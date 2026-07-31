@@ -18,7 +18,7 @@ import Eyebrow from '@components/Eyebrow.astro';
   আগে নেওয়া decision-গুলোতে, আর ship করার পরে পাওয়া evidence-এ।
 </p>
 
-বাংলাদেশের software engineer হিসেবে AI agent ব্যবহার করতে চাইলে শুধু একটা working app দেখানো এখন আর যথেষ্ট না। Recruiter বা engineering manager-কে দেখাতে হবে, আপনি problem কীভাবে ভেঙেছেন, architecture কেন বেছে নিয়েছেন, risk কোথায় দেখেছেন, আর output ঠিক কি না কীভাবে যাচাই করেছেন। [claude-lens](https://github.com/foyzulkarim/claude-lens) বানানোর সময় আমি এই পুরো process public-এ রেখেছি। সেই অভিজ্ঞতা থেকে idea থেকে production feedback পর্যন্ত একটা repeatable lifecycle এখানে তুলে ধরছি।
+AI agent ব্যবহার করে একটা working app বানালেই AI engineering-এর দক্ষতা প্রমাণ হয় না; decision-making process এবং verification-এর evidence-ও দেখাতে হয়। Recruiter বা engineering manager-কে দেখাতে হবে, আপনি problem কীভাবে ভেঙেছেন, architecture কেন বেছে নিয়েছেন, risk কোথায় দেখেছেন, আর output ঠিক কি না কীভাবে যাচাই করেছেন। [claude-lens](https://github.com/foyzulkarim/claude-lens) বানানোর সময় আমি এই পুরো process public-এ রেখেছি। সেই অভিজ্ঞতা থেকে idea থেকে production feedback পর্যন্ত একটা repeatable lifecycle এখানে তুলে ধরছি।
 
 একটা LLM পুরো codebase ঘেঁটে option propose করতে পারে, code draft করতে পারে এবং tool run করতে পারে—অনেক ক্ষেত্রেই আপনার চেয়ে দ্রুত। কিন্তু system define করা, constraint set করা, risk approve করা, evidence যাচাই করা এবং outcome-এর ownership নেওয়া আপনার কাজ। Model আর আপনার মাঝখানে তাই কিছু gate দরকার—test, acceptance criteria, review এবং security policy—যাতে যাচাই ছাড়া কিছু production-এর দিকে এগোতে না পারে।
 
