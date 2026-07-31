@@ -1,0 +1,77 @@
+---
+import '../styles/blog.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Document language. Post pages in Bengali pass 'bn'. */
+  lang?: 'en' | 'bn';
+  /** Home page supplies its own full title instead of the "— foyzul" suffix. */
+  bareTitle?: boolean;
+}
+
+const { title, description, lang = 'en', bareTitle = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const fullTitle = bareTitle ? title : `${title} — foyzul`;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {/* Must stay inline and before the stylesheet: these pages are static, so
+        a deferred script would run after first paint and a reader on the dark
+        theme would get a white flash on every navigation. */}
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('has-js');
+        try {
+          var stored = localStorage.getItem('theme');
+          if (stored === 'light' || stored === 'dark') root.dataset.theme = stored;
+        } catch (e) {
+          /* storage blocked — fall through to the OS preference */
+        }
+      })();
+    </script>
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title="foyzul" href="/rss.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+
+    {/* The two faces every English page renders immediately. */}
+    <link
+      rel="preload"
+      href="/fonts/source-serif-4-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/ibm-plex-sans-latin-600-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body>
+    {/* Spec §5.1: first focusable element on the page. */}
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader />
+    <main class="page" id="main">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

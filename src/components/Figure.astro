@@ -1,0 +1,47 @@
+---
+interface Props {
+  /** Escape the measure into the full-bleed track (spec §3.4). */
+  bleed?: boolean;
+  /** Small mono label above the figure. */
+  eyebrow?: string;
+  /** Caption text. May contain inline markup. */
+  caption?: string;
+  /** Draw the framed container. Off for raster images. */
+  frame?: boolean;
+  /**
+   * Keep the child's intrinsic geometry and scroll it on narrow screens
+   * rather than shrinking it into illegibility. On for diagrams.
+   */
+  scroll?: boolean;
+}
+
+const {
+  bleed = false,
+  eyebrow,
+  caption,
+  frame = true,
+  scroll = false,
+} = Astro.props;
+
+const Wrapper = bleed ? 'div' : Fragment;
+const Frame = frame ? 'div' : Fragment;
+const scrollLabel = eyebrow ? `${eyebrow} — scrollable` : 'Diagram, scrollable';
+---
+
+<Wrapper class={bleed ? 'bleed' : undefined}>
+  <figure>
+    {eyebrow && <p class="fig-eye">{eyebrow}</p>}
+    <Frame class={frame ? 'figframe' : undefined}>
+      {
+        scroll ? (
+          <div class="diagram-scroll" tabindex="0" role="region" aria-label={scrollLabel}>
+            <slot />
+          </div>
+        ) : (
+          <slot />
+        )
+      }
+    </Frame>
+    {caption && <figcaption set:html={caption} />}
+  </figure>
+</Wrapper>

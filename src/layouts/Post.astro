@@ -1,0 +1,37 @@
+---
+import Base from './Base.astro';
+import TagChips from '../components/TagChips.astro';
+import { formatDate, isoDate, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, lang } = post.data;
+---
+
+<Base title={title} description={description} lang={lang}>
+  {/*
+    Spec §5.1 / §9.2: exactly ONE <article> per post. It spans every grid
+    track and re-exposes them via subgrid (blog.css §3), so a bleed figure
+    inside can reach the full width without the post being split.
+  */}
+  <article class="post">
+    <h1>{title}</h1>
+    <p class="post-meta">
+      <time datetime={isoDate(pubDate)}>{formatDate(pubDate)}</time>
+      {
+        updatedDate && (
+          <span>
+            Updated <time datetime={isoDate(updatedDate)}>{formatDate(updatedDate)}</time>
+          </span>
+        )
+      }
+    </p>
+    {/* The lede is authored in the post body, so the frontmatter
+        description stays short enough for the index row (spec §5.2). */}
+    <slot />
+    <TagChips tags={tags} lang={lang} />
+  </article>
+</Base>

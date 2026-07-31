@@ -1,0 +1,37 @@
+---
+import TagChips from './TagChips.astro';
+import { formatDate, isoDate, type Post } from '../lib/posts';
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+{/* Spec §5.2: reverse-chronological <ol>, one <article> per entry. */}
+<ol class="post-list">
+  {
+    posts.map((post) => {
+      const bn = post.data.lang === 'bn' ? 'bn' : undefined;
+      return (
+        <li>
+          <article class="post-item">
+            <h2 class="post-item__title">
+              <a href={`/${post.id}/`} lang={bn}>
+                {post.data.title}
+              </a>
+            </h2>
+            <time class="post-item__date" datetime={isoDate(post.data.pubDate)}>
+              {formatDate(post.data.pubDate)}
+            </time>
+            <p class="post-item__desc" lang={bn}>
+              {post.data.description}
+            </p>
+            <TagChips tags={post.data.tags} lang={post.data.lang} />
+          </article>
+        </li>
+      );
+    })
+  }
+</ol>

@@ -1,0 +1,15 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*.ts", "**/*.astro"],
+  "exclude": ["dist", "claude", "chatgpt", "post-1"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    // Post files import components by alias so the path does not change when
+    // a post moves between a flat file and its own folder.
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@lib/*": ["src/lib/*"]
+    }
+  }
+}

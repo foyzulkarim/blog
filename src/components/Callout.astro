@@ -1,0 +1,13 @@
+---
+interface Props {
+  /** Short all-caps label, e.g. "In practice". Optional. */
+  tag?: string;
+}
+
+const { tag } = Astro.props;
+---
+
+<aside class="callout">
+  {tag && <span class="callout__tag">{tag}</span>}
+  <slot />
+</aside>

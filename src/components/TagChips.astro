@@ -1,0 +1,33 @@
+---
+import { tagSlug } from '../lib/posts';
+
+interface Props {
+  tags: string[];
+  lang?: 'en' | 'bn';
+}
+
+const { tags, lang = 'en' } = Astro.props;
+const showLangChip = lang === 'bn';
+const hasAny = tags.length > 0 || showLangChip;
+---
+
+{
+  hasAny && (
+    <ul class="tags">
+      {/* Spec §8.2: a বাংলা chip makes the language discoverable. Derived
+          from frontmatter `lang`, not authored as a tag. */}
+      {showLangChip && (
+        <li class="tag--lang">
+          <a href="/topics/#bangla" lang="bn">
+            বাংলা
+          </a>
+        </li>
+      )}
+      {tags.map((tag) => (
+        <li>
+          <a href={`/topics/#${tagSlug(tag)}`}>{tag}</a>
+        </li>
+      ))}
+    </ul>
+  )
+}

@@ -1,0 +1,694 @@
+/* ============================================================
+   blog.foyzul.com — site-wide stylesheet
+   One file. Zero JS. Tokens + element selectors only.
+   ============================================================ */
+
+/* ---------- 1. TOKENS ------------------------------------- */
+
+:root {
+  /* type families — 2 text + 1 mono. Bengali is a unicode-range fallback,
+     so English pages never request it. */
+  --font-body: "Source Serif 4", "Noto Serif Bengali", Georgia, serif;
+  --font-ui: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-bn: "Noto Serif Bengali", "Source Serif 4", serif;
+
+  /* type scale — 1.25ish, fluid only at the top end */
+  --t--1: 0.875rem;    /* 14px  meta, captions, table cells */
+  --t-0:  1.1875rem;   /* 19px  body — Source Serif 4 has a modest x-height */
+  --t-1:  1.3125rem;   /* 21px  h4 / lede */
+  --t-2:  1.5625rem;   /* 25px  h3 */
+  --t-3:  1.9375rem;   /* 31px  h2 */
+  --t-4:  clamp(2.125rem, 1.6rem + 2vw, 2.875rem); /* h1 */
+
+  --lh-body: 1.62;
+  --lh-tight: 1.22;
+  --lh-table: 1.35;
+
+  /* spacing scale (0.25rem base) */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+
+  /* layout */
+  --measure: 68ch;
+  --bleed-max: 1280px;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --radius: 4px;
+  --radius-lg: 6px;
+  --hairline: 1px;
+
+  /* colour — light. Cool near-neutral, no cream. */
+  --surface:          oklch(0.986 0.003 250);
+  --surface-sunken:   oklch(0.958 0.005 250);
+  --surface-raised:   oklch(1 0 0);
+  --text-primary:     oklch(0.255 0.014 258);
+  --text-secondary:   oklch(0.505 0.014 258);
+  --text-faint:       oklch(0.548 0.013 258);
+  --border:           oklch(0.885 0.007 258);
+  --border-strong:    oklch(0.775 0.011 258);
+  --accent:           oklch(0.505 0.126 249);
+  --accent-hover:     oklch(0.415 0.132 249);
+  --accent-visited:   oklch(0.475 0.108 296);
+  --accent-quiet:     oklch(0.945 0.021 249);
+  --focus-ring:       oklch(0.555 0.176 249);
+
+  --code-bg:          oklch(0.965 0.005 258);
+  --code-border:      oklch(0.905 0.007 258);
+  --code-text:        oklch(0.30 0.015 258);
+
+  --table-header-bg:  oklch(0.945 0.008 258);
+  --table-header-text: oklch(0.285 0.016 258);
+  --table-row-alt:    oklch(0.972 0.004 258);
+  /* deliberately lighter than --border: ten hairlines at 0.885 read as stripes */
+  --table-rule:       oklch(0.932 0.005 258);
+  --table-key-bg:     oklch(0.986 0.003 250);
+
+  --diagram-stroke:        oklch(0.42 0.016 258);
+  --diagram-fill:          oklch(0.955 0.006 258);
+  --diagram-fill-emphasis: oklch(0.905 0.043 249);
+  --diagram-text:          oklch(0.30 0.015 258);
+  /* text sitting on --diagram-fill-emphasis */
+  --diagram-text-emphasis: oklch(0.375 0.098 249);
+
+  --fade: oklch(0.986 0.003 250 / 0);
+}
+
+/* colour — dark. Designed, not derived: lifted surface, softened text,
+   accent pushed up in lightness to hold AA on a dark field. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface:          oklch(0.196 0.009 258);
+    --surface-sunken:   oklch(0.168 0.009 258);
+    --surface-raised:   oklch(0.232 0.010 258);
+    --text-primary:     oklch(0.882 0.006 258);
+    --text-secondary:   oklch(0.735 0.010 258);
+    --text-faint:       oklch(0.615 0.010 258);
+    --border:           oklch(0.315 0.012 258);
+    --border-strong:    oklch(0.435 0.014 258);
+    --accent:           oklch(0.775 0.106 245);
+    --accent-hover:     oklch(0.855 0.086 245);
+    --accent-visited:   oklch(0.775 0.086 300);
+    --accent-quiet:     oklch(0.275 0.032 249);
+    --focus-ring:       oklch(0.815 0.132 245);
+
+    --code-bg:          oklch(0.162 0.010 258);
+    --code-border:      oklch(0.295 0.012 258);
+    --code-text:        oklch(0.885 0.008 258);
+
+    --table-header-bg:  oklch(0.262 0.012 258);
+    --table-header-text: oklch(0.945 0.006 258);
+    --table-row-alt:    oklch(0.216 0.009 258);
+    --table-rule:       oklch(0.288 0.011 258);
+    --table-key-bg:     oklch(0.196 0.009 258);
+
+    --diagram-stroke:        oklch(0.775 0.012 258);
+    --diagram-fill:          oklch(0.262 0.012 258);
+    --diagram-fill-emphasis: oklch(0.315 0.049 249);
+    --diagram-text:          oklch(0.882 0.006 258);
+    --diagram-text-emphasis: oklch(0.855 0.072 245);
+  }
+}
+
+/* Same values, opt-in. Production uses prefers-color-scheme only;
+   this hook exists so both modes can be shown side by side. */
+[data-theme="dark"] {
+  --surface:          oklch(0.196 0.009 258);
+  --surface-sunken:   oklch(0.168 0.009 258);
+  --surface-raised:   oklch(0.232 0.010 258);
+  --text-primary:     oklch(0.882 0.006 258);
+  --text-secondary:   oklch(0.735 0.010 258);
+  --text-faint:       oklch(0.615 0.010 258);
+  --border:           oklch(0.315 0.012 258);
+  --border-strong:    oklch(0.435 0.014 258);
+  --accent:           oklch(0.775 0.106 245);
+  --accent-hover:     oklch(0.855 0.086 245);
+  --accent-visited:   oklch(0.775 0.086 300);
+  --accent-quiet:     oklch(0.275 0.032 249);
+  --focus-ring:       oklch(0.815 0.132 245);
+  --code-bg:          oklch(0.162 0.010 258);
+  --code-border:      oklch(0.295 0.012 258);
+  --code-text:        oklch(0.885 0.008 258);
+  --table-header-bg:  oklch(0.262 0.012 258);
+  --table-header-text: oklch(0.945 0.006 258);
+  --table-row-alt:    oklch(0.216 0.009 258);
+  --table-rule:       oklch(0.288 0.011 258);
+  --table-key-bg:     oklch(0.196 0.009 258);
+  --diagram-stroke:        oklch(0.775 0.012 258);
+  --diagram-fill:          oklch(0.262 0.012 258);
+  --diagram-fill-emphasis: oklch(0.315 0.049 249);
+  --diagram-text:          oklch(0.882 0.006 258);
+  --diagram-text-emphasis: oklch(0.855 0.072 245);
+}
+[data-theme="dark"] { color-scheme: dark; }
+
+/* A theme hook re-declares tokens, but the inherited colour was already
+   computed on body from the other mode, so re-assert the pair here. */
+[data-theme] { background-color: var(--surface); color: var(--text-primary); }
+
+/* Light values, opt-in — same purpose: pin a panel to light regardless of
+   the OS preference so the specimen can show both modes at once. */
+[data-theme="light"] {
+  color-scheme: light;
+  --surface:          oklch(0.986 0.003 250);
+  --surface-sunken:   oklch(0.958 0.005 250);
+  --surface-raised:   oklch(1 0 0);
+  --text-primary:     oklch(0.255 0.014 258);
+  --text-secondary:   oklch(0.505 0.014 258);
+  --text-faint:       oklch(0.548 0.013 258);
+  --border:           oklch(0.885 0.007 258);
+  --border-strong:    oklch(0.775 0.011 258);
+  --accent:           oklch(0.505 0.126 249);
+  --accent-hover:     oklch(0.415 0.132 249);
+  --accent-visited:   oklch(0.475 0.108 296);
+  --accent-quiet:     oklch(0.945 0.021 249);
+  --focus-ring:       oklch(0.555 0.176 249);
+  --code-bg:          oklch(0.965 0.005 258);
+  --code-border:      oklch(0.905 0.007 258);
+  --code-text:        oklch(0.30 0.015 258);
+  --table-header-bg:  oklch(0.945 0.008 258);
+  --table-header-text: oklch(0.285 0.016 258);
+  --table-row-alt:    oklch(0.972 0.004 258);
+  --table-rule:       oklch(0.932 0.005 258);
+  --table-key-bg:     oklch(0.986 0.003 250);
+  --diagram-stroke:        oklch(0.42 0.016 258);
+  --diagram-fill:          oklch(0.955 0.006 258);
+  --diagram-fill-emphasis: oklch(0.905 0.043 249);
+  --diagram-text:          oklch(0.30 0.015 258);
+  --diagram-text-emphasis: oklch(0.375 0.098 249);
+}
+
+/* ---------- 2. RESET + BASE ------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: var(--s-6);
+}
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--t-0);
+  line-height: var(--lh-body);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+:where(:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection { background: var(--accent-quiet); color: var(--text-primary); }
+
+img, svg, video { max-width: 100%; height: auto; }
+
+[lang="bn"] {
+  font-family: var(--font-bn);
+  line-height: 1.85;
+  font-size: 1.02em;
+}
+
+/* ---------- 3. LAYOUT: the measure + the full-bleed hatch --- */
+/* .page is a 4-column grid: gutter | measure | gutter, capped at
+   --bleed-max. Everything lands in `measure`; .bleed spans `full`.
+   No 100vw, so it is scrollbar-safe and never causes x-overflow. */
+
+.page {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--gutter), 1fr)
+    [measure-start] min(var(--measure), 100% - (var(--gutter) * 2))
+    [measure-end] minmax(var(--gutter), 1fr)
+    [full-end];
+  max-width: var(--bleed-max);
+  margin-inline: auto;
+  padding-block: var(--s-6) var(--s-8);
+}
+
+.page { color: var(--text-primary); }
+.page > * { grid-column: measure; min-width: 0; }
+/* Body prose is --text-primary in both modes, by inheritance from .page.
+   --text-secondary and --text-faint are reserved for metadata, captions,
+   ledes and the footer, which set colour on their own role classes. */
+.page :where(p, li, dd, td, th) { color: inherit; }
+.page > .bleed { grid-column: full; }
+
+/* At <=48rem the gutters collapse to the minimum, so a .bleed runs
+   edge to edge — the full 380px of screen goes to the data. */
+@media (max-width: 48rem) {
+  .page { --gutter: 1.25rem; }
+}
+
+/* ---------- 4. HEADER / NAV / FOOTER ---------------------- */
+
+.site-header {
+  border-bottom: var(--hairline) solid var(--border);
+  background: var(--surface);
+}
+
+.site-header__inner {
+  max-width: var(--bleed-max);
+  margin-inline: auto;
+  padding: var(--s-4) var(--gutter);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+.wordmark {
+  font-family: var(--font-ui);
+  font-size: var(--t-1);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.wordmark:visited { color: var(--text-primary); }
+.wordmark:hover { color: var(--accent); }
+
+.nav {
+  display: flex;
+  gap: clamp(var(--s-4), 3.5vw, var(--s-5));
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  letter-spacing: 0.01em;
+}
+.nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding-block: 2px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.nav a:visited { color: var(--text-secondary); }
+.nav a:hover { color: var(--text-primary); border-bottom-color: var(--border-strong); }
+.nav a[aria-current="page"] { color: var(--text-primary); border-bottom-color: var(--accent); }
+
+.site-footer {
+  border-top: var(--hairline) solid var(--border);
+  margin-top: var(--s-8);
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-secondary);
+}
+.site-footer__inner {
+  max-width: var(--bleed-max);
+  margin-inline: auto;
+  padding: var(--s-5) var(--gutter);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  justify-content: space-between;
+}
+.site-footer a { color: var(--text-secondary); }
+
+/* ---------- 5. PROSE -------------------------------------- */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-ui);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.018em;
+  color: var(--text-primary);
+  text-wrap: balance;
+  scroll-margin-top: var(--s-6);
+}
+
+h1 { font-size: var(--t-4); font-weight: 600; margin: 0 0 var(--s-3); letter-spacing: -0.026em; }
+h2 { font-size: var(--t-3); font-weight: 600; margin: var(--s-8) 0 var(--s-3); }
+h3 { font-size: var(--t-2); font-weight: 600; margin: var(--s-7) 0 var(--s-2); }
+h4 {
+  font-size: var(--t-1); font-weight: 600; margin: var(--s-6) 0 var(--s-2);
+  letter-spacing: 0.005em;
+}
+
+p { margin: 0 0 var(--s-5); text-wrap: pretty; }
+p.lede { font-size: var(--t-1); color: var(--text-secondary); }
+
+/* heading anchors — always in the tab order, revealed on hover/focus */
+.anchor {
+  font-family: var(--font-mono);
+  font-size: 0.7em;
+  font-weight: 400;
+  color: var(--text-faint);
+  text-decoration: none;
+  margin-left: 0.4em;
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+:is(h2, h3, h4):hover .anchor,
+.anchor:focus-visible { opacity: 1; }
+.anchor:hover { color: var(--accent); }
+@media (hover: none) { .anchor { opacity: 1; } }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+  text-decoration-color: color-mix(in oklch, var(--accent) 40%, transparent);
+}
+a:hover { color: var(--accent-hover); text-decoration-color: currentColor; }
+/* visited carries a second, non-colour channel — the hue shift alone
+   collapses under protanopia and deuteranopia */
+a:visited {
+  color: var(--accent-visited);
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+}
+
+strong { font-weight: 600; }
+
+ul, ol { margin: 0 0 var(--s-5); padding-left: 1.35em; }
+li { margin-bottom: var(--s-2); }
+li > ul, li > ol { margin: var(--s-2) 0 var(--s-2); }
+ul { list-style: square; }
+li::marker { color: var(--text-faint); }
+ol > li::marker { font-family: var(--font-mono); font-size: 0.85em; }
+
+blockquote {
+  margin: var(--s-6) 0;
+  padding: var(--s-1) 0 var(--s-1) var(--s-5);
+  border-left: 2px solid var(--border-strong);
+  color: var(--text-secondary);
+}
+blockquote p:last-child { margin-bottom: 0; }
+blockquote cite {
+  display: block;
+  margin-top: var(--s-3);
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  font-style: normal;
+  color: var(--text-faint);
+}
+
+hr {
+  border: 0;
+  border-top: var(--hairline) solid var(--border);
+  margin: var(--s-7) 0;
+}
+
+/* ---------- 6. CODE -------------------------------------- */
+
+code, kbd, samp, pre { font-family: var(--font-mono); font-variant-ligatures: none; }
+
+:not(pre) > code {
+  font-size: 0.855em;
+  background: var(--code-bg);
+  border: var(--hairline) solid var(--code-border);
+  border-radius: var(--radius);
+  padding: 0.1em 0.34em;
+  color: var(--code-text);
+  word-break: break-word;
+}
+
+pre {
+  margin: var(--s-6) 0;
+  padding: var(--s-4) 0;
+  background: var(--code-bg);
+  border: var(--hairline) solid var(--code-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--t--1);
+  line-height: 1.65;
+  overflow-x: auto;
+  tab-size: 2;
+  /* Shiki hooks: themes set these two, everything else is inline spans */
+  color: var(--code-text);
+}
+pre > code {
+  display: block;
+  padding-inline: var(--s-4);
+  background: none;
+  border: 0;
+  min-width: fit-content;
+}
+.code-label {
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-faint);
+  margin: var(--s-6) 0 calc(var(--s-2) * -1 - var(--s-2));
+  display: block;
+}
+.code-label + pre { margin-top: var(--s-2); }
+
+/* ---------- 7. TABLES (the point of the site) ------------- */
+/* Scroll container. Always present: it is what makes 10 columns
+   survive 380px without shrinking text or squeezing columns. */
+
+.table-scroll:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+  border-block: var(--hairline) solid var(--border-strong);
+  /* scroll affordance: a tint pinned to each edge (background-attachment
+     scroll) with a cover pinned to the content ends (local) that slides
+     over it once you reach that end. No JS. */
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--text-primary) 12%, transparent), transparent),
+    linear-gradient(to left,  color-mix(in oklch, var(--text-primary) 12%, transparent), transparent),
+    linear-gradient(to right, var(--surface), transparent),
+    linear-gradient(to left,  var(--surface), transparent);
+  background-position: left center, right center, left center, right center;
+  background-repeat: no-repeat;
+  background-size: 26px 100%, 26px 100%, 14px 100%, 14px 100%;
+  background-attachment: scroll, scroll, local, local;
+}
+.bleed > .table-scroll { border-radius: 0; }
+.page > .bleed { margin-block: var(--s-6); }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  line-height: var(--lh-table);
+  font-variant-numeric: tabular-nums;
+  background: none;
+}
+
+caption {
+  caption-side: top;
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-secondary);
+  padding: 0 var(--gutter) var(--s-3);
+}
+.bleed caption { padding-inline: var(--gutter); }
+
+thead th {
+  background: var(--table-header-bg);
+  color: var(--table-header-text);
+  font-weight: 600;
+  font-size: 0.94em;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: left;
+  vertical-align: bottom;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--border-strong);
+}
+
+th, td {
+  padding: var(--s-2) var(--s-4);
+  border-bottom: var(--hairline) solid var(--table-rule);
+  text-align: left;
+  vertical-align: top;
+}
+tbody tr:last-child > * { border-bottom: 0; }
+tbody tr:nth-child(even) { background: var(--table-row-alt); }
+tbody th { font-weight: 600; white-space: nowrap; }
+
+/* numeric columns: right-aligned, tabular, mono for scanability */
+.num, td.num, th.num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+thead th.num { font-family: var(--font-ui); }
+.num--best { color: var(--text-primary); font-weight: 600; }
+.num--best::after {
+  content: "";
+  display: inline-block;
+  width: 5px; height: 5px;
+  margin-left: 0.45em;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 0.12em;
+}
+.unit { color: var(--text-faint); font-family: var(--font-ui); }
+
+/* first column stays put while the numbers scroll under it —
+   this is the whole reason a 10-column table works at 380px */
+.table--sticky :is(thead th, tbody th, tbody td):first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--table-key-bg);
+  box-shadow: 1px 0 0 var(--table-rule);
+}
+.table--sticky thead th:first-child { background: var(--table-header-bg); z-index: 3; }
+.table--sticky tbody tr:nth-child(even) :is(th, td):first-child { background: var(--table-row-alt); }
+
+/* narrow tables sit inside the measure and keep a light frame */
+.table-scroll--inset { border-radius: var(--radius-lg); border: var(--hairline) solid var(--border); }
+.table-scroll--inset table { font-size: var(--t--1); }
+
+.table-note {
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-faint);
+  margin: var(--s-2) 0 0;
+  padding-inline: var(--gutter);
+}
+.bleed .table-note { padding-inline: var(--gutter); }
+.table-note kbd {
+  font-size: 0.92em;
+  border: var(--hairline) solid var(--border);
+  border-radius: 3px;
+  padding: 0 0.3em;
+}
+
+/* ---------- 8. FIGURES ----------------------------------- */
+
+figure { margin: var(--s-6) 0; }
+.page > .bleed > figure { margin: 0; }
+
+figcaption {
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-secondary);
+  margin-top: var(--s-3);
+  text-wrap: pretty;
+}
+.bleed figcaption { padding-inline: var(--gutter); }
+figcaption b { color: var(--text-primary); font-weight: 600; }
+
+.diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--diagram-stroke); /* currentColor for hand-authored SVG */
+  background: var(--surface-raised);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--s-4);
+}
+.bleed .diagram { border-radius: 0; border-inline: 0; }
+.diagram text { font-family: var(--font-ui); fill: var(--diagram-text); }
+.diagram .stroke { stroke: currentColor; fill: none; }
+.diagram .arrow { fill: currentColor; stroke: none; }
+.diagram .box { fill: var(--diagram-fill); stroke: currentColor; }
+.diagram .box--emphasis { fill: var(--diagram-fill-emphasis); stroke: var(--diagram-text-emphasis); }
+.diagram .text--emphasis { fill: var(--diagram-text-emphasis); }
+.diagram .text--muted { fill: var(--diagram-text); opacity: 0.72; }
+
+.figure-image img,
+.figure-image .placeholder {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: var(--hairline) solid var(--border);
+  background: var(--surface-sunken);
+}
+
+/* ---------- 9. POST + INDEX ------------------------------- */
+
+.post-meta {
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0 0 var(--s-6);
+}
+
+.post-list { list-style: none; margin: 0; padding: 0; }
+.post-list > li { margin: 0; border-bottom: var(--hairline) solid var(--border); }
+.post-list > li:last-child { border-bottom: 0; }
+
+.post-link {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-1);
+  padding: var(--s-5) 0;
+  text-decoration: none;
+  color: inherit;
+}
+.post-link:visited { color: inherit; }
+.post-link__title {
+  font-family: var(--font-ui);
+  font-size: var(--t-1);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+.post-link:hover .post-link__title { color: var(--accent); }
+.post-link:visited .post-link__title { color: var(--accent-visited); }
+.post-link:hover .post-link__title,
+.post-link:visited:hover .post-link__title { text-decoration: underline; text-underline-offset: 0.16em; }
+.post-link__desc { color: var(--text-secondary); font-size: 0.97em; text-wrap: pretty; }
+.post-link__date {
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 48rem) {
+  .post-link {
+    grid-template-columns: 1fr 7.5rem;
+    grid-template-areas: "title date" "desc desc";
+    column-gap: var(--s-5);
+    align-items: baseline;
+  }
+  .post-link__title { grid-area: title; }
+  .post-link__date { grid-area: date; text-align: right; }
+  .post-link__desc { grid-area: desc; }
+}
+
+.index-intro {
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0 0 var(--s-3);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+.skip-link:focus {
+  left: var(--gutter);
+  top: var(--s-2);
+  z-index: 10;
+  background: var(--surface-raised);
+  border: var(--hairline) solid var(--border-strong);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--radius);
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+}

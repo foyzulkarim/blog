@@ -1,0 +1,24 @@
+---
+const path = Astro.url.pathname;
+// "Writing" stays active across the paginated index (spec §7.1).
+const isWriting = path === '/' || path.startsWith('/page/');
+const isTopics = path.startsWith('/topics');
+const isAbout = path.startsWith('/about');
+
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="wordmark" href="/">foyzul</a>
+    <div class="site-header__end">
+      <nav class="nav" aria-label="Main">
+        <a href="/" aria-current={isWriting ? 'page' : undefined}>Writing</a>
+        <a href="/topics/" aria-current={isTopics ? 'page' : undefined}>Topics</a>
+        <a href="https://courses.foyzul.com" target="_blank" rel="noopener">Courses</a>
+        <a href="/about/" aria-current={isAbout ? 'page' : undefined}>About</a>
+      </nav>
+      <ThemeToggle />
+    </div>
+  </div>
+</header>

@@ -1,0 +1,995 @@
+/* ============================================================
+   blog.foyzul.com — site-wide stylesheet
+   Consolidated from claude/blog.css per docs/BLOG_SPEC.md §3
+   and docs/ARCHITECTURE.md §6. One file. No JS except the theme toggle,
+   which degrades to the OS preference when scripting is off (§1.1).
+   ============================================================ */
+
+/* ---------- 0. FONTS -------------------------------------- */
+/* Self-hosted, no third-party origins (spec §4). Bengali faces are
+   gated behind unicode-range so English-only pages never fetch them. */
+
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url("/fonts/source-serif-4-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: italic;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url("/fonts/source-serif-4-latin-wght-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-mono-latin-600-normal.woff2") format("woff2");
+}
+
+/* Bengali — unicode-range gated (spec §4). */
+@font-face {
+  font-family: "Noto Sans Bengali";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/noto-sans-bengali-bengali-400-normal.woff2") format("woff2");
+  unicode-range: U+0980-09FF, U+200C-200D, U+25CC, U+A8F1;
+}
+@font-face {
+  font-family: "Noto Sans Bengali";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/noto-sans-bengali-bengali-600-normal.woff2") format("woff2");
+  unicode-range: U+0980-09FF, U+200C-200D, U+25CC, U+A8F1;
+}
+
+/* ---------- 1. TOKENS ------------------------------------- */
+
+:root {
+  /* C2: the only color-scheme declaration in the file. Without it the
+     native scrollbars and form controls stay light in dark mode. */
+  color-scheme: light dark;
+
+  /* type families — 2 text + 1 mono. Bengali is a unicode-range fallback,
+     so English pages never request it. (C1: Sans, not Serif — the files in
+     the repo are Noto Sans Bengali.) */
+  --font-body: "Source Serif 4", "Noto Sans Bengali", Georgia, serif;
+  --font-ui: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-bn: "Noto Sans Bengali", "Source Serif 4", sans-serif;
+
+  /* type scale — 1.25ish, fluid only at the top end */
+  --t--1: 0.875rem;    /* 14px  meta, captions, table cells */
+  --t-0:  1.1875rem;   /* 19px  body — Source Serif 4 has a modest x-height */
+  --t-1:  1.3125rem;   /* 21px  h4 / lede */
+  --t-2:  1.4375rem;   /* 23px  h3 — 1.35x under h2, so a sub-heading inside
+                                a phase never competes with the phase title */
+  --t-3:  1.9375rem;   /* 31px  h2 */
+  --t-4:  clamp(2.125rem, 1.6rem + 2vw, 2.875rem); /* h1 */
+
+  --lh-body: 1.62;
+  --lh-tight: 1.22;
+  --lh-table: 1.35;
+
+  /* spacing scale (0.25rem base) */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+
+  /* layout */
+  --measure: 68ch;
+  --bleed-max: 1280px;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --radius: 4px;
+  --radius-lg: 6px;
+  --hairline: 1px;
+
+  /* colour — light-dark(light, dark), one line per token so the two faces of
+     a colour sit together and stay in step. Light is a cool near-neutral, no
+     cream. Dark is designed, not derived: lifted surface, softened text,
+     accent pushed up in lightness to hold AA on a dark field.
+     Which face renders follows `color-scheme` above — `light dark` defers to
+     the OS, and §1.1 narrows it to one keyword once the reader picks. */
+  --surface:           light-dark(oklch(0.986 0.003 250), oklch(0.196 0.009 258));
+  --surface-sunken:    light-dark(oklch(0.958 0.005 250), oklch(0.168 0.009 258));
+  --surface-raised:    light-dark(oklch(1 0 0),           oklch(0.232 0.010 258));
+  --text-primary:      light-dark(oklch(0.255 0.014 258), oklch(0.882 0.006 258));
+  --text-secondary:    light-dark(oklch(0.505 0.014 258), oklch(0.735 0.010 258));
+  --text-faint:        light-dark(oklch(0.548 0.013 258), oklch(0.660 0.010 258));
+  --border:            light-dark(oklch(0.885 0.007 258), oklch(0.315 0.012 258));
+  --border-strong:     light-dark(oklch(0.775 0.011 258), oklch(0.435 0.014 258));
+  --accent:            light-dark(oklch(0.505 0.126 249), oklch(0.775 0.106 245));
+  --accent-hover:      light-dark(oklch(0.415 0.132 249), oklch(0.855 0.086 245));
+  --accent-visited:    light-dark(oklch(0.475 0.108 296), oklch(0.775 0.086 300));
+  --accent-quiet:      light-dark(oklch(0.945 0.021 249), oklch(0.275 0.032 249));
+  --focus-ring:        light-dark(oklch(0.555 0.176 249), oklch(0.815 0.132 245));
+
+  --code-bg:           light-dark(oklch(0.965 0.005 258), oklch(0.162 0.010 258));
+  --code-border:       light-dark(oklch(0.905 0.007 258), oklch(0.295 0.012 258));
+  --code-text:         light-dark(oklch(0.30 0.015 258),  oklch(0.885 0.008 258));
+
+  --table-header-bg:   light-dark(oklch(0.945 0.008 258), oklch(0.262 0.012 258));
+  --table-header-text: light-dark(oklch(0.285 0.016 258), oklch(0.945 0.006 258));
+  --table-row-alt:     light-dark(oklch(0.972 0.004 258), oklch(0.216 0.009 258));
+  /* light side deliberately lighter than --border: ten hairlines at 0.885
+     read as stripes */
+  --table-rule:        light-dark(oklch(0.932 0.005 258), oklch(0.288 0.011 258));
+  --table-key-bg:      light-dark(oklch(0.986 0.003 250), oklch(0.196 0.009 258));
+
+  --diagram-stroke:        light-dark(oklch(0.42 0.016 258),  oklch(0.775 0.012 258));
+  --diagram-fill:          light-dark(oklch(0.955 0.006 258), oklch(0.262 0.012 258));
+  --diagram-fill-emphasis: light-dark(oklch(0.905 0.043 249), oklch(0.315 0.049 249));
+  --diagram-text:          light-dark(oklch(0.30 0.015 258),  oklch(0.882 0.006 258));
+  /* text sitting on --diagram-fill-emphasis */
+  --diagram-text-emphasis: light-dark(oklch(0.375 0.098 249), oklch(0.855 0.072 245));
+  --diagram-fill-alt:      light-dark(oklch(0.925 0.035 190), oklch(0.300 0.040 190));
+  --diagram-fill-warm:     light-dark(oklch(0.930 0.040 75),  oklch(0.315 0.040 75));
+  --diagram-text-warm:     light-dark(oklch(0.480 0.090 75),  oklch(0.830 0.075 75));
+}
+
+/* ---------- 1.1 THEME OVERRIDE ---------------------------- */
+/* The reader's explicit choice, written to <html data-theme> by the inline
+   script in Base.astro before first paint and by ThemeToggle on click.
+   Absent the attribute, `color-scheme: light dark` above follows the OS.
+   Narrowing color-scheme is the whole override: it repoints every
+   light-dark() token AND the native scrollbars and form controls. */
+
+html[data-theme="light"] { color-scheme: light; }
+html[data-theme="dark"]  { color-scheme: dark; }
+
+/* ---------- 2. RESET + BASE ------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: var(--s-6);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--t-0);
+  line-height: var(--lh-body);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+:where(:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection { background: var(--accent-quiet); color: var(--text-primary); }
+
+img, svg, video { max-width: 100%; height: auto; }
+
+[lang="bn"] {
+  font-family: var(--font-bn);
+  line-height: 1.85;
+  font-size: 1.02em;
+}
+
+/* ---------- 3. LAYOUT: the measure + the full-bleed hatch --- */
+/* .page is a 4-column grid: gutter | measure | gutter, capped at
+   --bleed-max. Everything lands in `measure`; .bleed spans `full`.
+   No 100vw, so it is scrollbar-safe and never causes x-overflow. */
+
+.page {
+  flex: 1;
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--gutter), 1fr)
+    [measure-start] min(var(--measure), 100% - (var(--gutter) * 2))
+    [measure-end] minmax(var(--gutter), 1fr)
+    [full-end];
+  align-content: start;
+  max-width: var(--bleed-max);
+  width: 100%;
+  margin-inline: auto;
+  padding-block: var(--s-6) var(--s-8);
+  color: var(--text-primary);
+}
+
+.page > * { grid-column: measure; min-width: 0; }
+/* Body prose is --text-primary in both modes, by inheritance from .page.
+   --text-secondary and --text-faint are reserved for metadata, captions,
+   ledes and the footer, which set colour on their own role classes. */
+.page :where(p, li, dd, td, th) { color: inherit; }
+.page > .bleed { grid-column: full; }
+
+/* ARCHITECTURE §6.1 — the full-bleed contract.
+   The article spans every track and re-exposes the parent's columns via
+   subgrid, so a table or figure can reach `full` WITHOUT the post being
+   split into multiple <article> elements (spec §9.2). */
+.page > .post {
+  grid-column: full;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-content: start;
+}
+.post > * { grid-column: measure; min-width: 0; }
+.post > .bleed { grid-column: full; }
+
+/* At <=48rem the gutters collapse to the minimum, so a .bleed runs
+   edge to edge — the full 380px of screen goes to the data. */
+@media (max-width: 48rem) {
+  .page { --gutter: 1.25rem; }
+}
+
+/* ---------- 4. HEADER / NAV / FOOTER ---------------------- */
+
+.site-header {
+  border-bottom: var(--hairline) solid var(--border);
+  background: var(--surface);
+}
+
+.site-header__inner {
+  max-width: var(--bleed-max);
+  margin-inline: auto;
+  padding: var(--s-3) var(--gutter);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+}
+
+.wordmark {
+  font-family: var(--font-ui);
+  font-size: var(--t-1);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding-block: var(--s-2);
+}
+.wordmark:visited { color: var(--text-primary); }
+.wordmark:hover { color: var(--accent); }
+
+/* No hamburger: items wrap to a second row at narrow widths (spec §7.1). */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 clamp(var(--s-4), 3.5vw, var(--s-5));
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  letter-spacing: 0.01em;
+}
+/* C8: hit area. 12px block padding takes a 14px label to ~40px tall. */
+.nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding-block: var(--s-3);
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.nav a:visited { color: var(--text-secondary); }
+.nav a:hover { color: var(--text-primary); border-bottom-color: var(--border-strong); }
+.nav a[aria-current="page"] { color: var(--text-primary); border-bottom-color: var(--accent); }
+
+/* Keeps nav and toggle together as one right-hand block, so the toggle wraps
+   WITH the nav at narrow widths instead of stranding itself on a third row. */
+.site-header__end {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 var(--s-4);
+}
+
+/* Inert without JS, so it is not rendered until the head script says there
+   is JS. Declared before .has-js so the reveal rule wins on equal specificity. */
+.theme-toggle { display: none; }
+
+html.has-js .theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* C8 again: 18px icon + padding clears the 40px hit area the nav uses. */
+  width: 40px;
+  height: 40px;
+  align-self: center;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.theme-toggle:hover { color: var(--text-primary); background: var(--surface-sunken); }
+
+.theme-toggle__icon { display: none; }
+/* Following the OS: offer the opposite of what the OS gives us. */
+html:not([data-theme]) .theme-toggle__moon { display: block; }
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) .theme-toggle__moon { display: none; }
+  html:not([data-theme]) .theme-toggle__sun { display: block; }
+}
+/* Reader has chosen: offer the other one. */
+html[data-theme="light"] .theme-toggle__moon { display: block; }
+html[data-theme="dark"] .theme-toggle__sun { display: block; }
+
+.site-footer {
+  border-top: var(--hairline) solid var(--border);
+  margin-top: var(--s-8);
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-secondary);
+}
+.site-footer__inner {
+  max-width: var(--bleed-max);
+  margin-inline: auto;
+  padding: var(--s-4) var(--gutter);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-5);
+  justify-content: space-between;
+}
+.site-footer p { margin: 0; }
+.site-footer__meta { display: flex; gap: var(--s-3); align-items: baseline; }
+/* C8: RSS hit area matches the nav. */
+.site-footer a {
+  color: var(--text-secondary);
+  padding-block: var(--s-2);
+  display: inline-block;
+}
+.site-footer a:hover { color: var(--accent); }
+
+/* ---------- 5. PROSE -------------------------------------- */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-ui);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.018em;
+  color: var(--text-primary);
+  text-wrap: balance;
+  scroll-margin-top: var(--s-6);
+}
+
+h1 { font-size: var(--t-4); font-weight: 600; margin: 0 0 var(--s-3); letter-spacing: -0.026em; }
+h2 { font-size: var(--t-3); font-weight: 600; margin: var(--s-8) 0 var(--s-3); }
+h3 { font-size: var(--t-2); font-weight: 600; margin: var(--s-7) 0 var(--s-2); }
+h4 {
+  font-size: var(--t-0); font-weight: 600; margin: var(--s-6) 0 var(--s-2);
+  letter-spacing: 0.005em;
+}
+
+p { margin: 0 0 var(--s-5); text-wrap: pretty; }
+p.lede { font-size: var(--t-1); color: var(--text-secondary); }
+
+/* heading anchors — always in the tab order, revealed on hover/focus */
+.anchor {
+  font-family: var(--font-mono);
+  font-size: 0.7em;
+  font-weight: 400;
+  color: var(--text-faint);
+  text-decoration: none;
+  margin-left: 0.4em;
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+:is(h2, h3, h4):hover .anchor,
+.anchor:focus-visible { opacity: 1; }
+.anchor:hover { color: var(--accent); }
+@media (hover: none) { .anchor { opacity: 1; } }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+  text-decoration-color: color-mix(in oklch, var(--accent) 40%, transparent);
+}
+a:hover { color: var(--accent-hover); text-decoration-color: currentColor; }
+/* visited carries a second, non-colour channel — the hue shift alone
+   collapses under protanopia and deuteranopia */
+a:visited {
+  color: var(--accent-visited);
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+}
+
+strong { font-weight: 600; }
+
+ul, ol { margin: 0 0 var(--s-5); padding-left: 1.35em; }
+li { margin-bottom: var(--s-2); }
+li > ul, li > ol { margin: var(--s-2) 0 var(--s-2); }
+ul { list-style: square; }
+li::marker { color: var(--text-faint); }
+ol > li::marker { font-family: var(--font-mono); font-size: 0.85em; }
+
+blockquote {
+  margin: var(--s-6) 0;
+  padding: var(--s-1) 0 var(--s-1) var(--s-5);
+  border-left: 2px solid var(--border-strong);
+  color: var(--text-secondary);
+}
+blockquote p:last-child { margin-bottom: 0; }
+blockquote cite {
+  display: block;
+  margin-top: var(--s-3);
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  font-style: normal;
+  color: var(--text-faint);
+}
+
+hr {
+  border: 0;
+  border-top: var(--hairline) solid var(--border);
+  margin: var(--s-7) 0;
+}
+
+/* ---------- 6. CODE -------------------------------------- */
+
+code, kbd, samp, pre { font-family: var(--font-mono); font-variant-ligatures: none; }
+
+:not(pre) > code {
+  font-size: 0.855em;
+  background: var(--code-bg);
+  border: var(--hairline) solid var(--code-border);
+  border-radius: var(--radius);
+  padding: 0.1em 0.34em;
+  color: var(--code-text);
+  word-break: break-word;
+}
+
+pre {
+  margin: var(--s-6) 0;
+  padding: var(--s-4) 0;
+  background: var(--code-bg);
+  border: var(--hairline) solid var(--code-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--t--1);
+  line-height: 1.65;
+  overflow-x: auto;
+  tab-size: 2;
+  color: var(--code-text);
+}
+pre > code {
+  display: block;
+  padding-inline: var(--s-4);
+  background: none;
+  border: 0;
+  min-width: fit-content;
+}
+/* C6: an overflowing code block is a scroll container, so it must be
+   reachable and visibly focused (spec §3.3). tabindex is added by the
+   rehype step in astro.config; this is the matching affordance. */
+pre:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Shiki dual themes. defaultColor:false emits only --shiki-light/--shiki-dark
+   per token; we map colour but keep OUR --code-bg so the block stays in the
+   editorial palette (spec §3.3). Selector is .astro-code, not .shiki. */
+.astro-code { background-color: var(--code-bg) !important; }
+.astro-code, .astro-code span { color: light-dark(var(--shiki-light), var(--shiki-dark)); }
+
+.code-label {
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-faint);
+  margin: var(--s-6) 0 calc(var(--s-2) * -1 - var(--s-2));
+  display: block;
+}
+.code-label + pre { margin-top: var(--s-2); }
+
+/* ---------- 7. TABLES ------------------------------------- */
+/* Scroll container. Always present: it is what makes 10 columns
+   survive 380px without shrinking text or squeezing columns. */
+
+.table-scroll:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+  border-block: var(--hairline) solid var(--border-strong);
+  /* scroll affordance: a tint pinned to each edge (background-attachment
+     scroll) with a cover pinned to the content ends (local) that slides
+     over it once you reach that end. No JS. */
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--text-primary) 12%, transparent), transparent),
+    linear-gradient(to left,  color-mix(in oklch, var(--text-primary) 12%, transparent), transparent),
+    linear-gradient(to right, var(--surface), transparent),
+    linear-gradient(to left,  var(--surface), transparent);
+  background-position: left center, right center, left center, right center;
+  background-repeat: no-repeat;
+  background-size: 26px 100%, 26px 100%, 14px 100%, 14px 100%;
+  background-attachment: scroll, scroll, local, local;
+}
+.bleed > .table-scroll { border-radius: 0; }
+.bleed { margin-block: var(--s-6); }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  line-height: var(--lh-table);
+  font-variant-numeric: tabular-nums;
+  background: none;
+}
+
+caption {
+  caption-side: top;
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-secondary);
+  padding: 0 var(--gutter) var(--s-3);
+}
+.bleed caption { padding-inline: var(--gutter); }
+
+thead th {
+  background: var(--table-header-bg);
+  color: var(--table-header-text);
+  font-weight: 600;
+  font-size: 0.94em;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: left;
+  vertical-align: bottom;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--border-strong);
+}
+
+th, td {
+  padding: var(--s-2) var(--s-4);
+  border-bottom: var(--hairline) solid var(--table-rule);
+  text-align: left;
+  vertical-align: top;
+}
+tbody tr:last-child > * { border-bottom: 0; }
+tbody tr:nth-child(even) { background: var(--table-row-alt); }
+tbody th { font-weight: 600; white-space: nowrap; }
+
+/* numeric columns: right-aligned, tabular, mono for scanability */
+.num, td.num, th.num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+thead th.num { font-family: var(--font-ui); }
+.num--best { color: var(--text-primary); font-weight: 600; }
+.num--best::after {
+  content: "";
+  display: inline-block;
+  width: 5px; height: 5px;
+  margin-left: 0.45em;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 0.12em;
+}
+.unit { color: var(--text-faint); font-family: var(--font-ui); }
+
+/* first column stays put while the numbers scroll under it */
+.table--sticky :is(thead th, tbody th, tbody td):first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--table-key-bg);
+  box-shadow: 1px 0 0 var(--table-rule);
+}
+.table--sticky thead th:first-child { background: var(--table-header-bg); z-index: 3; }
+.table--sticky tbody tr:nth-child(even) :is(th, td):first-child { background: var(--table-row-alt); }
+
+/* narrow tables sit inside the measure and keep a light frame */
+.table-scroll--inset { border-radius: var(--radius-lg); border: var(--hairline) solid var(--border); }
+.table-scroll--inset table { font-size: var(--t--1); }
+
+.table-note {
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-faint);
+  margin: var(--s-2) 0 0;
+  padding-inline: var(--gutter);
+}
+.table-note kbd {
+  font-size: 0.92em;
+  border: var(--hairline) solid var(--border);
+  border-radius: 3px;
+  padding: 0 0.3em;
+}
+
+/* ---------- 8. FIGURES + DIAGRAMS ------------------------- */
+
+figure { margin: var(--s-6) 0; }
+.bleed > figure { margin: 0; }
+
+figcaption {
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-secondary);
+  margin-top: var(--s-3);
+  text-wrap: pretty;
+}
+.bleed figcaption { padding-inline: var(--gutter); }
+figcaption b { color: var(--text-primary); font-weight: 600; }
+
+/* figure eyebrow — the small mono label above a diagram (from post-1) */
+.fig-eye {
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-faint);
+  margin: 0 0 var(--s-3);
+}
+.bleed .fig-eye { padding-inline: var(--gutter); }
+
+/* framed container for a diagram (post-1's .figframe) */
+.figframe {
+  background: var(--surface-raised);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--s-5);
+}
+.bleed .figframe { border-radius: 0; border-inline: 0; }
+
+.diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--diagram-stroke); /* currentColor for hand-authored SVG */
+}
+.diagram text { font-family: var(--font-mono); fill: var(--diagram-text); }
+.diagram .stroke { stroke: currentColor; fill: none; }
+.diagram .stroke--dash { stroke-dasharray: 4 5; }
+.diagram .arrow { fill: currentColor; stroke: none; }
+.diagram .box { fill: var(--diagram-fill); stroke: currentColor; }
+/* replaces post-1's hardcoded fill:#fff, which was invisible in dark mode */
+.diagram .box--raised { fill: var(--surface-raised); stroke: currentColor; }
+.diagram .box--emphasis { fill: var(--diagram-fill-emphasis); stroke: var(--diagram-text-emphasis); }
+.diagram .box--alt { fill: var(--diagram-fill-alt); stroke: var(--diagram-stroke); }
+.diagram .box--warm { fill: var(--diagram-fill-warm); stroke: var(--diagram-stroke); }
+.diagram .text--emphasis { fill: var(--diagram-text-emphasis); }
+.diagram .text--muted { fill: var(--diagram-text); opacity: 0.72; }
+.diagram .label { font-size: 13px; font-weight: 500; text-anchor: middle; }
+.diagram .label--sm { font-size: 10.5px; font-weight: 400; fill: var(--diagram-text); opacity: 0.74; }
+/* CSS beats the text-anchor presentation attribute, so left-aligned SVG
+   labels need a class rather than text-anchor="start". Declared after
+   .label/.eye so it wins at equal specificity. */
+.diagram .anchor-start { text-anchor: start; }
+.diagram .eye {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-anchor: middle;
+  fill: var(--diagram-text);
+  opacity: 0.8;
+}
+.diagram .tick { stroke: var(--border-strong); stroke-width: 1; }
+.diagram .text--warm { fill: var(--diagram-text-warm); }
+/* horizontal bars: filled, unstroked; .stroke--frame draws the outline */
+.diagram .bar { stroke: none; }
+.diagram .bar--a { fill: var(--diagram-fill); }
+.diagram .bar--b { fill: var(--diagram-fill-emphasis); }
+.diagram .bar--c { fill: var(--diagram-fill-warm); }
+.diagram .stroke--frame { stroke: var(--border-strong); fill: none; }
+
+/* A diagram drawn for ~880 units is illegible scaled into a 380px screen, so
+   it keeps its geometry and scrolls instead — the same bargain the tables
+   make (spec §3.5). Keyboard-focusable per spec §5.4. */
+.diagram-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.diagram-scroll:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.diagram-scroll > .diagram { min-width: 660px; }
+
+@media (max-width: 48rem) {
+  .diagram .label { font-size: 14px; }
+  .diagram .label--sm { font-size: 11.5px; }
+  .diagram .eye { font-size: 12px; }
+}
+
+.figure-image img,
+.figure-image .placeholder {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: var(--hairline) solid var(--border);
+  background: var(--surface-sunken);
+}
+
+/* ---------- 9. CALLOUT + SECTION EYEBROW ------------------ */
+
+.callout {
+  margin: var(--s-6) 0;
+  padding: var(--s-4) var(--s-5);
+  background: var(--accent-quiet);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+.callout > :last-child { margin-bottom: 0; }
+.callout__tag {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-hover);
+  margin-bottom: var(--s-2);
+}
+
+/* The phase opener. This is a CHAPTER BOUNDARY, not a label: it owns the
+   whitespace above it (previously it had margin-top:0 and inherited whatever
+   the previous block left, which after a .bleed figure was only --s-6 — so it
+   sat 2.25x closer to the diagram above than to its own h2 and read as a
+   caption). The rule + padding make the break structural, and the .num is
+   weighted up so a phase opener can never be mistaken for a .fig-eye. */
+.eyebrow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text-secondary);
+  margin: var(--s-8) 0 var(--s-3);
+  padding-top: var(--s-5);
+  border-top: var(--hairline) solid var(--border);
+}
+.eyebrow .num {
+  color: var(--accent);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The eyebrow and the heading it introduces are ONE unit. The h2's own
+   --s-8 top margin would otherwise split the pair it belongs to. */
+.eyebrow + :is(h2, h3) { margin-top: 0; }
+
+/* trailing colophon line on a post */
+.post-colophon {
+  margin-top: var(--s-7);
+  padding-top: var(--s-4);
+  border-top: var(--hairline) solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* ---------- 10. POST + INDEX ------------------------------ */
+
+.post-meta {
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0 0 var(--s-6);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  align-items: baseline;
+}
+
+/* C3: .index-intro is the WRAPPER (spec §8.1), not the eyebrow. The old
+   uppercase/faint treatment moved to .index-intro__meta. */
+.index-intro { margin: 0 0 var(--s-7); }
+.index-intro h1 { margin-bottom: var(--s-4); }
+.index-intro__lede {
+  font-size: var(--t-1);
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 54ch;
+  text-wrap: pretty;
+}
+.index-intro__meta {
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.post-list { list-style: none; margin: 0; padding: 0; }
+.post-list > li { margin: 0; border-top: var(--hairline) solid var(--border); }
+.post-list > li:last-child { border-bottom: var(--hairline) solid var(--border); }
+
+/* C4: the grid lives on the <article>, not on an anchor — spec §5.2 needs
+   <article><h2><a>…</a></h2><time>, and that anchor cannot nest inside a
+   row-level anchor. */
+.post-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-1);
+  padding: var(--s-5) 0;
+}
+.post-item__title {
+  font-family: var(--font-ui);
+  font-size: var(--t-1);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  margin: 0;
+  text-wrap: balance;
+}
+.post-item__title a {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.post-item__title a:visited { color: var(--text-primary); }
+.post-item__title a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+.post-item__desc { color: var(--text-secondary); font-size: 0.97em; margin: 0; text-wrap: pretty; }
+.post-item__date {
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 48rem) {
+  .post-item {
+    grid-template-columns: 1fr 7.5rem;
+    grid-template-areas: "title date" "desc desc" "tags tags";
+    column-gap: var(--s-5);
+    align-items: baseline;
+  }
+  .post-item__title { grid-area: title; }
+  .post-item__date { grid-area: date; text-align: right; }
+  .post-item__desc { grid-area: desc; }
+  /* Must stay scoped to the index row. Unscoped, this also matched the
+     .tags list inside article.post — a subgrid with no such named area,
+     which placed it in an implicit column past the right edge. */
+  .post-item > .tags { grid-area: tags; }
+}
+
+/* C5: tag chips — inline, all-caps, faint, `·` separated (spec §8.2). */
+.tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--s-2);
+  margin: var(--s-2) 0 0;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.tags li { margin: 0; display: flex; align-items: baseline; gap: var(--s-2); }
+.tags li:not(:last-child)::after { content: "·"; color: var(--text-faint); }
+.tags a {
+  color: var(--text-faint);
+  text-decoration: none;
+  padding: var(--s-2) var(--s-1);
+  display: inline-block;
+}
+.tags a:visited { color: var(--text-faint); }
+.tags a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 0.16em; }
+.tags .tag--lang a { color: var(--accent); }
+
+.pagination {
+  margin-top: var(--s-7);
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+.pagination a { padding-block: var(--s-3); display: inline-block; text-decoration: none; }
+.pagination a:hover { text-decoration: underline; text-underline-offset: 0.16em; }
+
+/* ---------- 11. TOPICS ------------------------------------ */
+
+.topic-group { margin-bottom: var(--s-7); }
+.topic-group > h2 {
+  font-family: var(--font-ui);
+  font-size: var(--t-2);
+  margin: 0 0 var(--s-2);
+  padding-bottom: var(--s-2);
+  border-bottom: var(--hairline) solid var(--border);
+}
+.topic-group__count {
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  color: var(--text-faint);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-left: var(--s-3);
+}
+.topic-list { list-style: none; margin: 0; padding: 0; }
+.topic-list li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 var(--s-4);
+  padding: var(--s-2) 0;
+}
+.topic-list time {
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 12. SKIP LINK --------------------------------- */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+.skip-link:focus {
+  left: var(--gutter);
+  top: var(--s-2);
+  z-index: 10;
+  background: var(--surface-raised);
+  border: var(--hairline) solid var(--border-strong);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--radius);
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+}

@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPublishedPosts, formatDate, isoDate, tagSlug, type Post } from '../../lib/posts';
+
+const posts = await getPublishedPosts();
+
+// Group by tag. Tag chips link here as /topics/#<slug> (ARCHITECTURE §5.2).
+const byTag = new Map<string, { slug: string; posts: Post[] }>();
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    const entry = byTag.get(tag) ?? { slug: tagSlug(tag), posts: [] };
+    entry.posts.push(post);
+    byTag.set(tag, entry);
+  }
+}
+
+const groups = [...byTag.entries()].sort((a, b) => {
+  const byCount = b[1].posts.length - a[1].posts.length;
+  return byCount !== 0 ? byCount : a[0].localeCompare(b[0]);
+});
+
+// The বাংলা chip points at this group.
+const bengali = posts.filter((p) => p.data.lang === 'bn');
+---
+
+<Base
+  title="Topics"
+  description="Posts grouped by topic."
+>
+  <header class="index-intro">
+    <h1>Topics</h1>
+    <p class="index-intro__lede">
+      Everything written so far, grouped by subject.
+      <span class="index-intro__meta">{groups.length} topics.</span>
+    </p>
+  </header>
+
+  {
+    bengali.length > 0 && (
+      <section class="topic-group" id="bangla">
+        <h2>
+          <span lang="bn">বাংলা</span>
+          <span class="topic-group__count">{bengali.length}</span>
+        </h2>
+        <ul class="topic-list">
+          {bengali.map((post) => (
+            <li>
+              <a href={`/${post.id}/`} lang="bn">
+                {post.data.title}
+              </a>
+              <time datetime={isoDate(post.data.pubDate)}>{formatDate(post.data.pubDate)}</time>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    groups.map(([tag, { slug, posts: tagged }]) => (
+      <section class="topic-group" id={slug}>
+        <h2>
+          {tag}
+          <span class="topic-group__count">{tagged.length}</span>
+        </h2>
+        <ul class="topic-list">
+          {tagged.map((post) => (
+            <li>
+              <a href={`/${post.id}/`} lang={post.data.lang === 'bn' ? 'bn' : undefined}>
+                {post.data.title}
+              </a>
+              <time datetime={isoDate(post.data.pubDate)}>{formatDate(post.data.pubDate)}</time>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+
+  {groups.length === 0 && bengali.length === 0 && <p>No topics yet.</p>}
+</Base>

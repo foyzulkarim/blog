@@ -1,0 +1,19 @@
+{
+  // Static assets only — no `main`, because there is no Worker code to run.
+  // The Worker name here must match the Worker name in the Cloudflare
+  // dashboard, or a Git-connected build will fail.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "blog-foyzul-com",
+  "compatibility_date": "2026-07-30",
+  "assets": {
+    "directory": "./dist",
+
+    // Without this, an unmatched path returns a null-body 404 and the
+    // built dist/404.html is never served.
+    "not_found_handling": "404-page",
+
+    // Astro builds every page as <slug>/index.html (trailingSlash: 'always'),
+    // which this resolves with the trailing slash. /about redirects to /about/.
+    "html_handling": "auto-trailing-slash"
+  }
+}

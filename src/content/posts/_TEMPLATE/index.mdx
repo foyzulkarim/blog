@@ -1,0 +1,115 @@
+---
+# Copy this whole folder, rename it, and the folder name becomes the URL:
+#   src/content/posts/my-new-post/  ->  https://blog.foyzul.com/my-new-post/
+#
+# Anything under a folder starting with _ is ignored, so this file never
+# publishes and never appears in the index, RSS, or sitemap.
+
+title: The post title, used as the <h1> and the index link
+# One or two sentences. Shown on the homepage under the title, in RSS, and as
+# the meta description. Keep it short — it is the index row, not the lede.
+description: What this post is about, in one concise sentence.
+pubDate: 2026-07-31
+# updatedDate: 2026-08-15   # optional; renders as "Updated ..." next to the date
+tags:
+  - Architecture
+  - AI
+# lang: bn                  # Bengali post: swaps the font, adds the বাংলা chip
+# draft: true               # visible in `npm run dev`, excluded from the build
+---
+
+import Figure from '@components/Figure.astro';
+import Callout from '@components/Callout.astro';
+import Eyebrow from '@components/Eyebrow.astro';
+
+{/*
+  The lede is written here, not taken from `description`, so the index row can
+  stay short while the post opens with something fuller.
+*/}
+
+<p class="lede">
+  The opening paragraph. Larger and lighter than body copy.
+</p>
+
+Ordinary paragraphs are just Markdown. Body copy is 19px Source Serif 4 on a 68ch measure —
+don't fight it with custom widths.
+
+## A section heading
+
+Headings are `##` and `###`. There is exactly one `<h1>` per page and it comes from `title`,
+so never write `#` in the body.
+
+- Bullet lists work as expected.
+- `Inline code` and [links](https://example.com) are styled by the global stylesheet.
+
+<Eyebrow num="Phase 01">Optional section label</Eyebrow>
+
+### Callouts
+
+<Callout tag="Optional label">
+  **A point worth pulling out of the flow.** Use sparingly — the design spends its boldness on
+  tables and full-bleed figures, not on boxes.
+</Callout>
+
+### Images
+
+Drop the file in this folder and reference it relatively. Astro optimises it at build time:
+
+{/* ![Description of the image for screen readers](./my-chart.png) */}
+
+### Figures and diagrams
+
+`<Figure>` handles the framing, the caption, and the full-bleed escape. Use `bleed` when the
+content needs more room than the 68ch measure, and `scroll` for anything with fixed geometry
+(diagrams) so it keeps its size on a phone instead of shrinking into illegibility.
+
+<Figure
+  bleed
+  scroll
+  eyebrow="Small label above the figure"
+  caption="What the reader should take from it."
+>
+  <svg class="diagram" viewBox="0 0 880 120" role="img" aria-label="Describe the diagram in a sentence — this is what a screen reader announces.">
+    {/* Use the token classes so the diagram works in dark mode:
+        box--raised  box  box--emphasis   stroke  stroke--dash  arrow
+        label  label--sm  eye  text--emphasis  text--warm  anchor-start
+        Never hardcode a colour — #fff disappears against a dark background. */}
+    <rect class="box--raised" x="20" y="30" width="160" height="56" rx="8" />
+    <text class="label" x="100" y="64">A box</text>
+    <rect class="box--emphasis" x="260" y="30" width="160" height="56" rx="8" />
+    <text class="label text--emphasis" x="340" y="64">An emphasised box</text>
+  </svg>
+</Figure>
+
+{/*
+  SVG GOTCHA: keep <text> content on ONE line.
+  MDX parses a wrapped child as Markdown and injects a <p>, which breaks the
+  SVG and silently swallows everything after it. `npm run verify` catches this.
+*/}
+
+### Tables
+
+Wrap wide tables so they scroll instead of squeezing, and always give a `<caption>`:
+
+<div class="bleed">
+  <div class="table-scroll" tabindex="0" role="region" aria-label="Describe the table">
+    <table class="table--sticky">
+      <caption>What the table measures, and when.</caption>
+      <thead>
+        <tr><th scope="col">Thing</th><th scope="col" class="num">Value</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">First</th><td class="num">1.9</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+### Code
+
+Fenced blocks get syntax highlighting in both light and dark automatically, plus the
+keyboard-focusable scroll region:
+
+```js
+const answer = 42;
+```

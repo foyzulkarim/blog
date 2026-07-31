@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&amp;family=IBM+Plex+Sans:wght@400;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600&amp;display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="blog.css" />
+</helmet>
+
+<div data-theme="light" style="background: var(--surface-sunken); min-height: 100vh; padding-bottom: 6rem">
+
+<div style="max-width: 1280px; margin: 0 auto; padding: 3rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 0.75rem">blog.foyzul.com — design layer</p>
+  <h1 style="font-family: var(--font-ui); font-size: 2rem; font-weight: 600; letter-spacing: -0.026em; margin: 0 0 0.75rem; color: var(--text-primary)">One stylesheet, two modes, tables that stay text.</h1>
+  <p style="font-family: var(--font-ui); font-size: 15px; line-height: 1.6; color: var(--text-secondary); max-width: 62ch; margin: 0">Tokens, then the full element inventory, then the index and post layouts — all rendered by <code style="font-family: var(--font-mono); font-size: 0.9em">blog.css</code> with no per-page CSS and no JavaScript. Boldness is spent in two places only: the table treatment and the full-bleed break.</p>
+</div>
+
+<!-- ============ TOKENS ============ -->
+<div style="max-width: 1280px; margin: 0 auto; padding: 3.5rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); border-top: 1px solid var(--border-strong); padding-top: 0.75rem; margin: 0 0 1.5rem">01 · Token block</p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem">
+    <div data-theme="light" style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem">
+      <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 1rem">:root — light</p>
+      <div style="display: grid; gap: 0.5rem; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary)">
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--surface)"></span><span>--surface</span><span>0.986 0.003 250</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--surface-sunken)"></span><span>--surface-sunken</span><span>0.958</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--text-primary)"></span><span>--text-primary</span><span>0.255</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--text-secondary)"></span><span>--text-secondary</span><span>0.505</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--border)"></span><span>--border</span><span>0.885</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--accent)"></span><span>--accent</span><span>0.505 0.126 249</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--accent-visited)"></span><span>--accent-visited</span><span>0.475 0.108 296</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--code-bg)"></span><span>--code-bg</span><span>0.965</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--table-header-bg)"></span><span>--table-header-bg</span><span>0.945</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--diagram-stroke)"></span><span>--diagram-stroke</span><span>0.42</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--diagram-fill-emphasis)"></span><span>--diagram-fill-emphasis</span><span>0.905 0.043 249</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--table-rule)"></span><span>--table-rule</span><span>0.932</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--focus-ring)"></span><span>--focus-ring</span><span>0.555 0.176 249</span></div>
+      </div>
+    </div>
+
+    <div data-theme="dark" style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem; color: var(--text-primary)">
+      <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 1rem">prefers-color-scheme: dark</p>
+      <div style="display: grid; gap: 0.5rem; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary)">
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--surface)"></span><span>--surface</span><span>0.196 0.009 258</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--surface-sunken)"></span><span>--surface-sunken</span><span>0.168</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--text-primary)"></span><span>--text-primary</span><span>0.882</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--text-secondary)"></span><span>--text-secondary</span><span>0.735</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--border)"></span><span>--border</span><span>0.315</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--accent)"></span><span>--accent</span><span>0.775 0.106 245</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--accent-visited)"></span><span>--accent-visited</span><span>0.775 0.086 300</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--code-bg)"></span><span>--code-bg</span><span>0.162</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--table-header-bg)"></span><span>--table-header-bg</span><span>0.262</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--diagram-stroke)"></span><span>--diagram-stroke</span><span>0.775</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--diagram-fill-emphasis)"></span><span>--diagram-fill-emphasis</span><span>0.315 0.049 249</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--table-rule)"></span><span>--table-rule</span><span>0.288</span></div>
+        <div style="display: grid; grid-template-columns: 28px 1fr auto; gap: 0.75rem; align-items: center"><span style="height: 28px; border-radius: 3px; border: 1px solid var(--border); background: var(--focus-ring)"></span><span>--focus-ring</span><span>0.815 0.132 245</span></div>
+      </div>
+    </div>
+
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem">
+      <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 1rem">Type, space, layout</p>
+      <div style="font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); display: grid; gap: 0.45rem">
+        <div>--font-body &nbsp;<span style="font-family: var(--font-body); color: var(--text-primary)">Source Serif 4 · 400/600 · 41 KB</span></div>
+        <div>--font-ui &nbsp;&nbsp;&nbsp;<span style="font-family: var(--font-ui); color: var(--text-primary)">IBM Plex Sans · 400/600 · 58 KB</span></div>
+        <div>--font-mono &nbsp;<span style="font-family: var(--font-mono); color: var(--text-primary)">IBM Plex Mono · 400 · 31 KB</span></div>
+        <div>--font-bn &nbsp;&nbsp;&nbsp;<span style="font-family: var(--font-bn); color: var(--text-primary)">Noto Serif Bengali · U+0980–09FF</span></div>
+        <div style="color: var(--text-faint); padding-top: 0.35rem">Latin payload ≈ 130 KB woff2. Bengali (+38 KB) downloads only when Bengali codepoints are present.</div>
+        <div style="border-top: 1px solid var(--border); padding-top: 0.6rem; margin-top: 0.35rem">--t--1 14 · --t-0 19 · --t-1 21 · --t-2 25 · --t-3 31 · --t-4 34→46</div>
+        <div>--s-1 4 · --s-2 8 · --s-3 12 · --s-4 16 · --s-5 24 · --s-6 32 · --s-7 48 · --s-8 72</div>
+        <div>--measure 68ch · --bleed-max 1280 · --gutter 20→40 · --radius 4 / 6</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SPECIMEN ============ -->
+<div style="max-width: 1280px; margin: 0 auto; padding: 4rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); border-top: 1px solid var(--border-strong); padding-top: 0.75rem; margin: 0">02 · Specimen — every element in the inventory</p>
+</div>
+
+<div style="background: var(--surface); border-block: 1px solid var(--border); margin-top: 1.5rem">
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="wordmark" href="#specimen">foyzul</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#specimen" aria-current="page">Writing</a>
+      <a href="#specimen">Courses</a>
+      <a href="#specimen">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page" id="specimen">
+  <article>
+    <h1>Why Substack rasterizes your tables, and what it costs you</h1>
+    <p class="post-meta"><time datetime="2026-07-28">28 July 2026</time></p>
+
+    <p class="lede">A ten-column benchmark matrix is the most useful artifact a performance post can contain. Turned into a PNG it is unselectable, unsearchable, unreadable by a screen reader, and invisible to every model that will ever summarize your work.</p>
+
+    <p>The rest of this page is a specimen: it exists so that every element that can appear in a post has been decided once, in the stylesheet, rather than negotiated per post in raw HTML. Body text sits at a <code>68ch</code> measure — roughly seventy-five characters with this face at 17px — and everything data-bearing is allowed to escape it.</p>
+
+    <h2>Headings and prose <a class="anchor" href="#specimen" aria-label="Permalink">#</a></h2>
+    <p>Headings are set in the UI face, not the body serif. The mix is deliberate: a sans heading reads as structure and a serif paragraph reads as voice, and at 3,000 words the distinction is what keeps scanning possible. Links look like <a href="#specimen">an unvisited link</a>, and once followed they look like <a href="#specimen" style="color: var(--accent-visited); text-decoration-style: dotted; text-decoration-thickness: 1.5px; text-underline-offset: 0.2em">a visited link</a> — same weight, shifted hue, because losing your place in a long list of references is worse than a little chromatic variety.</p>
+
+    <h3>Third level, for steps inside an argument <a class="anchor" href="#specimen" aria-label="Permalink">#</a></h3>
+    <p>Inline code such as <code>prefers-color-scheme</code> or <code>--table-header-bg</code> carries a hairline border so it survives inside a link and against the table-header fill without ambiguity.</p>
+
+    <h4>Fourth level, effectively a run-in label <a class="anchor" href="#specimen" aria-label="Permalink">#</a></h4>
+    <p>Below fourth level, use a paragraph with a bold lead-in instead. <strong>Nesting past four levels</strong> means the post wants splitting.</p>
+
+    <ul>
+      <li>Unordered lists use a square marker in the faint token.</li>
+      <li>A nested level indents once and no further:
+        <ul>
+          <li>Second level, same marker at the same size.</li>
+          <li>The list never becomes an outline.</li>
+        </ul>
+      </li>
+      <li>Item spacing is tighter than paragraph spacing.</li>
+    </ul>
+
+    <ol>
+      <li>Ordered markers are set in mono so multi-digit numbers stay aligned.</li>
+      <li>Useful for procedures, which is most of what this blog publishes.
+        <ol>
+          <li>Nested ordered lists switch to lower-alpha automatically.</li>
+          <li>Same rule: one level of nesting only.</li>
+        </ol>
+      </li>
+      <li>Numbers are not decoration — they mean order.</li>
+    </ol>
+
+    <blockquote>
+      <p>The plural of anecdote is not data, but the plural of screenshot is definitely not a table.</p>
+      <cite>A reviewer, on the first draft of this post</cite>
+    </blockquote>
+
+    <hr />
+
+    <h2>Narrow table, inside the measure <a class="anchor" href="#specimen" aria-label="Permalink">#</a></h2>
+    <p>Three columns fit the reading measure, so they stay in it — framed, radiused, and left where the eye already is.</p>
+  </article>
+
+  <div class="table-scroll table-scroll--inset">
+    <table>
+      <thead>
+        <tr><th scope="col">Directive</th><th scope="col" class="num">Hit ratio</th><th scope="col">Applies to</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">s-maxage</th><td class="num">0.94</td><td>Shared caches only</td></tr>
+        <tr><th scope="row">stale-while-revalidate</th><td class="num">0.97</td><td>Shared and private</td></tr>
+        <tr><th scope="row">no-store</th><td class="num">0.00</td><td>Everything, unfortunately</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <article>
+    <h2>Wide table, full-bleed <a class="anchor" href="#specimen" aria-label="Permalink">#</a></h2>
+    <p>Ten mostly-numeric columns do not fit 68ch and never will. <code>.bleed</code> promotes the block to the full grid — capped at 1280px on desktop, edge-to-edge below 768px — and the scroll container takes over from there. Text size never changes; columns are never squeezed.</p>
+  </article>
+
+  <div class="bleed">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Benchmark table">
+      <table class="table--sticky">
+        <caption>Table 1 — Cold-start and throughput by runtime. n=2,000 per cell, four regions, July 2026. Dot marks best in column.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Runtime</th>
+            <th scope="col" class="num">p50</th>
+            <th scope="col" class="num">p95</th>
+            <th scope="col" class="num">p99</th>
+            <th scope="col" class="num">Cold p99</th>
+            <th scope="col" class="num">RPS</th>
+            <th scope="col" class="num">Mem MB</th>
+            <th scope="col" class="num">Bundle KB</th>
+            <th scope="col" class="num">PoPs</th>
+            <th scope="col" class="num">$ / 1M</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Workers</th><td class="num">1.9</td><td class="num">4.2</td><td class="num num--best">7.1</td><td class="num num--best">18</td><td class="num">9,410</td><td class="num">34</td><td class="num">142</td><td class="num num--best">330</td><td class="num num--best">0.30</td></tr>
+          <tr><th scope="row">Deno Deploy</th><td class="num">2.4</td><td class="num">5.6</td><td class="num">9.8</td><td class="num">41</td><td class="num">7,880</td><td class="num">41</td><td class="num">148</td><td class="num">35</td><td class="num">0.35</td></tr>
+          <tr><th scope="row">Fastly C@E</th><td class="num num--best">1.6</td><td class="num num--best">3.9</td><td class="num">8.4</td><td class="num">23</td><td class="num num--best">10,240</td><td class="num num--best">22</td><td class="num">151</td><td class="num">100</td><td class="num">0.50</td></tr>
+          <tr><th scope="row">Lambda@Edge</th><td class="num">6.8</td><td class="num">18.4</td><td class="num">42.0</td><td class="num">380</td><td class="num">3,120</td><td class="num">128</td><td class="num num--best">140</td><td class="num">13</td><td class="num">0.60</td></tr>
+          <tr><th scope="row">Vercel Edge</th><td class="num">2.2</td><td class="num">5.1</td><td class="num">9.1</td><td class="num">31</td><td class="num">8,460</td><td class="num">38</td><td class="num">146</td><td class="num">18</td><td class="num">0.65</td></tr>
+          <tr><th scope="row">Netlify Edge</th><td class="num">2.6</td><td class="num">6.4</td><td class="num">11.2</td><td class="num">47</td><td class="num">7,240</td><td class="num">44</td><td class="num">149</td><td class="num">35</td><td class="num">0.55</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note">All latencies in ms, lower is better. Drag or shift-scroll to pan; the <kbd>Runtime</kbd> column stays pinned to the left edge.</p>
+  </div>
+
+  <article>
+    <h2>Diagrams stay as SVG <a class="anchor" href="#specimen" aria-label="Permalink">#</a></h2>
+    <p>Strokes and text use <code>currentColor</code> and the diagram tokens, so a hand-authored figure inverts correctly in dark mode with no second copy of the asset.</p>
+  </article>
+
+  <div class="bleed">
+    <figure>
+      <svg class="diagram" viewBox="0 0 1000 210" role="img" aria-labelledby="d1t">
+        <title id="d1t">Request path: reader to edge PoP to cache to origin, with a stale-while-revalidate return path. The cache node is emphasized.</title>
+        <g stroke-width="1.25">
+          <rect class="box" x="8" y="60" width="150" height="76" rx="4" />
+          <rect class="box" x="248" y="60" width="150" height="76" rx="4" />
+          <rect class="box box--emphasis" x="488" y="60" width="150" height="76" rx="4" />
+          <rect class="box" x="728" y="60" width="150" height="76" rx="4" />
+          <path class="stroke" d="M158 98 H236" />
+          <path class="stroke" d="M398 98 H476" />
+          <path class="stroke" d="M638 98 H716" />
+          <path class="stroke" stroke-dasharray="5 4" d="M803 136 V176 H83 V136" />
+        </g>
+        <g class="arrow">
+          <path d="M236 98 l-9 -4.5 v9 z" />
+          <path d="M476 98 l-9 -4.5 v9 z" />
+          <path d="M716 98 l-9 -4.5 v9 z" />
+          <path d="M83 136 l-4.5 9 h9 z" />
+        </g>
+        <g font-size="16" text-anchor="middle">
+          <text x="83" y="92">Reader</text>
+          <text x="83" y="116" class="text--muted" font-size="14">Dhaka</text>
+          <text x="323" y="92">Edge PoP</text>
+          <text x="323" y="116" class="text--muted" font-size="14">Worker</text>
+          <text x="563" y="92" class="text--emphasis">Cache API</text>
+          <text x="563" y="116" class="text--emphasis" font-size="14">s-maxage 300</text>
+          <text x="803" y="92">Origin</text>
+          <text x="803" y="116" class="text--muted" font-size="14">R2 bucket</text>
+          <text x="443" y="196" class="text--muted" font-size="14">stale-while-revalidate — the response returns before the origin fetch completes</text>
+        </g>
+      </svg>
+      <figcaption><b>Figure 1.</b> The request path. Full-bleed because the label text would set at 11px if this were squeezed into the measure.</figcaption>
+    </figure>
+  </div>
+
+  <article>
+    <figure class="figure-image">
+      <svg class="placeholder" viewBox="0 0 800 400" role="img" aria-label="Placeholder for a screenshot">
+        <defs>
+          <pattern id="stripe" width="10" height="10" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="10" stroke="var(--border)" stroke-width="4" />
+          </pattern>
+        </defs>
+        <rect width="800" height="400" fill="url(#stripe)" opacity="0.7" />
+        <text x="400" y="205" text-anchor="middle" font-family="var(--font-mono)" font-size="16" fill="var(--text-secondary)">raster image — screenshot, 2x, webp</text>
+      </svg>
+      <figcaption><b>Figure 2.</b> Raster images take the same caption treatment as SVG and sit inside the measure unless they carry detail worth bleeding.</figcaption>
+    </figure>
+
+    <h2>Code blocks <a class="anchor" href="#specimen" aria-label="Permalink">#</a></h2>
+    <span class="code-label">workers/cache.ts</span>
+    <pre><code>export default {
+  async fetch(req: Request, env: Env, ctx: ExecutionContext) {
+    const cache = caches.default;
+    const key = new Request(new URL(req.url).toString(), req);
+
+    let res = await cache.match(key);
+    if (res) return res;
+
+    res = await fetch(env.ORIGIN + new URL(req.url).pathname, { cf: { cacheEverything: true, cacheTtlByStatus: { "200-299": 300, "404": 1, "500-599": 0 } } });
+
+    res = new Response(res.body, res);
+    res.headers.set("cache-control", "public, s-maxage=300, stale-while-revalidate=86400");
+    ctx.waitUntil(cache.put(key, res.clone()));
+    return res;
+  },
+};</code></pre>
+    <p>The <code>cacheTtlByStatus</code> line overflows deliberately: code blocks scroll horizontally rather than wrap, because a wrapped line in a shell transcript is a different command.</p>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>foyzul · Dhaka</span>
+    <span><a href="#specimen">RSS</a> · <a href="#specimen">Source</a></span>
+  </div>
+</footer>
+</div>
+
+<!-- ============ DARK ============ -->
+<sc-if value="{{ showDark }}" hint-placeholder-val="{{ true }}">
+<div style="max-width: 1280px; margin: 0 auto; padding: 4rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); border-top: 1px solid var(--border-strong); padding-top: 0.75rem; margin: 0">03 · Dark mode — designed, not inverted</p>
+</div>
+
+<div data-theme="dark" style="background: var(--surface); color: var(--text-primary); border-block: 1px solid var(--border); margin-top: 1.5rem">
+<main class="page">
+  <article>
+    <h2 style="margin-top: 0">Same tokens, different values <a class="anchor" href="#specimen" aria-label="Permalink">#</a></h2>
+    <p>The dark surface is a lifted slate, not near-black: at 3,000 words a pure black field makes serif stems bloom. Body text sits at 0.882 lightness rather than pure white for the same reason — at 0.925 it halates over a long read. Links such as <a href="#specimen">this one</a> lift in lightness to hold AA against the darker field, and <a href="#specimen" style="color: var(--accent-visited); text-decoration-style: dotted; text-decoration-thickness: 1.5px; text-underline-offset: 0.2em">visited links</a> keep the hue shift.</p>
+  </article>
+
+  <div class="bleed">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Benchmark table">
+      <table class="table--sticky">
+        <thead>
+          <tr>
+            <th scope="col">Runtime</th>
+            <th scope="col" class="num">p50</th>
+            <th scope="col" class="num">p95</th>
+            <th scope="col" class="num">p99</th>
+            <th scope="col" class="num">Cold p99</th>
+            <th scope="col" class="num">RPS</th>
+            <th scope="col" class="num">Mem MB</th>
+            <th scope="col" class="num">Bundle KB</th>
+            <th scope="col" class="num">PoPs</th>
+            <th scope="col" class="num">$ / 1M</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Workers</th><td class="num">1.9</td><td class="num">4.2</td><td class="num num--best">7.1</td><td class="num num--best">18</td><td class="num">9,410</td><td class="num">34</td><td class="num">142</td><td class="num num--best">330</td><td class="num num--best">0.30</td></tr>
+          <tr><th scope="row">Deno Deploy</th><td class="num">2.4</td><td class="num">5.6</td><td class="num">9.8</td><td class="num">41</td><td class="num">7,880</td><td class="num">41</td><td class="num">148</td><td class="num">35</td><td class="num">0.35</td></tr>
+          <tr><th scope="row">Fastly C@E</th><td class="num num--best">1.6</td><td class="num num--best">3.9</td><td class="num">8.4</td><td class="num">23</td><td class="num num--best">10,240</td><td class="num num--best">22</td><td class="num">151</td><td class="num">100</td><td class="num">0.50</td></tr>
+          <tr><th scope="row">Lambda@Edge</th><td class="num">6.8</td><td class="num">18.4</td><td class="num">42.0</td><td class="num">380</td><td class="num">3,120</td><td class="num">128</td><td class="num num--best">140</td><td class="num">13</td><td class="num">0.60</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="bleed">
+    <figure>
+      <svg class="diagram" viewBox="0 0 1000 140" role="img" aria-label="The same diagram in dark mode.">
+        <g stroke-width="1.25">
+          <rect class="box" x="8" y="30" width="150" height="70" rx="4" />
+          <rect class="box" x="248" y="30" width="150" height="70" rx="4" />
+          <rect class="box box--emphasis" x="488" y="30" width="150" height="70" rx="4" />
+          <rect class="box" x="728" y="30" width="150" height="70" rx="4" />
+          <path class="stroke" d="M158 65 H236" />
+          <path class="stroke" d="M398 65 H476" />
+          <path class="stroke" stroke-dasharray="5 4" d="M638 65 H716" />
+        </g>
+        <g font-size="16" text-anchor="middle">
+          <text x="83" y="70">Reader</text>
+          <text x="323" y="70">Edge PoP</text>
+          <text x="563" y="70" class="text--emphasis">Cache API</text>
+          <text x="803" y="70">Origin</text>
+        </g>
+      </svg>
+      <figcaption><b>Figure 3.</b> Identical markup. Strokes follow <code>currentColor</code>, fills follow <code>--diagram-fill</code>.</figcaption>
+    </figure>
+  </div>
+
+  <article>
+    <pre><code>@media (prefers-color-scheme: dark) {
+  :root {
+    --surface:      oklch(0.196 0.009 258);
+    --text-primary: oklch(0.882 0.006 258);
+    --accent:       oklch(0.775 0.106 245);
+  }
+}</code></pre>
+  </article>
+</main>
+</div>
+</sc-if>
+
+<!-- ============ BENGALI ============ -->
+<sc-if value="{{ showBengali }}" hint-placeholder-val="{{ true }}">
+<div style="max-width: 1280px; margin: 0 auto; padding: 4rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); border-top: 1px solid var(--border-strong); padding-top: 0.75rem; margin: 0">04 · Bengali post — Bengali body, English chrome</p>
+</div>
+<div style="background: var(--surface); border-block: 1px solid var(--border); margin-top: 1.5rem">
+<main class="page">
+  <article>
+    <h1 lang="bn">ইউনিকোড নরমালাইজেশন এবং বাংলা টেক্সট সার্চ</h1>
+    <p class="post-meta"><time datetime="2026-06-09">9 June 2026</time></p>
+    <p lang="bn">বাংলা লেখায় যুক্তাক্ষর এবং নুক্তা-যুক্ত অক্ষর একাধিক কোডপয়েন্ট-ক্রম দিয়ে লেখা যায়। ফলে দুটি দৃশ্যত অভিন্ন শব্দ ডেটাবেজে ভিন্ন বাইট-সিকোয়েন্স হিসেবে জমা থাকে, এবং সার্চ কোয়েরি নীরবে ব্যর্থ হয়। সমাধান হলো ইনডেক্স করার আগেই NFC নরমালাইজেশন প্রয়োগ করা।</p>
+    <p lang="bn">নিচের টেবিলে একই শব্দের তিনটি রূপ এবং তাদের বাইট-দৈর্ঘ্য দেখানো হয়েছে — <code>ক্ষ</code> যুক্তাক্ষরটি লক্ষ করুন।</p>
+  </article>
+  <div class="table-scroll table-scroll--inset">
+    <table>
+      <thead><tr><th scope="col">Form</th><th scope="col" class="num">Codepoints</th><th scope="col" class="num">Bytes</th></tr></thead>
+      <tbody>
+        <tr><th scope="row" lang="bn">ক্ষ (NFC)</th><td class="num">3</td><td class="num">9</td></tr>
+        <tr><th scope="row" lang="bn">ক্ষ (NFD)</th><td class="num">4</td><td class="num">12</td></tr>
+        <tr><th scope="row" lang="bn">ক্‌ষ (ZWNJ)</th><td class="num">4</td><td class="num">12</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <article>
+    <p style="margin-top: 1.5rem">Chrome, labels, and table headers stay in English — the audience reads English UI and Bengali prose, and mixing registers inside the chrome reads as a translation bug. Noto Serif Bengali is scoped by <code>unicode-range</code>, so this is the only page in the site that downloads it.</p>
+  </article>
+</main>
+</div>
+</sc-if>
+
+<!-- ============ INDEX ============ -->
+<div style="max-width: 1280px; margin: 0 auto; padding: 4rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); border-top: 1px solid var(--border-strong); padding-top: 0.75rem; margin: 0">05 · Index — the site root. No hero, no cards.</p>
+</div>
+
+<div style="background: var(--surface); border-block: 1px solid var(--border); margin-top: 1.5rem">
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="wordmark" href="#specimen">foyzul</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#specimen" aria-current="page">Writing</a>
+      <a href="#specimen">Courses</a>
+      <a href="#specimen">About</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <p class="index-intro">Writing — 42 posts</p>
+  <ul class="post-list">
+    <li><a class="post-link" href="#specimen">
+      <span class="post-link__title">Why Substack rasterizes your tables, and what it costs you</span>
+      <span class="post-link__date">2026-07-28</span>
+      <span class="post-link__desc">A ten-column matrix as a PNG is unselectable, unsearchable, and invisible to screen readers.</span>
+    </a></li>
+    <li><a class="post-link" href="#specimen">
+      <span class="post-link__title">Cold starts across five edge runtimes</span>
+      <span class="post-link__date">2026-07-14</span>
+      <span class="post-link__desc">The same 1.4 MB handler, deployed unchanged, measured from four regions over 72 hours.</span>
+    </a></li>
+    <li><a class="post-link" href="#specimen">
+      <span class="post-link__title">Postgres connection pooling when your app scales to zero</span>
+      <span class="post-link__date">2026-06-28</span>
+      <span class="post-link__desc">Serverless breaks the assumption pgbouncer was built around. Four workarounds, measured.</span>
+    </a></li>
+    <li><a class="post-link" href="#specimen">
+      <span class="post-link__title" lang="bn">ইউনিকোড নরমালাইজেশন এবং বাংলা টেক্সট সার্চ</span>
+      <span class="post-link__date">2026-06-09</span>
+      <span class="post-link__desc" lang="bn">যুক্তাক্ষরের কারণে বাংলা সার্চ কেন ভেঙে যায়, এবং NFC নরমালাইজেশন দিয়ে তা কীভাবে ঠিক করা যায়।</span>
+    </a></li>
+    <li><a class="post-link" href="#specimen">
+      <span class="post-link__title">Reading the query planner instead of guessing at indexes</span>
+      <span class="post-link__date">2026-05-22</span>
+      <span class="post-link__desc">A field guide to EXPLAIN ANALYZE output, one node type at a time.</span>
+    </a></li>
+    <li><a class="post-link" href="#specimen">
+      <span class="post-link__title">What a CDN actually caches</span>
+      <span class="post-link__date">2026-05-03</span>
+      <span class="post-link__desc">Vary headers, cache keys, and the six ways a stray Set-Cookie ruins your hit ratio.</span>
+    </a></li>
+  </ul>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>foyzul · Dhaka</span>
+    <span><a href="#specimen">RSS</a> · <a href="#specimen">Source</a></span>
+  </div>
+</footer>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<div style="max-width: 1280px; margin: 0 auto; padding: 4rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); border-top: 1px solid var(--border-strong); padding-top: 0.75rem; margin: 0">06 · About — one column of prose</p>
+</div>
+<div style="background: var(--surface); border-block: 1px solid var(--border); margin-top: 1.5rem">
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="wordmark" href="#specimen">foyzul</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#specimen">Writing</a>
+      <a href="#specimen">Courses</a>
+      <a href="#specimen" aria-current="page">About</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <article>
+    <h1>About</h1>
+    <p class="lede">I write about the parts of backend and edge infrastructure that are easy to measure and hard to reason about.</p>
+    <p>Based in Dhaka. Most of what appears here starts as a benchmark I ran to settle an argument, or as notes for a course I was teaching. Posts run long because the useful part is usually the method, not the conclusion.</p>
+    <p>The fastest way to reach me is email; the slowest is any social platform. If you found an error in a benchmark, send the command you ran.</p>
+    <h2>What this site is built on <a class="anchor" href="#specimen" aria-label="Permalink">#</a></h2>
+    <p>Astro, one stylesheet, no client JavaScript, deployed to Cloudflare Workers. Tables are tables and diagrams are SVG — which is the entire reason it is no longer hosted somewhere else.</p>
+  </article>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>foyzul · Dhaka</span>
+    <span><a href="#specimen">RSS</a> · <a href="#specimen">Source</a></span>
+  </div>
+</footer>
+</div>
+
+<!-- ============ WIDTHS ============ -->
+<sc-if value="{{ showWidths }}" hint-placeholder-val="{{ true }}">
+<div style="max-width: 1280px; margin: 0 auto; padding: 4rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); border-top: 1px solid var(--border-strong); padding-top: 0.75rem; margin: 0 0 0.75rem">07 · 1440 / 768 / 380 — live, at half scale</p>
+  <p style="font-family: var(--font-ui); font-size: 14px; line-height: 1.6; color: var(--text-secondary); max-width: 62ch; margin: 0 0 1.5rem">Each frame is the real page at that viewport width. At 1440 the bleed caps at 1280 and centres; at 768 the gutters collapse to 20px; at 380 the bleed runs edge to edge and the table scrolls with the runtime column pinned. Body text never shrinks — <code style="font-family: var(--font-mono)">--t-0</code> is 17px at every width.</p>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-start">
+    <div>
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 0 0 0.5rem">post · 1440</p>
+      <div style="width: 720px; height: 480px; overflow: hidden; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--surface)">
+        <iframe src="views/post.html" title="Post at 1440px" style="width: 1440px; height: 960px; border: 0; transform: scale(0.5); transform-origin: top left"></iframe>
+      </div>
+    </div>
+    <div>
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 0 0 0.5rem">post · 768</p>
+      <div style="width: 384px; height: 480px; overflow: hidden; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--surface)">
+        <iframe src="views/post.html" title="Post at 768px" style="width: 768px; height: 960px; border: 0; transform: scale(0.5); transform-origin: top left"></iframe>
+      </div>
+    </div>
+    <div>
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 0 0 0.5rem">post · 380</p>
+      <div style="width: 196px; height: 480px; overflow: hidden; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--surface)">
+        <iframe src="views/post.html" title="Post at 380px" style="width: 392px; height: 960px; border: 0; transform: scale(0.5); transform-origin: top left"></iframe>
+      </div>
+    </div>
+    <div>
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 0 0 0.5rem">index · 380</p>
+      <div style="width: 196px; height: 480px; overflow: hidden; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--surface)">
+        <iframe src="views/index.html" title="Index at 380px" style="width: 392px; height: 960px; border: 0; transform: scale(0.5); transform-origin: top left"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ REVISION VIEWS ============ -->
+<div style="max-width: 1280px; margin: 0 auto; padding: 4rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); border-top: 1px solid var(--border-strong); padding-top: 0.75rem; margin: 0 0 0.75rem">08 · The five hard cases</p>
+  <p style="font-family: var(--font-ui); font-size: 14px; line-height: 1.6; color: var(--text-secondary); max-width: 62ch; margin: 0 0 2rem">Body text is now 19px at every width; the row rule is <code style="font-family: var(--font-mono)">--table-rule</code> at L 0.932, three steps lighter than <code style="font-family: var(--font-mono)">--border</code>, so ten dense rows stop reading as stripes.</p>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: flex-start">
+    <div>
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 0 0 0.5rem">1 · ten columns, long cells, 380 viewport — actual size, scrollable</p>
+      <div style="width: 392px; height: 660px; overflow: hidden; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--surface)">
+        <iframe src="views/wide-table.html" title="Ten-column table at 380px" style="width: 392px; height: 660px; border: 0"></iframe>
+      </div>
+      <p style="font-family: var(--font-ui); font-size: 13px; line-height: 1.55; color: var(--text-secondary); width: 392px; margin: 0.75rem 0 0">Drag the table sideways in the frame. Three affordances stack: the pinned <b>Provider</b> column with its 1px shadow, the thin styled scrollbar, and an edge tint that recedes as you reach each end — the tint is <code style="font-family: var(--font-mono)">background-attachment: local</code>, no JS. Cells wrap; nothing shrinks, nothing breaks mid-word.</p>
+    </div>
+
+    <div>
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 0 0 0.5rem">2 · 1920 viewport, 40% scale — <code style="font-family: var(--font-mono)">--bleed-max</code> holds at 1280</p>
+      <div style="width: 768px; height: 440px; overflow: hidden; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--surface)">
+        <iframe src="views/wide-table.html" title="Ten-column table at 1920px" style="width: 1920px; height: 1100px; border: 0; transform: scale(0.4); transform-origin: top left"></iframe>
+      </div>
+      <p style="font-family: var(--font-ui); font-size: 13px; line-height: 1.55; color: var(--text-secondary); width: 768px; margin: 0.75rem 0 0">At 1920 the bleed stops at 1280 and centres with the measure, leaving 320px of quiet surface either side. Columns size to content rather than stretching, so the numbers stay in scanning range of their headers.</p>
+    </div>
+  </div>
+</div>
+
+<div style="max-width: 1280px; margin: 0 auto; padding: 2.5rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 0 0 0.75rem">3 · one diagram, four tokens, both modes</p>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem">
+    <div data-theme="light" style="border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem">
+      <figure style="margin: 0">
+        <svg class="diagram" viewBox="0 0 1000 210" role="img" aria-label="Request path in light mode with the cache node emphasized.">
+          <g stroke-width="1.25">
+            <rect class="box" x="8" y="60" width="150" height="76" rx="4" />
+            <rect class="box" x="248" y="60" width="150" height="76" rx="4" />
+            <rect class="box box--emphasis" x="488" y="60" width="150" height="76" rx="4" />
+            <rect class="box" x="728" y="60" width="150" height="76" rx="4" />
+            <path class="stroke" d="M158 98 H236" />
+            <path class="stroke" d="M398 98 H476" />
+            <path class="stroke" d="M638 98 H716" />
+            <path class="stroke" stroke-dasharray="5 4" d="M803 136 V176 H83 V136" />
+          </g>
+          <g class="arrow">
+            <path d="M236 98 l-9 -4.5 v9 z" />
+            <path d="M476 98 l-9 -4.5 v9 z" />
+            <path d="M716 98 l-9 -4.5 v9 z" />
+            <path d="M83 136 l-4.5 9 h9 z" />
+          </g>
+          <g font-size="16" text-anchor="middle">
+            <text x="83" y="92">Reader</text>
+            <text x="83" y="116" class="text--muted" font-size="14">Dhaka</text>
+            <text x="323" y="92">Edge PoP</text>
+            <text x="323" y="116" class="text--muted" font-size="14">Worker</text>
+            <text x="563" y="92" class="text--emphasis">Cache API</text>
+            <text x="563" y="116" class="text--emphasis" font-size="14">s-maxage 300</text>
+            <text x="803" y="92">Origin</text>
+            <text x="803" y="116" class="text--muted" font-size="14">R2 bucket</text>
+            <text x="443" y="196" class="text--muted" font-size="14">stale-while-revalidate</text>
+          </g>
+        </svg>
+        <figcaption><b>Light.</b> Stroke <code>currentColor</code> ← <code>--diagram-stroke</code>; plain boxes <code>--diagram-fill</code>; the cache node <code>--diagram-fill-emphasis</code>; labels <code>--diagram-text</code> and <code>--diagram-text-emphasis</code>.</figcaption>
+      </figure>
+    </div>
+    <div data-theme="dark" style="border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem">
+      <figure style="margin: 0">
+        <svg class="diagram" viewBox="0 0 1000 210" role="img" aria-label="The same request path in dark mode.">
+          <g stroke-width="1.25">
+            <rect class="box" x="8" y="60" width="150" height="76" rx="4" />
+            <rect class="box" x="248" y="60" width="150" height="76" rx="4" />
+            <rect class="box box--emphasis" x="488" y="60" width="150" height="76" rx="4" />
+            <rect class="box" x="728" y="60" width="150" height="76" rx="4" />
+            <path class="stroke" d="M158 98 H236" />
+            <path class="stroke" d="M398 98 H476" />
+            <path class="stroke" d="M638 98 H716" />
+            <path class="stroke" stroke-dasharray="5 4" d="M803 136 V176 H83 V136" />
+          </g>
+          <g class="arrow">
+            <path d="M236 98 l-9 -4.5 v9 z" />
+            <path d="M476 98 l-9 -4.5 v9 z" />
+            <path d="M716 98 l-9 -4.5 v9 z" />
+            <path d="M83 136 l-4.5 9 h9 z" />
+          </g>
+          <g font-size="16" text-anchor="middle">
+            <text x="83" y="92">Reader</text>
+            <text x="83" y="116" class="text--muted" font-size="14">Dhaka</text>
+            <text x="323" y="92">Edge PoP</text>
+            <text x="323" y="116" class="text--muted" font-size="14">Worker</text>
+            <text x="563" y="92" class="text--emphasis">Cache API</text>
+            <text x="563" y="116" class="text--emphasis" font-size="14">s-maxage 300</text>
+            <text x="803" y="92">Origin</text>
+            <text x="803" y="116" class="text--muted" font-size="14">R2 bucket</text>
+            <text x="443" y="196" class="text--muted" font-size="14">stale-while-revalidate</text>
+          </g>
+        </svg>
+        <figcaption><b>Dark.</b> Identical markup, no second asset. The emphasis fill is a low-chroma accent tint at L 0.315 so the label still clears AA.</figcaption>
+      </figure>
+    </div>
+  </div>
+</div>
+
+<div style="max-width: 1280px; margin: 0 auto; padding: 2.5rem 2rem 0">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1.5rem; align-items: start">
+    <div>
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 0 0 0.75rem">4 · code block, one line long past the frame</p>
+      <div data-theme="light" style="border: 1px solid var(--border); border-radius: 6px; padding: 0 1.25rem 1.25rem">
+        <span class="code-label">db/pool.ts</span>
+        <pre><code>export const pool = new Pool({ connectionString: env.DATABASE_URL, max: 1, idleTimeoutMillis: 0, connectionTimeoutMillis: 5_000 });
+
+export async function q(sql, params = []) {
+  const c = await pool.connect();
+  try {
+    return (await c.query(sql, params)).rows;
+  } finally {
+    c.release();
+  }
+}</code></pre>
+        <p style="font-family: var(--font-ui); font-size: 13px; line-height: 1.55; color: var(--text-secondary); margin: 0">Lines scroll, never wrap: a wrapped shell line is a different command. Padding is on the inner <code style="font-family: var(--font-mono)">code</code>, so the last character does not sit flush against the frame at the end of the scroll.</p>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 0 0 0.75rem">5 · Bengali and English at body size, shared baseline</p>
+      <div data-theme="light" style="border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-family: var(--font-body); font-size: var(--t-0); line-height: var(--lh-body); color: var(--text-primary)">
+          <p style="margin: 0" lang="bn">যুক্তাক্ষর যেমন <b>ক্ষ</b>, <b>ঞ্চ</b>, <b>স্ট্র</b> এবং <b>দ্ভু</b> বডি সাইজে পরিষ্কারভাবে রেন্ডার হয়; হসন্ত এবং রেফ আলাদা করে চেনা যায়। ১৯ পিক্সেলে বাংলা মাত্রা-রেখা সরু হয়ে যায় না।</p>
+          <p style="margin: 0">Latin runs alongside at the same 19px. Noto Serif Bengali carries a taller apparent x-height, so Bengali is set at 1.02em with a looser 1.85 line-height — the two faces share a baseline without the Bengali looking undersized.</p>
+        </div>
+        <p style="font-family: var(--font-ui); font-size: 13px; line-height: 1.55; color: var(--text-secondary); margin: 1rem 0 0">Scoped by <code style="font-family: var(--font-mono)">unicode-range: U+0980–09FF</code>, so an English-only page never requests the face. Chrome, table headers and metadata stay English on Bengali posts.</p>
+      </div>
+
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); margin: 1.5rem 0 0.75rem">focus ring — <code style="font-family: var(--font-mono)">--focus-ring</code>, rings drawn statically here</p>
+      <div data-theme="light" style="border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem; display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center">
+        <a href="#specimen" style="outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 2px">an inline link</a>
+        <span class="nav" style="font-family: var(--font-ui)"><a href="#specimen" style="outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 2px">Courses</a></span>
+        <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); outline: 2px solid var(--focus-ring); outline-offset: -2px; border: 1px solid var(--border-strong); padding: 0.4rem 0.6rem">.table-scroll — tabindex="0", ring inset</span>
+      </div>
+      <p style="font-family: var(--font-ui); font-size: 13px; line-height: 1.55; color: var(--text-secondary); margin: 0.75rem 0 0">The scroll container is keyboard-reachable, so arrow keys pan the table without a pointer; its ring is inset by 2px so it never collides with the bleed edge.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RULES ============ -->
+<div style="max-width: 1280px; margin: 0 auto; padding: 4rem 2rem 0">
+  <p style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); border-top: 1px solid var(--border-strong); padding-top: 0.75rem; margin: 0 0 1.5rem">09 · How the two bold decisions work</p>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; font-family: var(--font-ui); font-size: 14px; line-height: 1.65; color: var(--text-secondary)">
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem">
+      <p style="font-family: var(--font-ui); font-size: 15px; font-weight: 600; color: var(--text-primary); margin: 0 0 0.6rem">The full-bleed break</p>
+      <p style="margin: 0 0 0.6rem"><code style="font-family: var(--font-mono); font-size: 0.9em">.page</code> is a four-track grid: <code style="font-family: var(--font-mono); font-size: 0.9em">gutter | measure | gutter</code>, capped at 1280px and centred. Children land in <code style="font-family: var(--font-mono); font-size: 0.9em">measure</code>; <code style="font-family: var(--font-mono); font-size: 0.9em">.bleed</code> spans <code style="font-family: var(--font-mono); font-size: 0.9em">full</code>.</p>
+      <p style="margin: 0 0 0.6rem">No <code style="font-family: var(--font-mono); font-size: 0.9em">100vw</code> and no negative margins, so it can never cause horizontal page scroll and is immune to scrollbar width. It is one class on one wrapper div — safe to type in markdown.</p>
+      <p style="margin: 0">At 1440px the break is 1280px wide, symmetric around the measure. At 768px and below the gutters collapse to 20px, so the break is effectively edge to edge; at 380px the data gets all 380 pixels, and the top and bottom edges of the block are marked with a strong hairline rather than a card.</p>
+    </div>
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem">
+      <p style="font-family: var(--font-ui); font-size: 15px; font-weight: 600; color: var(--text-primary); margin: 0 0 0.6rem">The table treatment</p>
+      <p style="margin: 0 0 0.6rem">Headers: UI face, uppercase, 0.02em tracking, filled with <code style="font-family: var(--font-mono); font-size: 0.9em">--table-header-bg</code> and closed with a 2px rule — the only place in the design where a fill and a heavy rule are allowed.</p>
+      <p style="margin: 0 0 0.6rem">Rows: hairline separators plus a 1.4%-lightness zebra. Numeric cells are mono, right-aligned, <code style="font-family: var(--font-mono); font-size: 0.9em">tabular-nums</code>; the best value in a column takes a 5px accent dot, never a coloured background.</p>
+      <p style="margin: 0">At 380px a 10-column table scrolls horizontally inside <code style="font-family: var(--font-mono); font-size: 0.9em">.table-scroll</code>. The first column is <code style="font-family: var(--font-mono); font-size: 0.9em">position: sticky</code> so the row label never leaves. Affordances: a thin styled scrollbar, an edge tint that recedes when you reach each end (pure CSS, <code style="font-family: var(--font-mono); font-size: 0.9em">background-attachment: local</code>), and a mono note under the table. Text size is identical to desktop.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showDark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Specimen sections&quot;},&quot;showBengali&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Specimen sections&quot;},&quot;showWidths&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Specimen sections&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      showDark: this.props.showDark ?? true,
+      showBengali: this.props.showBengali ?? true,
+      showWidths: this.props.showWidths ?? true,
+    };
+  }
+}
+</script>
+</body>
+</html>

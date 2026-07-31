@@ -141,3 +141,21 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Astro
+.astro/
+dist/
+
+# Wrangler local state
+.wrangler/
+
+# Serena
+.serena/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Playwright
+test-results/
+shots/

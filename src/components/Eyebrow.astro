@@ -1,0 +1,14 @@
+---
+interface Props {
+  /** Section number, rendered in the accent colour. */
+  num?: string;
+}
+
+const { num } = Astro.props;
+---
+
+<p class="eyebrow">
+  {num && <span class="num">{num}</span>}
+  {num && <span aria-hidden="true">·</span>}
+  <span><slot /></span>
+</p>

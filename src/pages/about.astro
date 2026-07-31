@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+
+// Prose lifted from chatgpt/about.html (spec §9.3). The LinkedIn and YouTube
+// URLs there are placeholders and are carried across unchanged.
+const description =
+  'About Foyzul Karim — software engineer, architect, teacher, and technical writer.';
+---
+
+<Base title="About" description={description}>
+  <article class="post">
+    <h1>About</h1>
+    <p class="lede">
+      I am a software engineer, architect, teacher, and public speaker based in Melbourne.
+    </p>
+    <p>
+      For more than fifteen years I have worked on distributed systems, Node.js platforms,
+      cloud architecture, and the engineering practices that make software dependable after
+      it reaches production.
+    </p>
+    <p>
+      I write for working engineers. The subjects range from system boundaries and delivery
+      pipelines to the changing responsibilities created by AI-assisted development. The aim
+      is to make difficult technical decisions concrete enough to use.
+    </p>
+    <p>
+      My courses and videos extend the same work through longer explanations, demonstrations,
+      and implementation exercises.
+    </p>
+
+    <h2 id="contact">Contact</h2>
+    <p>
+      The best way to follow new writing is through
+      <a href="https://www.linkedin.com">LinkedIn</a> or my
+      <a href="https://www.youtube.com">YouTube channel</a>.
+    </p>
+  </article>
+</Base>
