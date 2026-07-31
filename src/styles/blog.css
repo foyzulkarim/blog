@@ -1,6 +1,6 @@
 /* ============================================================
    blog.foyzul.com — site-wide stylesheet
-   Consolidated from claude/blog.css per docs/BLOG_SPEC.md §3
+   Consolidated from the original prototype per docs/BLOG_SPEC.md §3
    and docs/ARCHITECTURE.md §6. One file. No JS except the theme toggle,
    which degrades to the OS preference when scripting is off (§1.1).
    ============================================================ */
@@ -660,6 +660,11 @@ figcaption {
   text-wrap: pretty;
 }
 .bleed figcaption { padding-inline: var(--gutter); }
+/* A file-based diagram (<Figure scroll> around an ![img]) renders centred at
+   its natural width, so a gutter-left caption detaches from the card. Centre
+   the caption under those figures only; inline-SVG figures fill the track and
+   keep the left-aligned caption. */
+.bleed figure:has(.diagram-scroll > p > img) figcaption { text-align: center; }
 figcaption b { color: var(--text-primary); font-weight: 600; }
 
 /* figure eyebrow — the small mono label above a diagram (from post-1) */
@@ -736,6 +741,17 @@ figcaption b { color: var(--text-primary); font-weight: 600; }
   outline-offset: 2px;
 }
 .diagram-scroll > .diagram { min-width: 660px; }
+
+/* File-based diagrams (`![alt](./x.svg)` inside <Figure scroll>) land in a
+   markdown <p> wrapper, unlike inline .diagram SVGs. Neutralise the wrapper's
+   rhythm margin and centre the image at its natural size; below 660px the
+   auto margins collapse to zero and the scroller takes over (spec §3.5). */
+.diagram-scroll > p { margin: 0; }
+.diagram-scroll > p > img {
+  display: block;
+  margin-inline: auto;
+  min-width: 660px;
+}
 
 @media (max-width: 48rem) {
   .diagram .label { font-size: 14px; }

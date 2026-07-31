@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 936 344" width="936" height="344">
+  <rect x="0" y="0" width="936" height="344" rx="12" fill="#fcfcf8" stroke="#dcdcd0" stroke-width="1"/>
+  <g transform="translate(28,28)">
+        <defs>
+          <marker id="ah-h" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" class="ah" fill="#7d93a8" stroke="none"/></marker>
+        </defs>
+        <text class="eye" x="150" y="30" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="11" fill="#2e4a62" letter-spacing="1.3" text-anchor="middle">The model</text>
+        <text class="eye" x="391" y="30" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="11" fill="#a86f16" letter-spacing="1.3" text-anchor="middle">Gates</text>
+        <text class="eye b" x="683" y="30" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="11" fill="#0f766e" letter-spacing="1.3" text-anchor="middle">You</text>
+        <g>
+          <rect class="node found" x="20" y="46" width="260" height="190" rx="10" fill="#e7edf2" stroke="#2e4a62" stroke-width="1.5"/>
+          <text class="lbl sm" x="150" y="78" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">proposes options</text>
+          <text class="lbl sm" x="150" y="106" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">drafts the code</text>
+          <text class="lbl sm" x="150" y="134" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">runs the tools</text>
+          <text class="lbl sm" x="150" y="162" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">moves faster than you</text>
+          <text class="lbl sm" x="150" y="218" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#2e4a62" font-weight="400" text-anchor="middle">execution capacity</text>
+        </g>
+        <g>
+          <rect class="node" x="316" y="46" width="150" height="190" rx="10" fill="#ffffff" stroke="#a86f16" stroke-width="1.5"/>
+          <text class="lbl sm" x="391" y="78" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">tests</text>
+          <text class="lbl sm" x="391" y="106" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">acceptance criteria</text>
+          <text class="lbl sm" x="391" y="134" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">review</text>
+          <text class="lbl sm" x="391" y="162" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">security policy</text>
+          <text class="lbl sm" x="391" y="218" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#a86f16" font-weight="400" text-anchor="middle">nothing crosses unchecked</text>
+        </g>
+        <g>
+          <rect class="node flow" x="506" y="46" width="354" height="190" rx="10" fill="#d7ebe6" stroke="#0f766e" stroke-width="1.5"/>
+          <text class="lbl sm" x="683" y="78" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">define the system</text>
+          <text class="lbl sm" x="683" y="106" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">set the constraints</text>
+          <text class="lbl sm" x="683" y="134" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">approve the risk</text>
+          <text class="lbl sm" x="683" y="162" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">judge the evidence</text>
+          <text class="lbl sm" x="683" y="190" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">own the outcome</text>
+          <text class="lbl sm" x="683" y="218" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#0f766e" font-weight="400" text-anchor="middle">judgement and accountability</text>
+        </g>
+        <line class="flowline" x1="282" y1="141" x2="312" y2="141" marker-end="url(#ah-h)" fill="none" stroke="#7d93a8" stroke-width="1.6"/>
+        <line class="flowline" x1="468" y1="141" x2="502" y2="141" marker-end="url(#ah-h)" fill="none" stroke="#7d93a8" stroke-width="1.6"/>
+        <text class="eye" x="440" y="270" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="11" fill="#2e4a62" letter-spacing="1.3" text-anchor="middle">The model never sits in the incident review. You do</text>
+      </g>
+</svg>

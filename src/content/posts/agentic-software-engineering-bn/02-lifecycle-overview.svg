@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 936 290" width="936" height="290">
+  <rect x="0" y="0" width="936" height="290" rx="12" fill="#fcfcf8" stroke="#dcdcd0" stroke-width="1"/>
+  <g transform="translate(28,28)">
+        <defs>
+          <marker id="ah-f" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" class="ah" fill="#7d93a8" stroke="none"/></marker>
+        </defs>
+        <!-- zone labels -->
+        <text class="eye" x="320" y="52" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="11" fill="#2e4a62" letter-spacing="1.3" text-anchor="middle">Think &amp; define — no code yet</text>
+        <text class="eye b" x="720" y="52" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="11" fill="#0f766e" letter-spacing="1.3" text-anchor="middle">Build &amp; learn</text>
+        <!-- boundary note -->
+        <text class="lbl sm" x="600" y="72" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#a86f16" font-weight="400" text-anchor="middle">↓ implementation starts here</text>
+        <!-- bar -->
+        <rect class="barA" x="40" y="84" width="560" height="44" fill="#e7edf2"/>
+        <rect class="barB" x="600" y="84" width="240" height="44" fill="#d7ebe6"/>
+        <rect class="barstroke" x="40" y="84" width="800" height="44" fill="none" stroke="#c3c3b4" stroke-width="1.5"/>
+        <line class="divide" x1="600" y1="78" x2="600" y2="134" stroke="#2e4a62" stroke-width="1.4" stroke-dasharray="3 4"/>
+        <!-- stage ticks -->
+        <g>
+          <line class="tick" x1="90"  y1="128" x2="90"  y2="140" stroke="#7d93a8" stroke-width="1"/>
+          <line class="tick" x1="200" y1="128" x2="200" y2="140" stroke="#7d93a8" stroke-width="1"/>
+          <line class="tick" x1="315" y1="128" x2="315" y2="140" stroke="#7d93a8" stroke-width="1"/>
+          <line class="tick" x1="425" y1="128" x2="425" y2="140" stroke="#7d93a8" stroke-width="1"/>
+          <line class="tick" x1="530" y1="128" x2="530" y2="140" stroke="#7d93a8" stroke-width="1"/>
+          <line class="tick" x1="680" y1="128" x2="680" y2="140" stroke="#7d93a8" stroke-width="1"/>
+          <line class="tick" x1="790" y1="128" x2="790" y2="140" stroke="#7d93a8" stroke-width="1"/>
+        </g>
+        <g>
+          <text class="lbl sm" x="90"  y="158" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">01 Concept</text>
+          <text class="lbl sm" x="200" y="158" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">02 Architect</text>
+          <text class="lbl sm" x="315" y="158" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">03 Foundation</text>
+          <text class="lbl sm" x="425" y="158" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">04 Features</text>
+          <text class="lbl sm" x="530" y="158" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">05 Spec</text>
+          <text class="lbl sm" x="680" y="158" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">06 Build</text>
+          <text class="lbl sm" x="790" y="158" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#565d67" font-weight="400" text-anchor="middle">07 Ship</text>
+        </g>
+        <path class="flowline dash" d="M812,168 C862,202 38,202 78,170" marker-end="url(#ah-f)" fill="none" stroke="#7d93a8" stroke-width="1.6" stroke-dasharray="4 5"/>
+        <text class="lbl sm" x="440" y="222" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="10" fill="#0f766e" font-weight="400" text-anchor="middle">production evidence feeds back into the spec</text>
+      </g>
+</svg>
