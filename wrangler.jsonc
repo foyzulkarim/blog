@@ -16,6 +16,15 @@
     }
   ],
 
+  // blog.foyzul.com is the only hostname: a second live copy on workers.dev
+  // would be duplicate content for crawlers. Stated explicitly because these
+  // default off once `routes` is set, and preview_urls defaults to workers_dev
+  // — an implicit pair that is easy to trip over.
+  // Preview a draft locally with `npm run dev`, or `npx wrangler dev` to also
+  // exercise the asset handling configured below.
+  "workers_dev": false,
+  "preview_urls": false,
+
   "assets": {
     "directory": "./dist",
 
