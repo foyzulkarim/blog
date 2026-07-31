@@ -14,8 +14,8 @@ Status: **Final — single source of truth for planning and building.** Consolid
 
 One consolidated production system. Do not merge both stylesheets or maintain two themes.
 
-- **Visual source of truth: Claude** (`claude/blog.css`).
-- **Semantic, accessibility, font-loading, and Astro-structure reference: ChatGPT** (`chatgpt/`).
+- **Visual source of truth:** the Claude-derived production stylesheet (`src/styles/blog.css`).
+- **Semantic, accessibility, font-loading, and Astro structure:** the requirements in this document and the production implementation.
 
 ### 2.1 Why Claude is the visual foundation
 
@@ -35,19 +35,19 @@ One consolidated production system. Do not merge both stylesheets or maintain tw
 
 ### 2.3 Explicitly dropped
 
-- `claude/Blog Design System.dc.html` + `claude/support.js` (Design Canvas preview tooling — not production).
-- Google Fonts `<link>` tags in `claude/views/*.html`.
+- The Claude Design Canvas preview tooling (not production).
+- The prototypes' Google Fonts `<link>` tags.
 - ChatGPT's visual system (tokens, layout, card-less index is retained only as semantic reference).
-- `chatgpt/responsive.html` — no `/responsive` QA page in v1.
+- The ChatGPT responsive preview — no `/responsive` QA page in v1.
 
 **Retained from ChatGPT after all:** the Shiki dual-theme variable pattern
-(`--shiki-light` / `--shiki-dark` per token, seen in `chatgpt/post.html:69`). Astro emits it with
+(`--shiki-light` / `--shiki-dark` per token). Astro emits it with
 `shikiConfig.defaultColor: false`, and it is the mechanism that makes code blocks correct in dark
 mode. The block background stays on our `--code-bg` so the editorial palette of §3.3 is preserved.
 
 ## 3. Design tokens and typography
 
-Lift the token system from `claude/blog.css`, then consolidate:
+The prototype token system is consolidated in `src/styles/blog.css`:
 
 - **One authoritative light token block and one dark token block.** Remove values currently duplicated across `prefers-color-scheme` and preview-specific theme hooks.
 - Remove stale specimen text, including the older 17px body-size statement. The selected body token is **19px**.
@@ -95,7 +95,7 @@ Self-host all fonts. No third-party font origins.
 | IBM Plex Sans Latin 400/600 | WOFF2 | Headings, UI (~46KB for English-only pages) |
 | Source Serif 4 (variable, roman + italic) | WOFF2 | Prose — sourced via `@fontsource-variable/source-serif-4`, 50KB each |
 | IBM Plex Mono 400/600 | WOFF2 | Code/data — sourced via `@fontsource/ibm-plex-mono`, ~14KB each |
-| Noto Sans Bengali 400/600 | WOFF2 | Already in `chatgpt/fonts/` (44,352 + 47,636 bytes) |
+| Noto Sans Bengali 400/600 | WOFF2 | Self-hosted in `public/fonts/` (44,352 + 47,636 bytes) |
 
 All eight files are self-hosted from `public/fonts/`; nothing is fetched from a third-party origin at runtime. Latin faces carry a `unicode-range` so Bengali codepoints fall through to Noto Sans Bengali.
 
@@ -104,7 +104,7 @@ Rules:
 - `font-display: swap` everywhere.
 - Bengali faces gated behind `unicode-range` so English-only pages never request them; loaded only when Bengali text is present.
 - Subset Latin faces to the required ranges before shipping.
-- Copy `chatgpt/fonts/*.woff2` into the Astro public asset directory; source the missing Source Serif 4 and IBM Plex Mono WOFF2 files.
+- Keep the canonical font assets in `public/fonts/`; Source Serif 4 and IBM Plex Mono are sourced from their Fontsource packages.
 
 ## 5. Semantic HTML and accessibility requirements
 
@@ -135,8 +135,8 @@ These are hard requirements, not preferences.
 </ol>
 ```
 
-This is incompatible with the Claude prototype's `.post-link`, which made the whole row a single
-`<a>` carrying the grid areas (`claude/blog.css:630`) — the `<h2><a>` required here cannot nest
+This was incompatible with the Claude prototype's `.post-link`, which made the whole row a single
+`<a>` carrying the grid areas — the `<h2><a>` required here cannot nest
 inside a row-level anchor. The grid moved onto `.post-item` instead.
 
 ### 5.3 Language
@@ -181,7 +181,7 @@ never measured.
 | `/<slug>/` | Individual post — bare slug, no `/posts/` or `/writing/` prefix. Slugs are asserted at build time against the reserved set (`about`, `topics`, `page`, `rss.xml`, `404`); a collision fails the build rather than silently dropping the post |
 | `/404` | Not-found page (`dist/404.html`, served by Cloudflare on unmatched routes) |
 | `/topics/` | Tag index — posts grouped by tag from the content collection |
-| `/about/` | About page — lift content from `chatgpt/about.html` |
+| `/about/` | About page — production content lives in `src/pages/about.astro` |
 | `/rss.xml` | RSS feed |
 | `/courses` | Not a page — nav links externally to `https://courses.foyzul.com` (`target="_blank"` `rel="noopener"`) |
 
@@ -218,7 +218,7 @@ No other footer content.
 ```
 
 `.index-intro` is the **wrapper**. In the Claude prototype the same class name was a 14px
-uppercase `--text-faint` eyebrow (`claude/blog.css:671`); applying it to this header would have
+uppercase `--text-faint` eyebrow; applying it to this header would have
 rendered the lede tiny, uppercase and faint. The eyebrow treatment now lives on
 `.index-intro__meta`, which carries only the post-count metadata.
 
@@ -344,7 +344,7 @@ RSS · © 2026
 - Self-hosted fonts and assets in the public directory.
 - Minimal page-specific classes.
 - No client JavaScript required for reading.
-- No parallel ChatGPT/Claude visual systems — prototypes are reference only, not shipped.
+- No parallel prototype visual systems. The originals remain available in Git history only.
 
 ### 9.2 The full-bleed contract (must fix)
 
@@ -359,10 +359,10 @@ Layout must not split a post into multiple articles.
 
 | Piece | Source |
 |---|---|
-| Token system / global CSS | `claude/blog.css` (consolidated per §3) |
-| Post layout template | `claude/views/post.html` + `claude/views/wide-table.html` |
-| About page content | `chatgpt/about.html` |
-| Font files (Bengali, Plex Sans) | `chatgpt/fonts/` |
+| Token system / global CSS | `src/styles/blog.css` |
+| Post layout template | `src/layouts/Post.astro` |
+| About page content | `src/pages/about.astro` |
+| Font files | `public/fonts/` |
 | Topics index | New — group posts by tag from the content collection |
 | Semantic patterns | §5 of this document |
 
@@ -407,7 +407,7 @@ Remaining:
 
 - **Tag chips link to `/topics/#<tag>`**, an anchor into the grouped page, not a filtered view.
   Per-tag routes (`/topics/<tag>/`) remain an option.
-- **About page links** to `linkedin.com` and `youtube.com` are the placeholders inherited from
-  `chatgpt/about.html`; they need real profile URLs.
+- **About page links** to `linkedin.com` and `youtube.com` are inherited placeholders; they need
+  real profile URLs.
 - §3.5's sticky-column table system and §3.3's code styling are implemented and unit-verified but
   **unexercised by real content** — the first post contains no tables and no code blocks.

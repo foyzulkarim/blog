@@ -7,7 +7,7 @@ Companion to `BLOG_SPEC.md`. The spec defines *what it looks like*; this defines
 | # | Decision | Consequence |
 |---|---|---|
 | L1 | **Spec §3 wins over `post-1/`.** post-1 is a draft, not the target design. | Its content is re-authored into the Claude token system. See §7. |
-| L2 | **Bengali face is Noto Sans Bengali.** | Use the WOFF2 files already in `chatgpt/fonts/`. Edit `blog.css:11,14`. Nothing to source. Spec §3.1 is already correct; `blog.css` is wrong. |
+| L2 | **Bengali face is Noto Sans Bengali.** | Use the WOFF2 files in `public/fonts/`. Spec §3.1 is authoritative. |
 | L3 | **Static build, no SSR.** Nothing in the spec needs a server. | No Astro adapter. See §2. |
 | L4 | **MDX, not plain Markdown.** | post-1 needs `<Figure>`, `<Callout>`, and inline SVG diagrams as components. Raw HTML in `.md` would work but is not authorable at that density. Reversible if v1 posts turn out to be prose-only. |
 | L5 | **Full-bleed via `subgrid`.** | Chosen from the three options in §6.1. Keeps one `<article>` per post with the track definition in one place. |
@@ -65,14 +65,14 @@ Notes:
 astro.config.mjs
 wrangler.jsonc
 public/
-  fonts/*.woff2            # copied from chatgpt/fonts/ + newly sourced faces
+  fonts/*.woff2            # canonical self-hosted font assets
   _headers
 src/
   content.config.ts        # collection schema (§4)
   content/posts/           # one folder per post; see docs/AUTHORING.md
     _TEMPLATE/index.mdx    #   leading _ = never published
     <slug>/index.mdx       #   folder name is the URL; images sit beside it
-  styles/blog.css          # consolidated from claude/blog.css (§6)
+  styles/blog.css          # consolidated production design system (§6)
   layouts/
     Base.astro             # <html>, head, skip link, header, footer
     Post.astro             # article wrapper + full-bleed track
@@ -133,7 +133,7 @@ Decisions embedded here:
 | `/page/2/` … | `pages/page/[page].astro` | **New — spec §8.3's "Older posts" link had no destination in the §6 route table** |
 | `/<slug>/` | `pages/[...slug].astro` | Bare slug per spec §6 |
 | `/topics/` | `pages/topics/index.astro` | Grouped by tag |
-| `/about/` | `pages/about.astro` | Content from `chatgpt/about.html` |
+| `/about/` | `pages/about.astro` | Canonical about-page content |
 | `/rss.xml` | `pages/rss.xml.ts` | Spec §6 says `rss.xml`; prototypes say `feed.xml`. Spec wins. |
 | `/404` | `pages/404.astro` | **New** |
 
@@ -157,7 +157,7 @@ Spec §8.2 sends every tag chip to `/topics/`, so clicking `POSTGRES` lands on a
 
 ## 6. Design-system consolidation
 
-`claude/blog.css` → `src/styles/blog.css`. Beyond the §3 dedupe the spec already calls for, these are the corrections found by reading the file against the spec:
+The Claude prototype was consolidated into `src/styles/blog.css`. Beyond the §3 dedupe the spec already calls for, these are the corrections made while reconciling it with the spec:
 
 | # | Fix | Location |
 |---|---|---|
@@ -172,7 +172,7 @@ Spec §8.2 sends every tag chip to `/topics/`, so clicking `POSTGRES` lands on a
 
 ### 6.1 Full-bleed contract — open decision
 
-Spec §9.2 correctly identifies the defect: `.page > .bleed { grid-column: full }` only reaches **direct** children, which is why `claude/views/post.html` splits the post into two `<article>` elements (lines 33 and 65). To keep one `<article>` and still let a table escape the measure:
+Spec §9.2 correctly identifies the prototype defect: `.page > .bleed { grid-column: full }` only reaches **direct** children, which forced the post into two `<article>` elements. To keep one `<article>` and still let a table escape the measure:
 
 | Option | Mechanism | Tradeoff |
 |---|---|---|
@@ -194,7 +194,7 @@ Per L1, `post-1/agentic-software-engineering.html` becomes `src/content/posts/ag
 
 ## 8. Fonts and code
 
-**Fonts.** IBM Plex Sans 400/600 and Noto Sans Bengali 400/600 are in `chatgpt/fonts/`; copy to `public/fonts/`. Reuse the `@font-face` block from `chatgpt/styles.css:1-33` — its Bengali `unicode-range` gating (`U+0980-09FF, U+200C-200D, U+25CC, U+A8F1`) is what keeps English pages from requesting Bengali. **Source Serif 4 and IBM Plex Mono must still be sourced and subset** (spec §12).
+**Fonts.** IBM Plex Sans 400/600 and Noto Sans Bengali 400/600 are canonical assets in `public/fonts/`. The production `@font-face` declarations retain Bengali `unicode-range` gating (`U+0980-09FF, U+200C-200D, U+25CC, U+A8F1`), which keeps English pages from requesting Bengali. Source Serif 4 and IBM Plex Mono are also self-hosted there (spec §4).
 
 **Code blocks.** Astro's Shiki supports dual themes:
 
@@ -244,7 +244,7 @@ With `defaultColor: false`, a `@media (prefers-color-scheme: dark)` block remaps
 
 ## 11. Open items
 
-- **About page** still carries `chatgpt/about.html`'s placeholder LinkedIn/YouTube URLs.
+- **About page** still carries placeholder LinkedIn/YouTube URLs.
 - Per-tag routes (`/topics/<tag>/`) remain available if the anchor approach proves too coarse.
 - §3.5 tables and §3.3 code blocks are implemented and verified in isolation but no real post
   exercises them yet.
