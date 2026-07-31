@@ -71,6 +71,8 @@ PNG কেন? কারণ modern model গুলো *multimodal* — image dat
   ![Concept pipeline: Talk it out → design tool (Claude, Lovable, Stitch) → raw HTML+CSS screen → প্রতি screen-এর একটা করে PNG export → Phase 04-এ check হওয়া reference set। এই phase-এ কোনো code লেখা হয় না।](./03-concept-pipeline.svg)
 </Figure>
 
+একটা বাস্তবতা এখানেই বলে রাখা দরকার। Claude, ChatGPT, Lovable — এসবের subscription কিনতে গেলে প্রায়ই international card লাগে, আর সরাসরি BDT দিয়ে কেনার রাস্তা নেই। কিন্তু এই পুরো Phase 1 আসলে free tier দিয়েই চলে যায় — Claude আর ChatGPT দুটোরই usable free version আছে, আর Lovable বা Stitch-এ শুরুতে যথেষ্ট free credit থাকে একটা concept prototype বানানোর জন্য। Card সত্যিই লাগলে Wise বা Payoneer-এর USD virtual card, বা bKash-লিংকড local virtual-card service গুলো কাজে লাগে — এখন অনেক BD engineer এভাবেই চালান। মূল কথা হলো, টাকার অভাবে এই process আটকায় না; আটকায় শুধু কোন tool কোথায় free দিচ্ছে সেটা না জানলে।
+
 <Eyebrow num="Phase 02">Architect</Eyebrow>
 
 ## দুই ধরনের feature, আর যে তর্ক ঠিক করে দেয় কোনটা কী
@@ -143,7 +145,7 @@ Database-এর জন্য চাই schema-র উপর unit test আর আ
 
 Screenshot diffing নিয়ে একটা caveat, যেহেতু আমি এটা বেশ জোর দিয়ে বিক্রি করেছি। আগে behaviour assert করুন; visual comparison যোগ করুন শুধু সেখানে যেখানে চেহারাটা সত্যিই contract-এর অংশ। আর rendering environment প্রতিবার একদম এক রাখুন — অন্য font, অন্য platform, 2px চওড়া একটা scrollbar, আর test fail করা শুরু করবে এমন কারণে যার সাথে আপনার code-এর কোনো সম্পর্কই নেই। Flaky oracle কোনো oracle না থাকার চেয়েও খারাপ, কারণ এক সপ্তাহের মধ্যেই আপনি ওটাকে ignore করা শুরু করবেন।
 
-> Robert C. "Uncle Bob" Martin — clean code আর SOLID-এর দাদা — সম্প্রতি এই ধাঁচের একটা post দিয়েছেন: তিনি আর code পড়েন না। তিনি test আর drill গুলো এমনভাবে বসিয়ে দেন যাতে agent-এর কাছে তিনি যা চান তার বাইরে কিছু produce করার কোনো রাস্তাই না থাকে। তাঁর যুক্তিটাই আমার মাথায় গেঁথে গেছে: syntax পড়তে বসলে তিনি agent-এর output-এর সাথে তাল মেলাতে পারেন না। পড়াটাই bottleneck, তাই তিনি review বাড়ানোর বদলে constraint বাড়ান। উৎসটা কে, সেটা মাথায় রেখে একটু ভেবে দেখুন কথাটা।
+> Software engineering-এর একজন বহু-পরিচিত veteran সম্প্রতি এই ধাঁচের একটা post দিয়েছেন: তিনি আর code পড়েন না। তিনি test আর drill গুলো এমনভাবে বসিয়ে দেন যাতে agent-এর কাছে তিনি যা চান তার বাইরে কিছু produce করার কোনো রাস্তাই না থাকে। তাঁর যুক্তিটাই আমার মাথায় গেঁথে গেছে: syntax পড়তে বসলে তিনি agent-এর output-এর সাথে তাল মেলাতে পারেন না। পড়াটাই bottleneck, তাই তিনি review বাড়ানোর বদলে constraint বাড়ান। কয়েক দশক ধরে code quality নিয়ে যিনি সবচেয়ে জোরে সোচ্চার ছিলেন, তিনি নিজেই যে এই সিদ্ধান্তে পৌঁছেছেন — সেটা মাথায় রেখে একটু ভেবে দেখুন কথাটা।
 
 আসলে পুরো shift-টাই এটা। Test-কে "code কাজ করছে কি না check করা" হিসেবে ভাবা বন্ধ করুন, আর ভাবতে শুরু করুন **oracle** হিসেবে — এমন জিনিস যেটা কোনো মানুষের diff পড়া ছাড়াই বলে দিতে পারে *এটা ভুল*। Workshop-এর jig আপনার হয়ে কাটে না। ও ভুল কাটাটাকে অসম্ভব করে দেয়।
 
@@ -235,7 +237,7 @@ Foundation থেকে release পর্যন্ত sequence করা এক�
 
 Disposable environment-এ চালান, আপনার main machine-এ না। Production credential workspace থেকে পুরোপুরি বাইরে রাখুন — gitignore করা `.env`-এ না, *বাইরে*। Read আর write আলাদা করুন, কারণ অনেক task-এর শুধু পড়লেই চলে। যা কিছু destructive আর যা কিছু machine ছেড়ে বেরিয়ে যায়, তার জন্য আপনার approval বাধ্যতামূলক করুন। আর main protect করুন: agent pull request খোলে, merge করে না।
 
-এর কোনোটাই exotic কিছু না। এটা least privilege — বিশ বছর ধরে service-এর ক্ষেত্রে আমরা এটাই করে আসছি, আর যেই জিনিসটাকে access দিচ্ছি সেটা পুরো বাক্যে উত্তর দেওয়া শুরু করল, অমনি ভুলে গেলাম। AI agent নিয়ে OWASP-এর guidance-ও একই জায়গায় এসে দাঁড়ায় — minimum tool, scoped permission, sensitive কিছুর জন্য explicit authorisation।
+এর কোনোটাই exotic কিছু না। এটা least privilege — বিশ বছর ধরে service-এর ক্ষেত্রে আমরা এটাই করে আসছি, আর যেই জিনিসটাকে access দিচ্ছি সেটা পুরো বাক্যে উত্তর দেওয়া শুরু করল, অমনি ভুলে গেলাম। OWASP (যে non-profit organization industry-standard security guideline লেখে) AI agent নিয়ে যা বলছে সেটাও একই জায়গায় এসে দাঁড়ায় — minimum tool, scoped permission, sensitive কিছুর জন্য explicit authorisation।
 
 আর ঠিক এই section-টাই একজন senior reviewer খুঁজতে যায় আর সাধারণত পায় না। আপনার repo-তে এটা থাকাই নিজেই একটা signal।
 
@@ -260,7 +262,7 @@ Disposable environment-এ চালান, আপনার main machine-এ ন
 
 এই চারটার উত্তর না থাকলে আপনি ship করছেন না। আপনি release করে দোয়া করছেন।
 
-Instrumentation feature-এরই অংশ হিসেবে করুন, পরে পরিষ্কার করার কাজ হিসেবে না। Trace, metric, log — OpenTelemetry যে তিনটা signal-এর উপর দাঁড়ানো — আর ওগুলোকে release-এর সাথে *আর* Phase 04-এ লেখা acceptance criteria-র সাথে correlate করুন। ওই correlation-টাই আসল কথা। ওটা দিয়েই আপনি জানবেন, যেটা আপনি specify করেছিলেন সেটাই মানুষ পেয়েছে কি না।
+Instrumentation feature-এরই অংশ হিসেবে করুন, পরে পরিষ্কার করার কাজ হিসেবে না। Trace, metric, log — production-এ কী ঘটছে সেটা measure করার তিনটা standard signal, যেগুলোর জন্য OpenTelemetry সবচেয়ে বহুল-ব্যবহৃত tool — আর ওগুলোকে release-এর সাথে *আর* Phase 04-এ লেখা acceptance criteria-র সাথে correlate করুন। ওই correlation-টাই আসল কথা। ওটা দিয়েই আপনি জানবেন, যেটা আপনি specify করেছিলেন সেটাই মানুষ পেয়েছে কি না।
 
 তারপর loop-টা বন্ধ করুন। Production যা বলছে আর আপনি যা চেয়েছিলেন — মেলান। প্রতিটা চমক একটা ticket হয়ে যায়। প্রতিটা ticket আবার একই pipeline-এ ঢোকে। আর system যখন শেখায় যে spec-টাই ভুল ছিল, তখন spec update করুন — কারণ যে specification deploy করার সাথে সাথে সত্যি থাকা বন্ধ করে দেয়, ওটা কখনো specification ছিলই না। ওটা ছিল একটা plan।
 
@@ -350,6 +352,5 @@ Practical test হলো: session শেষ হওয়ার পর কী ট
 - [Git worktree documentation](https://git-scm.com/docs/git-worktree) — এক repository থেকে একাধিক working directory।
 - [OWASP AI Agent Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html) — agent-এর জন্য least privilege আর scoped permission।
 - [OpenTelemetry](https://opentelemetry.io/docs/concepts/observability-primer/) — observability-র তিন signal: trace, metric, log।
-- Robert C. Martin, agent-এর output পড়ার বদলে constrain করা নিয়ে — *link যোগ করতে হবে*।
 
 <p class="post-colophon">ClaudeLens · built in public · <a href="https://github.com/foyzulkarim/claude-lens">github.com/foyzulkarim/claude-lens</a></p>
