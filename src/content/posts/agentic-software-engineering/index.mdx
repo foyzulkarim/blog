@@ -1,6 +1,6 @@
 ---
 title: Agentic Software Engineering
-description: Code generation is abundant; engineering judgment is not. A five-phase lifecycle for building software with AI agents.
+description: Code generation is abundant; engineering judgment is not. A seven-phase lifecycle for building trustworthy software with AI agents.
 pubDate: 2026-07-31
 tags:
   - AI
@@ -18,58 +18,110 @@ import Eyebrow from '@components/Eyebrow.astro';
   reviewable changes, and production evidence.
 </p>
 
-If you want to demonstrate that you can build with AI, don't publish only the final code. Show the decisions, trade-offs, specifications, quality gates, and recovery paths that made the result trustworthy. That is the strongest quality signal because it reveals how you think, not merely how quickly a model can type.
+If you want to demonstrate that you can build with AI, do not publish only the final code. Show the decisions, trade-offs, specifications, quality gates, and recovery paths that made the result trustworthy. Those artefacts reveal how you think, not merely how quickly a model can type.
 
-This is the process I used while building [Claude-Lens](https://github.com/foyzulkarim/claude-lens) in public. It is not a universal framework, but it is a practical one. The division of responsibility is explicit:
+This is the process I used while building [Claude-Lens](https://github.com/foyzulkarim/claude-lens) in public. It is not a universal framework, but it is a practical one. Everything below follows from one operating contract:
 
-- **The model** proposes and executes.
-- **The engineer**
-  - defines the system;
-  - constrains the work;
-  - evaluates the evidence;
-  - owns the consequences.
+- **The model** proposes options, drafts code, and runs tools.
+- **The gates** test claims before they become changes.
+- **The engineer** defines the system, constrains the work, judges the evidence, approves risk, and owns the outcome.
 
 <Figure
   bleed
   scroll
-  eyebrow="Figure 01 · the whole flow, at a glance"
-  caption="The first three phases happen before production implementation. Phase 3 carries feature definition through specification and ticketing before the build loop begins."
+  eyebrow="Figure 01 · the operating contract"
+  caption="The model supplies execution capacity. The engineer retains judgment and accountability. Gates keep the two connected without confusing their roles."
 >
   <svg
     class="diagram"
-    viewBox="0 0 880 210"
+    viewBox="0 0 880 288"
     role="img"
-    aria-label="Five-phase lifecycle: Concept, Architecture, and Features and specification happen before production implementation; Build and Operate follow. Phase 3 contains feature definition, specification, and ticketing."
+    aria-label="The model proposes options, drafts code, and runs tools. Tests, acceptance criteria, review, and security policy act as gates. The engineer defines the system, sets constraints, approves risk, judges evidence, and owns the outcome."
   >
-    {/* zone labels */}
-    <text class="eye" x="320" y="34">Think &amp; define — no production code</text>
-    <text class="eye text--emphasis" x="660" y="34">Build</text>
-    <text class="eye text--warm" x="780" y="34">Operate</text>
-    {/* boundary note */}
-    <text class="label label--sm text--warm" x="600" y="58">↓ implementation starts here</text>
-    {/* lifecycle bar */}
-    <rect class="bar bar--a" x="40" y="70" width="560" height="48" />
-    <rect class="bar bar--b" x="600" y="70" width="120" height="48" />
-    <rect class="bar bar--c" x="720" y="70" width="120" height="48" />
-    <rect class="stroke--frame" x="40" y="70" width="800" height="48" />
-    <line class="tick" x1="180" y1="70" x2="180" y2="118" />
-    <line class="tick" x1="340" y1="70" x2="340" y2="118" />
-    <line class="stroke stroke--dash" x1="600" y1="64" x2="600" y2="124" />
-    <line class="tick" x1="720" y1="70" x2="720" y2="118" />
-    {/* five article phases */}
-    <text class="label label--sm" x="110" y="142">01 Concept</text>
-    <text class="label label--sm" x="260" y="142">02 Architecture</text>
-    <text class="label label--sm" x="470" y="142">03 Features &amp; spec</text>
-    <text class="label label--sm" x="660" y="142">04 Build</text>
-    <text class="label label--sm" x="780" y="142">05 Operate</text>
-    {/* Phase 3 sub-stages */}
-    <path class="stroke" d="M470,150 V160 M383,160 H557 M383,160 V168 M470,160 V168 M557,160 V168" />
-    <rect class="box--raised" x="342" y="168" width="82" height="28" rx="6" />
-    <rect class="box--raised" x="429" y="168" width="82" height="28" rx="6" />
-    <rect class="box--raised" x="516" y="168" width="82" height="28" rx="6" />
-    <text class="label label--sm" x="383" y="186">Feature def</text>
-    <text class="label label--sm" x="470" y="186">Spec</text>
-    <text class="label label--sm" x="557" y="186">Ticketing</text>
+    <defs>
+      <marker id="ase-arrow-contract" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+        <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
+      </marker>
+    </defs>
+    <text class="eye" x="150" y="30">The model</text>
+    <text class="eye text--warm" x="391" y="30">Gates</text>
+    <text class="eye text--emphasis" x="683" y="30">The engineer</text>
+    <g>
+      <rect class="box--alt" x="20" y="46" width="260" height="190" rx="10" />
+      <text class="label label--sm" x="150" y="78">proposes options</text>
+      <text class="label label--sm" x="150" y="106">drafts the code</text>
+      <text class="label label--sm" x="150" y="134">runs the tools</text>
+      <text class="label label--sm" x="150" y="162">moves faster than you</text>
+      <text class="label label--sm text--muted" x="150" y="218">execution capacity</text>
+    </g>
+    <g>
+      <rect class="box--warm" x="316" y="46" width="150" height="190" rx="10" />
+      <text class="label label--sm" x="391" y="78">tests</text>
+      <text class="label label--sm" x="391" y="106">acceptance criteria</text>
+      <text class="label label--sm" x="391" y="134">review</text>
+      <text class="label label--sm" x="391" y="162">security policy</text>
+      <text class="label label--sm text--warm" x="391" y="218">nothing crosses unchecked</text>
+    </g>
+    <g>
+      <rect class="box--emphasis" x="506" y="46" width="354" height="190" rx="10" />
+      <text class="label label--sm" x="683" y="78">define the system</text>
+      <text class="label label--sm" x="683" y="106">set the constraints</text>
+      <text class="label label--sm" x="683" y="134">approve the risk</text>
+      <text class="label label--sm" x="683" y="162">judge the evidence</text>
+      <text class="label label--sm" x="683" y="190">own the outcome</text>
+      <text class="label label--sm text--emphasis" x="683" y="218">judgment and accountability</text>
+    </g>
+    <line class="stroke" x1="282" y1="141" x2="312" y2="141" marker-end="url(#ase-arrow-contract)" />
+    <line class="stroke" x1="468" y1="141" x2="502" y2="141" marker-end="url(#ase-arrow-contract)" />
+    <text class="eye" x="440" y="270">The model never sits in the incident review. You do.</text>
+  </svg>
+</Figure>
+
+When an agent's mistake reaches production, the model does not face the stakeholder or lead the incident review. You do. Authority and accountability cannot be separated, so delegation has to be bounded by evidence. The middle column in the diagram—the tests, acceptance criteria, review, and policy—is the control system you spend the lifecycle building.
+
+The lifecycle has seven phases. The first five define the product and the conditions under which it can be built safely. Phase 6 begins production implementation. Phase 7 turns production evidence into the next round of decisions.
+
+This is not a waterfall argument. Discovery continues after implementation starts, and feedback can force any earlier decision to change. The point is to make each transition explicit. An architecture choice becomes a decision record. A product idea becomes acceptance criteria. A claim of correctness becomes executable evidence. You can revisit any of them, but you can see what changed, why it changed, and which downstream assumptions now need review.
+
+<Figure
+  bleed
+  scroll
+  eyebrow="Figure 02 · the whole flow, at a glance"
+  caption="Five phases reduce ambiguity before production implementation begins. Build and ship then return evidence to the specification."
+>
+  <svg
+    class="diagram"
+    viewBox="0 0 880 234"
+    role="img"
+    aria-label="Seven-phase lifecycle: Concept, Architect, Foundation planning, Features, and Specification happen before production implementation. Build and Ship follow, and production evidence loops back into the specification."
+  >
+    <defs>
+      <marker id="ase-arrow-lifecycle" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+        <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
+      </marker>
+    </defs>
+    <text class="eye" x="320" y="52">Think &amp; define — no production implementation</text>
+    <text class="eye text--emphasis" x="720" y="52">Build &amp; learn</text>
+    <text class="label label--sm text--warm" x="600" y="72">↓ implementation starts here</text>
+    <rect class="bar bar--a" x="40" y="84" width="560" height="44" />
+    <rect class="bar bar--b" x="600" y="84" width="120" height="44" />
+    <rect class="bar bar--c" x="720" y="84" width="120" height="44" />
+    <rect class="stroke--frame" x="40" y="84" width="800" height="44" />
+    <line class="tick" x1="145" y1="84" x2="145" y2="128" />
+    <line class="tick" x1="255" y1="84" x2="255" y2="128" />
+    <line class="tick" x1="370" y1="84" x2="370" y2="128" />
+    <line class="tick" x1="485" y1="84" x2="485" y2="128" />
+    <line class="stroke stroke--dash" x1="600" y1="78" x2="600" y2="134" />
+    <line class="tick" x1="720" y1="84" x2="720" y2="128" />
+    <text class="label label--sm" x="92" y="158">01 Concept</text>
+    <text class="label label--sm" x="200" y="158">02 Architect</text>
+    <text class="label label--sm" x="312" y="158">03 Foundation</text>
+    <text class="label label--sm" x="427" y="158">04 Features</text>
+    <text class="label label--sm" x="542" y="158">05 Spec</text>
+    <text class="label label--sm" x="660" y="158">06 Build</text>
+    <text class="label label--sm" x="780" y="158">07 Ship</text>
+    <path class="stroke stroke--dash" d="M812,168 C862,202 38,202 78,170" marker-end="url(#ase-arrow-lifecycle)" />
+    <text class="label label--sm text--emphasis" x="440" y="222">production evidence feeds back into the spec</text>
   </svg>
 </Figure>
 
@@ -77,35 +129,41 @@ This is the process I used while building [Claude-Lens](https://github.com/foyzu
 
 ## Prototype the experience before production code
 
-Start by exploring _what_ you want to build: the user, the problem, the core journey, and the smallest outcome worth shipping. Do not commit to a production technology stack yet. At this point the important questions are: who is this for, what job are they trying to complete, and what would make the result meaningfully better than their current option?
+Start by exploring _what_ you want to build: the user, the problem, the core journey, and the smallest outcome worth shipping. This is not yet an in-depth feature specification. It is a conversation about the product's shape. Who is it for? What job are they trying to complete? What would make the result meaningfully better than the option they have now?
 
-Once the product shape is clear, use Claude Design, Lovable, Google Stitch, or another design tool to generate the screens. I kept the output deliberately lightweight: raw HTML and CSS rather than a production React application. That prototype code is disposable; its job is to make the idea concrete enough to critique.
+Once the journey is coherent, use Claude Design, Lovable, Google Stitch, or another design tool to generate the screens. I kept the output deliberately lightweight: raw HTML and CSS, not a production React application. That is still code, but it is disposable prototype code. Its job is to make the experience concrete enough to critique without quietly deciding the architecture.
 
-I then rendered each screen to a reference PNG. A multimodal model can compare the implemented UI with that visual target, while browser automation can later turn the same reference into repeatable visual checks. The image is not a complete specification—it cannot prove behaviour, accessibility, responsiveness, or performance—but it is a useful oracle for layout and visual intent.
+Render each screen to a reference PNG and check it into the repository. A multimodal model can compare the implemented UI with that target later, while browser automation can turn the same reference into a repeatable visual check. The PNG is a survey marker: flat, dated, and resistant to drift. The HTML is the sketchpad; the image is the thing you measure against weeks later.
 
-The deliverables from Phase 1 are small and explicit: a user journey, screen prototypes, reference images, and a first list of measurable outcomes. No production implementation yet.
+An image is not a complete specification. It cannot prove behaviour, accessibility, responsiveness, security, or performance. It is one oracle for visual intent, not a substitute for acceptance criteria. Used that way, it closes a loop that would otherwise depend on your memory of a prototype.
+
+Prototype the awkward states as well as the happy path. Empty results, first-run setup, slow loading, invalid input, partial data, denied permissions, and narrow screens often reveal more about the product than a polished dashboard. If those states remain invisible until implementation, the agent will make the product decisions for you while filling in the gaps.
+
+Do not choose a production stack yet. A lightweight prototype is cheap to regenerate or discard. A framework scaffold is already an architectural commitment made at the moment you have the least information. Choose late enough to choose against requirements rather than habit.
+
+The deliverables from Phase 1 are deliberately small: a user journey, screen prototypes, frozen references, and a first list of measurable outcomes. There is no production implementation yet.
 
 <Figure
   bleed
   scroll
-  eyebrow="Figure 02 · concept pipeline"
-  caption="Design → render → use the reference as one part of an automated verification strategy."
+  eyebrow="Figure 03 · concept pipeline"
+  caption="Design → render → freeze. The references become one part of the automated verification strategy used later."
 >
   <svg
     class="diagram"
     viewBox="0 0 880 168"
     role="img"
-    aria-label="Concept pipeline from conversation to a multimodal verification."
+    aria-label="Concept pipeline from product conversation to a design tool, raw HTML and CSS screens, exported PNG images, and a checked-in reference set."
   >
     <defs>
-      <marker id="ah-b" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+      <marker id="ase-arrow-concept" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
         <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
       </marker>
     </defs>
-    <line class="stroke" x1="155" y1="72" x2="182" y2="72" marker-end="url(#ah-b)" />
-    <line class="stroke" x1="325" y1="72" x2="352" y2="72" marker-end="url(#ah-b)" />
-    <line class="stroke" x1="495" y1="72" x2="522" y2="72" marker-end="url(#ah-b)" />
-    <line class="stroke" x1="665" y1="72" x2="692" y2="72" marker-end="url(#ah-b)" />
+    <line class="stroke" x1="155" y1="72" x2="182" y2="72" marker-end="url(#ase-arrow-concept)" />
+    <line class="stroke" x1="325" y1="72" x2="352" y2="72" marker-end="url(#ase-arrow-concept)" />
+    <line class="stroke" x1="495" y1="72" x2="522" y2="72" marker-end="url(#ase-arrow-concept)" />
+    <line class="stroke" x1="665" y1="72" x2="692" y2="72" marker-end="url(#ase-arrow-concept)" />
     <g>
       <rect class="box--raised" x="15" y="44" width="140" height="56" rx="8" />
       <text class="label" x="85" y="70">Talk it out</text>
@@ -113,9 +171,8 @@ The deliverables from Phase 1 are small and explicit: a user journey, screen pro
     </g>
     <g>
       <rect class="box--raised" x="185" y="44" width="140" height="56" rx="8" />
-      <text class="label" x="255" y="64">Design tools</text>
-      <text class="label label--sm" x="255" y="81">Claude Design</text>
-      <text class="label label--sm" x="255" y="94">Lovable · Stitch</text>
+      <text class="label" x="255" y="70">Design tool</text>
+      <text class="label label--sm" x="255" y="87">Claude · Lovable · Stitch</text>
     </g>
     <g>
       <rect class="box--raised" x="355" y="44" width="140" height="56" rx="8" />
@@ -129,55 +186,46 @@ The deliverables from Phase 1 are small and explicit: a user journey, screen pro
     </g>
     <g>
       <rect class="box--emphasis" x="695" y="44" width="140" height="56" rx="8" />
-      <text class="label text--emphasis" x="765" y="70">Model verifies</text>
-      <text class="label label--sm" x="765" y="87">multimodal check</text>
+      <text class="label text--emphasis" x="765" y="70">Reference set</text>
+      <text class="label label--sm" x="765" y="87">checked in Phase 06</text>
     </g>
-    <text class="eye" x="425" y="140">No production code in this phase</text>
+    <text class="eye" x="425" y="140">Disposable prototype code · no production implementation</text>
   </svg>
 </Figure>
 
 <Eyebrow num="Phase 02">Architect</Eyebrow>
 
-## Separate product features from the foundation beneath them
+## Separate product capabilities from the foundation beneath them
 
-Now bring the prototypes into an architectural conversation. Identify two classes of work: **product capabilities**, which users can see, and **foundational capabilities**, which make those features possible—routing, identity, data ownership, persistence, error handling, test infrastructure, security boundaries, and observability.
+Bring the prototypes into an architectural conversation. Identify two classes of work: **product capabilities**, which users can see, and **foundational capabilities**, which make those features possible—startup, routing, identity, data ownership, persistence, error handling, test infrastructure, security boundaries, and observability.
 
-Technology selection belongs here, after the constraints are visible. For Claude-Lens, the data model forced the useful debate: do we need Postgres, what are the read and write patterns, what should be stored as snapshots, and where do deltas make more sense? Ask the model for at least two viable designs, their failure modes, operational cost, and the conditions that would invalidate each choice.
+Technology selection belongs here, after the constraints are visible. For Claude-Lens, the data model forced the useful debate: does a local, single-user tool reading append-only logs need Postgres? What are the read and write patterns? Which data should be stored as snapshots, and where do deltas make more sense? The discussion ended somewhere I did not start: a model shaped around the actual workload rather than the database I knew best.
 
-The model can widen the option space, but it cannot own the decision. Record consequential choices as short architecture decision records: context, options, decision, consequences, and a revisit trigger. This prevents a confident chat response from silently becoming permanent architecture.
+That distinction matters. “I picked the familiar tool” and “I picked the right tool” produce the same repository when the familiar tool happens to fit. They reveal very different judgment when it does not.
 
-### Split the foundation into runnable tasks
+### How to disagree with a model built to agree
 
-The foundation is not one giant commit. Split it into thin, verifiable increments: `npm start` boots the application; one route resolves; one migration applies; one health check reports dependencies; one telemetry signal reaches the local collector. Every task should leave the repository runnable and produce evidence that the new capability works.
+A model does not defend a position; it produces a likely continuation, and agreement is often part of that pattern. Push hard enough and it may fold whether or not you are right. Do not argue to win. Argue to expose evidence.
 
-### Don't go cheap on testing, either
+Ask it to make the strongest case for the option you dislike. Ask what workload breaks the preferred design, what you might regret in six months, and which assumptions must remain true. Then verify the specific claims. **Treat agreement as noise and specificity as signal.**
 
-Use the cheapest test that can detect the failure you care about: unit tests for isolated logic, integration tests for boundaries such as database behaviour, contract tests between services, and a smaller set of end-to-end tests for critical journeys using tools such as Playwright or Cypress.
+Ask for at least two viable designs, their failure modes, their operational cost, and the condition that would invalidate each choice. The model can widen the option space, but it cannot own the decision. Record consequential choices as short architecture decision records: context, options, decision, consequences, and a revisit trigger.
 
-For database integration, [Testcontainers](https://testcontainers.com/guides/introducing-testcontainers/) starts a disposable instance of the same kind of service you use in production. Run the real migration, exercise inserts and queries against that container, and tear it down afterwards. It is slower than an in-memory substitute, but it catches a different and valuable class of failure.
+Also distinguish requirements from preferences. Data residency, an offline mode, a fixed deployment environment, and a latency budget constrain the design. Familiarity with a framework is a preference unless the team or operating model makes it a constraint. Models often treat both with equal confidence; the engineer has to label them accurately before comparing options.
 
-For the UI, browser tests should assert behaviour first. Add visual regression only where appearance is part of the contract. [Playwright's screenshot assertions](https://playwright.dev/docs/test-snapshots) can compare a page with a checked-in baseline, but the rendering environment must remain consistent or the test becomes noisy.
-
-<Callout tag="The quality principle">
-  **Executable evidence scales better than prompts.** As agents generate more code than a human
-  can inspect line by line, tests, type checks, linters, security scans, and acceptance artefacts
-  become the control plane. They do not remove the need for review; they focus review on
-  behaviour, risk, and design.
-</Callout>
-
-When the plan is complete, you have the blueprint for a **runnable application with zero product features**. You have not implemented it yet; you have made the work independently verifiable.
+That final field is especially valuable. “Revisit if a session log exceeds 50 MB” is a tripwire you can observe. “Deltas felt faster” is a memory that will disappear. A compact decision record stops a confident chat response from silently becoming permanent architecture.
 
 <Figure
   bleed
   scroll
-  eyebrow="Figure 03 · what rests on what"
-  caption="Every page hangs off the foundation. Get the base right before a single feature is built."
+  eyebrow="Figure 04 · what rests on what"
+  caption="Every product capability depends on a shared foundation. Define that base before scheduling the features above it."
 >
   <svg
     class="diagram"
     viewBox="0 0 880 288"
     role="img"
-    aria-label="Feature pages sit on top of a shared foundation of routing, schema, startup and tests."
+    aria-label="Feature pages such as Dashboard, Sessions, Session detail, and Settings sit on a shared foundation of startup, routing, schema, security boundaries, observability, and a test harness."
   >
     <text class="eye anchor-start" x="122" y="34">Feature pages · built on top</text>
     <g>
@@ -190,7 +238,7 @@ When the plan is complete, you have the blueprint for a **runnable application w
       <rect class="box--raised" x="516" y="52" width="150" height="50" rx="8" />
       <text class="label" x="591" y="82">Settings</text>
       <rect class="box--raised" x="684" y="52" width="150" height="50" rx="8" />
-      <text class="label" x="759" y="82">…12 pages</text>
+      <text class="label" x="759" y="82">…more</text>
     </g>
     <g>
       <line class="stroke stroke--dash" x1="87" y1="102" x2="87" y2="196" />
@@ -199,125 +247,173 @@ When the plan is complete, you have the blueprint for a **runnable application w
       <line class="stroke stroke--dash" x1="591" y1="102" x2="591" y2="196" />
       <line class="stroke stroke--dash" x1="759" y1="102" x2="759" y2="196" />
     </g>
-    <rect class="box" x="12" y="198" width="822" height="60" rx="8" />
-    <text class="label" x="423" y="222">FOUNDATION — must-have · runnable app, zero features</text>
-    <text class="label label--sm" x="423" y="242">routing · schema · project startup · test harness</text>
-    <text class="eye" x="423" y="280">Built first — nothing ships on a shaky base</text>
+    <rect class="box--alt" x="12" y="198" width="822" height="60" rx="8" />
+    <text class="label" x="423" y="222">FOUNDATION · runnable system with zero product features</text>
+    <text class="label label--sm" x="423" y="242">startup · routing · schema · security · observability · test harness</text>
+    <text class="eye" x="423" y="280">Define the base before scheduling what rests on it</text>
   </svg>
 </Figure>
 
-<Eyebrow num="Phase 03">Features &amp; spec</Eyebrow>
+<Eyebrow num="Phase 03">Foundation</Eyebrow>
 
-## Turn screens into contracts, then contracts into tickets
+## Plan a walking skeleton that can verify itself
 
-Claude-Lens started with 12 screens when I first planned it, but screens are not a delivery plan. Each capability had dependencies, data requirements, failure states, and non-functional constraints. I first mapped that dependency graph, then cut the work into vertical slices that could be demonstrated and tested independently.
+The foundation is not one giant task. Consolidate the architectural decisions, then split them into thin, verifiable increments. Follow one rule: **every completed task must leave the repository runnable.**
 
-You _choreograph_ the tasks: what must happen first, what can run in parallel, and what evidence unlocks the next step. Do not rely on holding the entire system in your head. Keep the dependency map, architecture decisions, domain vocabulary, and invariants in the repository so that both humans and agents work from the same versioned context.
+If the first task is only a schema, but there is no project that boots and no route through which to exercise it, the agent has no meaningful feedback signal. It can generate files and report what success usually sounds like, but it cannot demonstrate that the pieces work together. So order the work differently.
 
-### Flesh each feature into a real ticket
+Task zero: the start command opens something. Task one: one route resolves end to end. Task two: the data layer connects and a real test exercises it. Task three: the test harness runs in the same way locally and in CI. This is a walking skeleton: the stairwell and frame go up before the rooms exist, and you can walk through the empty building.
 
-Pick one capability—say the dashboard—and ask the model to inspect the reference, identify components and states, and expose missing decisions. My development pipeline turns that conversation into a consistent ticket through two agent skills. The first captures the thinking in the repository as `issue-<number>.md`; the second creates the corresponding GitHub issue from that file. The duplication is intentional: keeping the issue specifications in the repository gives the agent the full orchestration context as it works through them locally.
+This phase plans that sequence and defines the evidence for each task; it does **not** implement the skeleton yet. The implementation begins in Phase 6. By separating the plan from the build, you can inspect the order and the gates before an agent starts changing production code.
+
+The walking skeleton matters especially with agents because it creates the first reliable feedback loop. Without it, you remain the only error detector. With it, every later task inherits a system the agent can boot, probe, and test.
 
 <Figure
   bleed
   scroll
-  eyebrow="Figure 04 · local-to-GitHub ticket pipeline"
-  caption="One ticket, two copies: the repository preserves the agent's orchestration context, while the second skill publishes the corresponding issue to GitHub."
+  eyebrow="Figure 05 · the walking skeleton plan"
+  caption="Plan the foundation so that each implemented increment will boot and produce evidence. Phase 6 executes this sequence."
 >
   <svg
     class="diagram"
-    viewBox="0 0 880 248"
+    viewBox="0 0 880 190"
     role="img"
-    aria-label="A planning conversation passes through an issue skill to become an issue-number Markdown file in the repository. A publishing skill creates the corresponding GitHub issue, while the implementation agent reads the local issue set for orchestration context."
+    aria-label="Four planned foundation tasks in order: the application starts, one route resolves, the real data layer is exercised, and the test harness runs. Each future increment must boot and be testable."
   >
     <defs>
-      <marker id="ah-e" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+      <marker id="ase-arrow-skeleton" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
         <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
       </marker>
     </defs>
-    <line class="stroke" x1="155" y1="68" x2="182" y2="68" marker-end="url(#ah-e)" />
-    <line class="stroke" x1="325" y1="68" x2="352" y2="68" marker-end="url(#ah-e)" />
-    <line class="stroke" x1="495" y1="68" x2="522" y2="68" marker-end="url(#ah-e)" />
-    <line class="stroke" x1="665" y1="68" x2="692" y2="68" marker-end="url(#ah-e)" />
     <g>
-      <rect class="box--raised" x="15" y="40" width="140" height="56" rx="8" />
-      <text class="label" x="85" y="64">Planning</text>
-      <text class="label label--sm" x="85" y="82">conversation</text>
+      <rect class="box--alt" x="14" y="44" width="190" height="60" rx="8" />
+      <text class="label" x="109" y="70">Task 00</text>
+      <text class="label label--sm" x="109" y="88">it starts · something opens</text>
     </g>
     <g>
-      <rect class="box--raised" x="185" y="40" width="140" height="56" rx="8" />
-      <text class="label" x="255" y="64">Issue skill</text>
-      <text class="label label--sm" x="255" y="82">writes local spec</text>
+      <rect class="box--alt" x="234" y="44" width="190" height="60" rx="8" />
+      <text class="label" x="329" y="70">Task 01</text>
+      <text class="label label--sm" x="329" y="88">one route resolves</text>
     </g>
     <g>
-      <rect class="box" x="350" y="40" width="150" height="56" rx="8" />
-      <text class="label" x="425" y="64">{'issue-<number>.md'}</text>
-      <text class="label label--sm" x="425" y="82">repository copy</text>
+      <rect class="box--alt" x="454" y="44" width="190" height="60" rx="8" />
+      <text class="label" x="549" y="70">Task 02</text>
+      <text class="label label--sm" x="549" y="88">real data layer + test</text>
     </g>
     <g>
-      <rect class="box--raised" x="525" y="40" width="140" height="56" rx="8" />
-      <text class="label" x="595" y="64">Publish skill</text>
-      <text class="label label--sm" x="595" y="82">syncs the ticket</text>
+      <rect class="box--emphasis" x="674" y="44" width="190" height="60" rx="8" />
+      <text class="label text--emphasis" x="769" y="70">Task 03</text>
+      <text class="label label--sm" x="769" y="88">test harness with teeth</text>
     </g>
-    <g>
-      <rect class="box--emphasis" x="695" y="40" width="140" height="56" rx="8" />
-      <text class="label text--emphasis" x="765" y="64">GitHub issue</text>
-      <text class="label label--sm" x="765" y="82">published copy</text>
-    </g>
-    <line class="stroke" x1="425" y1="96" x2="425" y2="160" marker-end="url(#ah-e)" />
-    <text class="label label--sm anchor-start" x="443" y="132">orchestration context</text>
-    <rect class="box" x="325" y="162" width="200" height="58" rx="8" />
-    <text class="label" x="425" y="187">Agent execution</text>
-    <text class="label label--sm" x="425" y="205">reads the local issue set</text>
+    <line class="stroke" x1="204" y1="74" x2="232" y2="74" marker-end="url(#ase-arrow-skeleton)" />
+    <line class="stroke" x1="424" y1="74" x2="452" y2="74" marker-end="url(#ase-arrow-skeleton)" />
+    <line class="stroke" x1="644" y1="74" x2="672" y2="74" marker-end="url(#ase-arrow-skeleton)" />
+    <text class="label label--sm text--emphasis" x="109" y="132">must boot ✓</text>
+    <text class="label label--sm text--emphasis" x="329" y="132">must boot ✓</text>
+    <text class="label label--sm text--emphasis" x="549" y="132">must boot ✓</text>
+    <text class="label label--sm text--emphasis" x="769" y="132">must boot ✓</text>
+    <text class="eye" x="440" y="168">A change that cannot run cannot provide evidence—to you or the agent</text>
   </svg>
 </Figure>
+
+### Build oracles, not a mountain of tests
+
+Use the cheapest test that can detect the failure you care about: unit tests for isolated logic, integration tests for boundaries such as databases and filesystems, contract tests between services, and a smaller set of end-to-end tests for critical journeys. The goal is not a pyramid because somebody drew a pyramid. Cheap tests should catch cheap failures; expensive tests should be aimed at expensive failures.
+
+For database integration, [Testcontainers](https://testcontainers.com/guides/introducing-testcontainers/) starts a disposable instance of the same kind of service used in production. Run the real migrations, exercise inserts and queries, then tear it down. An in-memory substitute is faster, but types, constraints, migrations, indexes, JSON semantics, and transactions can differ. The bugs you need to catch often live precisely in that gap.
+
+For the UI, browser tests should assert behaviour first. Add visual regression only where appearance is part of the contract. [Playwright's screenshot assertions](https://playwright.dev/docs/test-snapshots) can compare a page with a checked-in baseline, but the rendering environment must remain consistent. A changed font, platform, or scrollbar can turn a useful oracle into noise.
+
+Think of tests as **oracles**: mechanisms that can say “this is wrong” without requiring a human to reread every generated line. The Phase 1 PNG is a design oracle. Acceptance criteria are behavioural oracles. Testcontainers is a data-layer oracle. A browser journey is a flow oracle. Type checks, linters, security scans, and accessibility checks cover other failure classes.
+
+An oracle is useful only when failure is actionable. A test that flakes, an enormous screenshot diff, or a lint rule everybody ignores teaches the agent and the team to treat red as background noise. Keep the signal trustworthy: pin the environment, make failures reproducible, and remove checks that cannot explain what contract was broken. Evidence is a product you maintain, not a pile of commands added once to CI.
+
+<Callout tag="The quality principle">
+  **Executable evidence scales better than prompts.** As agents generate more code than a human
+  can inspect line by line, the gates become the control plane. They do not remove review; they
+  focus it on behaviour, risk, architecture, and the evidence behind each claim.
+</Callout>
+
+At the end of Phase 3 you have a blueprint for a **runnable application with zero product features**. You have defined its increments and their tests. You have not implemented them yet.
+
+<Eyebrow num="Phase 04">Features</Eyebrow>
+
+## Turn screens into contracts
+
+Claude-Lens began with a set of screens, but screens are not a delivery plan. Each capability has dependencies, data requirements, failure states, and non-functional constraints. Map that dependency graph, then cut the work into vertical slices that can be demonstrated and tested independently.
+
+You choreograph the tasks: what must happen first, what can run in parallel, and what evidence unlocks the next step. The dependency graph also tells you where parallel work is real and where it is an illusion. Two tickets that touch the same data contract or migration sequence are not independent merely because they have different titles.
+
+Do not rely on holding the whole system in your head. That understanding is useful, but your head is not versioned, shareable, or visible to a fresh agent session. Keep the dependency map, architecture decisions, domain vocabulary, and invariants in the repository. Hold the system in your head as well, not instead.
+
+### Write for a competent stranger with no memory
+
+Pick one capability—the dashboard, for example—and ask the model to inspect the reference, identify components and states, and expose missing decisions. Then turn the conversation into a bounded ticket.
 
 A useful ticket contains:
 
 - the user outcome and relevant business rule;
 - inputs, outputs, routes, data ownership, and invariants;
 - acceptance criteria, including empty, loading, error, and permission states;
-- the test strategy and required evidence;
+- the test strategy and evidence that must appear on the pull request;
 - performance, accessibility, security, and observability constraints where relevant;
-- explicit non-goals, dependencies, and rollback considerations.
+- dependencies, explicit non-goals, and rollback considerations.
 
-This is enough detail to constrain the implementation without prescribing every line. For UI work, Playwright can boot the application, perform the journey, assert behaviour, capture the result, and compare selected screens with the Phase 1 references.
+This is enough detail to constrain implementation without prescribing every line. The old standard was “could a developer who knows this codebase understand the ticket?” The more useful standard for agentic work is: **could a fresh session with no conversation history produce the intended result from this ticket and its linked canonical artefacts?**
 
-### The spec is everything, sitting in your repo
+Every assumption left only in chat becomes a coin flip at build time. Write for a competent stranger with no memory, because that is the actual execution condition.
 
-Repeat this for every capability and you are still not implementing—you are reducing ambiguity. Review the complete path over several sessions, from architecture through the final acceptance criterion. The resulting specification lives beside the code, changes through pull requests, and remains traceable to the delivered behaviour.
+<Eyebrow num="Phase 05">Specification &amp; ticketing</Eyebrow>
 
-Do not feed one enormous specification to an agent and hope it preserves every constraint. Give each task the smallest sufficient context, link to canonical artefacts, and require the agent to restate its understanding before it changes the repository.
+## Freeze the plan, read it end to end, then partition it
 
-### Automate the ticketing
+Repeat the feature-definition process for every capability and you are still not implementing. You are reducing ambiguity. When the set is complete, step away, then read the whole path in order: architecture, foundation, features, and release.
 
-I used GitHub Issues as the execution queue and automated the publishing step. The important property is not the script; it is **idempotency**. Give every local task a stable identifier, persist the remote issue number, and use explicit states such as `draft`, `published`, and `closed`. Re-running the synchroniser should update the intended issue, never create a duplicate.
+Read it as one system because some errors live _between_ tickets. Ticket four and ticket nineteen may each be coherent while quietly contradicting each other. Reviewing them separately will not reveal that. An end-to-end specification review can.
 
-<Eyebrow num="Phase 04">Build</Eyebrow>
+The resulting specification lives beside the code, changes through pull requests, and remains traceable to delivered behaviour. Nothing has shipped, but the implementation is now sliced into work that can be independently understood and verified.
 
-## Now — and only now — the implementation loop
+Before publishing the queue, test the specification itself. Trace one user journey across the tickets. Confirm that every dependency has an owner, every acceptance criterion is observable, and every non-goal is actually excluded from downstream work. Look for shared concepts named differently and identical words carrying different meanings. This editorial pass is cheaper than discovering the ambiguity through several inconsistent implementations.
 
-You now have sequenced issues, bounded context, and explicit gates. _Now_ implementation starts. For each ticket, ask the agent to restate the requirement, identify ambiguity and risk, and propose a short plan. Resolve misunderstandings before granting write access. Then run the same loop for every change.
+### The issue tracker is external memory
+
+Do not feed forty tickets, twenty reference images, and the entire architecture to one agent session. Even when the material technically fits, constraints compete and the response tends toward an average of everything requested. Partition the specification before executing it.
+
+I used GitHub Issues as the execution queue. This can look like bureaucracy, but **the issue tracker is the memory the agent doesn't have**. One ticket creates one bounded context carrying what is needed and excluding what is not.
+
+My workflow keeps the detailed issue specification in the repository and publishes a corresponding GitHub issue. The repository copy preserves local orchestration context; the remote copy supports assignment, discussion, status, and pull-request traceability. Canonical links and stable identifiers prevent the two representations from drifting.
+
+Automate the publishing step, but make the automation idempotent. Persist the remote issue number and use explicit states such as `draft`, `published`, and `closed`. Re-running the synchroniser should update the intended issue, never create a duplicate.
+
+That property matters because unattended runs fail partway through. The recovery you want is _resume_, not _restart_. Anything an agent runs while you are away should be safe to run again from the top.
+
+<Eyebrow num="Phase 06">Build</Eyebrow>
+
+## Now—and only now—the production implementation begins
+
+You now have sequenced issues, bounded context, and explicit gates. Pick the first ticket and ask the agent to restate the requirement, identify ambiguity and risk, and propose a short plan. This is not ceremony. The gap between the ticket and the intended behaviour is cheaper to find in a paragraph than in a diff.
+
+No specification removes discovery. Unexpected constraints will surface during implementation; the plan reduces variance rather than eliminating it. When reality contradicts the spec, update the relevant artefact instead of allowing a private chat correction to become the new source of truth.
+
+Then run the same control loop for every change.
 
 <Figure
   bleed
   scroll
-  eyebrow="Figure 05 · the per-ticket loop"
-  caption="Requirement check → implementation → commit → PR → automated gates → review → fix → merge, then repeat."
+  eyebrow="Figure 06 · the per-ticket loop"
+  caption="Requirement check → implementation → commit → pull request → review → fix → merge, then repeat."
 >
   <svg
     class="diagram"
     viewBox="0 0 880 300"
     role="img"
-    aria-label="Implementation loop: requirement, implement, commit, pull request, review, fix, merge, then next ticket."
+    aria-label="Per-ticket implementation loop: confirm the requirement, implement, commit, open a pull request, review, fix, merge, and choose the next ticket."
   >
     <defs>
-      <marker id="ah-c" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+      <marker id="ase-arrow-ticket" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
         <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
       </marker>
     </defs>
-    {/* keep SVG text content on one line — MDX parses a wrapped child as
-        markdown and injects a <p>, which breaks the surrounding SVG */}
     <text class="label label--sm text--emphasis anchor-start" x="16" y="40">pick a ticket ↓</text>
     <g>
       <rect class="box--raised" x="16" y="48" width="160" height="54" rx="8" />
@@ -329,10 +425,10 @@ You now have sequenced issues, bounded context, and explicit gates. _Now_ implem
       <rect class="box--raised" x="664" y="48" width="160" height="54" rx="8" />
       <text class="label" x="744" y="80">Pull request</text>
     </g>
-    <line class="stroke" x1="176" y1="75" x2="230" y2="75" marker-end="url(#ah-c)" />
-    <line class="stroke" x1="392" y1="75" x2="446" y2="75" marker-end="url(#ah-c)" />
-    <line class="stroke" x1="608" y1="75" x2="662" y2="75" marker-end="url(#ah-c)" />
-    <line class="stroke" x1="744" y1="102" x2="744" y2="196" marker-end="url(#ah-c)" />
+    <line class="stroke" x1="176" y1="75" x2="230" y2="75" marker-end="url(#ase-arrow-ticket)" />
+    <line class="stroke" x1="392" y1="75" x2="446" y2="75" marker-end="url(#ase-arrow-ticket)" />
+    <line class="stroke" x1="608" y1="75" x2="662" y2="75" marker-end="url(#ase-arrow-ticket)" />
+    <line class="stroke" x1="744" y1="102" x2="744" y2="196" marker-end="url(#ase-arrow-ticket)" />
     <g>
       <rect class="box--raised" x="664" y="198" width="160" height="54" rx="8" />
       <text class="label" x="744" y="230">Review</text>
@@ -341,35 +437,43 @@ You now have sequenced issues, bounded context, and explicit gates. _Now_ implem
       <rect class="box--emphasis" x="232" y="198" width="160" height="54" rx="8" />
       <text class="label text--emphasis" x="312" y="230">Merge</text>
     </g>
-    <line class="stroke" x1="662" y1="225" x2="610" y2="225" marker-end="url(#ah-c)" />
-    <line class="stroke" x1="446" y1="225" x2="394" y2="225" marker-end="url(#ah-c)" />
-    <path class="stroke stroke--dash" d="M232,238 C90,268 24,190 96,104" marker-end="url(#ah-c)" />
+    <line class="stroke" x1="662" y1="225" x2="610" y2="225" marker-end="url(#ase-arrow-ticket)" />
+    <line class="stroke" x1="446" y1="225" x2="394" y2="225" marker-end="url(#ase-arrow-ticket)" />
+    <path class="stroke stroke--dash" d="M232,238 C90,268 24,190 96,104" marker-end="url(#ase-arrow-ticket)" />
     <text class="label label--sm anchor-start" x="70" y="168">next ticket</text>
   </svg>
 </Figure>
 
-Some independent tickets can now run in parallel. [Git worktrees](https://git-scm.com/docs/git-worktree) let one repository check out multiple branches into separate working directories, giving each agent an isolated filesystem view without cloning the repository repeatedly.
+Put the evidence on the pull request itself: which tests ran and what they proved, screenshots or traces where relevant, migrations reviewed, known risks, and the rollback path. “Implements #34” is a claim. A pull request carrying reproducible evidence is a claim another person can check without reconstructing your reasoning.
 
-Parallelism is not automatically throughput. Agents can still collide through shared APIs, ports, databases, generated files, or incompatible migrations. Cap concurrency at the review and integration capacity of the team, assign clear file or subsystem ownership, and merge small changes frequently.
+Bugs enter as issues and travel through the same loop. Avoid a side channel for quick fixes straight to the main branch. The process can be lightweight, but it has to remain traceable when the pressure rises.
+
+### Parallel work is bought during planning
+
+Some independent tickets can now run in parallel. [Git worktrees](https://git-scm.com/docs/git-worktree) let one repository check out multiple branches into separate working directories, giving each agent an isolated filesystem view without repeatedly cloning the repository.
+
+The tool does not create independence. The dependency graph from Phase 4 does. Two tickets can run side by side only when their contracts and change surfaces are genuinely separate. Worktrees merely let you spend parallelism that was bought earlier through careful decomposition.
+
+Parallelism is not automatically throughput. Agents in separate directories can still collide through shared APIs, ports, databases, generated files, or incompatible migrations. Cap work in progress at the team's review and integration capacity, give each task clear ownership, and merge small changes frequently. Three agents producing work nobody can evaluate create a queue, not leverage.
 
 <Figure
   bleed
   scroll
-  eyebrow="Figure 06 · parallel work with worktrees"
-  caption="Fan independent work into worktrees, validate each branch, then converge through the same review gates."
+  eyebrow="Figure 07 · parallel work with worktrees"
+  caption="Independent work fans into isolated worktrees, passes the same gates, and converges through review."
 >
   <svg
     class="diagram"
     viewBox="0 0 880 268"
     role="img"
-    aria-label="One repo fans out into three worktree directories run in parallel, then merges back to main."
+    aria-label="One repository fans out into three worktree directories for independent tasks and agents, then converges through review and merge back to the main branch."
   >
     <defs>
-      <marker id="ah-d" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+      <marker id="ase-arrow-worktrees" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
         <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
       </marker>
     </defs>
-    <rect class="box" x="24" y="102" width="156" height="60" rx="8" />
+    <rect class="box--alt" x="24" y="102" width="156" height="60" rx="8" />
     <text class="label" x="102" y="128">main repo</text>
     <text class="label label--sm" x="102" y="145">one clone</text>
     <g>
@@ -384,33 +488,134 @@ Parallelism is not automatically throughput. Agents can still collide through sh
       <text class="label label--sm" x="475" y="224">feature 3 · agent</text>
     </g>
     <rect class="box--emphasis" x="700" y="102" width="156" height="60" rx="8" />
-    <text class="label text--emphasis" x="778" y="128">merge</text>
+    <text class="label text--emphasis" x="778" y="128">review + merge</text>
     <text class="label label--sm" x="778" y="145">back to main</text>
-    <path class="stroke" d="M180,124 C270,108 280,58 358,54" marker-end="url(#ah-d)" />
-    <line class="stroke" x1="180" y1="132" x2="358" y2="132" marker-end="url(#ah-d)" />
-    <path class="stroke" d="M180,140 C270,156 280,206 358,210" marker-end="url(#ah-d)" />
-    <path class="stroke" d="M590,54 C680,58 690,108 698,124" marker-end="url(#ah-d)" />
-    <line class="stroke" x1="590" y1="132" x2="698" y2="132" marker-end="url(#ah-d)" />
-    <path class="stroke" d="M590,210 C680,206 690,156 698,140" marker-end="url(#ah-d)" />
-    <text class="eye" x="440" y="262">Same Git · separate working directories · isolated branches · parallel execution</text>
+    <path class="stroke" d="M180,124 C270,108 280,58 358,54" marker-end="url(#ase-arrow-worktrees)" />
+    <line class="stroke" x1="180" y1="132" x2="358" y2="132" marker-end="url(#ase-arrow-worktrees)" />
+    <path class="stroke" d="M180,140 C270,156 280,206 358,210" marker-end="url(#ase-arrow-worktrees)" />
+    <path class="stroke" d="M590,54 C680,58 690,108 698,124" marker-end="url(#ase-arrow-worktrees)" />
+    <line class="stroke" x1="590" y1="132" x2="698" y2="132" marker-end="url(#ase-arrow-worktrees)" />
+    <path class="stroke" d="M590,210 C680,206 690,156 698,140" marker-end="url(#ase-arrow-worktrees)" />
+    <text class="eye" x="440" y="262">Same Git · separate directories · isolated branches · shared review gates</text>
   </svg>
 </Figure>
 
-### Give the agent less authority than the engineer
+### Decide what the agent is allowed to touch
 
-An agent that can edit code, run commands, open pull requests, and reach cloud services has a meaningful blast radius. Apply least privilege: use a disposable environment, keep production credentials out of the workspace, separate read and write capabilities, require approval for destructive or external actions, and protect the main branch. OWASP's [AI Agent Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html) recommends the same basic pattern: minimum tools, scoped permissions, and explicit authorisation for sensitive operations.
+An agent that edits files, runs commands, opens pull requests, and reaches the network has a real blast radius. Define that authority before a task needs it.
 
-Each pull request should carry evidence: tests executed, screenshots or traces where relevant, migrations reviewed, risks noted, and rollback considered. Bugs become issues and travel through the same loop. The process should become repeatable, not thoughtless.
+Apply least privilege: use a disposable environment, keep production credentials out of the workspace entirely, separate read from write, require approval for destructive or external actions, and protect the main branch. OWASP's [AI Agent Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html) recommends the same core pattern: minimum tools, scoped permissions, and explicit authorisation for sensitive operations.
 
-<Eyebrow num="Phase 05">Operate</Eyebrow>
+The exact boundary depends on the organisation and task. A useful starting policy is to divide actions into three tiers: permitted because they are cheap to undo; permitted only after human approval; and unavailable to the agent under any circumstance. Write the boundary down so it remains stable across sessions.
 
-## Shipping is another hypothesis, not the finish line
+Permissions should be task-specific rather than permanent. A dependency audit may need network reads but no repository writes. A refactor may need broad local edits but no external service. A release task may require a narrow deployment capability with a separate approval. Grant the smallest useful capability for the shortest useful time, and capture external actions in an audit trail.
 
-A feature that passed CI can still fail under real data, real latency, real permissions, and real user behaviour. Define the production check before deployment: what metric should move, what error budget is acceptable, how will you detect a regression, and what is the rollback path?
+<Figure
+  bleed
+  scroll
+  eyebrow="Figure 08 · agent authority"
+  caption="Treat tool access as an explicit policy. The examples will vary, but the three-tier boundary should exist before execution begins."
+>
+  <svg
+    class="diagram"
+    viewBox="0 0 880 268"
+    role="img"
+    aria-label="Three tiers of agent authority: actions allowed outright, actions that need human approval, and actions never permitted."
+  >
+    <text class="eye text--emphasis" x="150" y="30">Allowed</text>
+    <text class="eye text--warm" x="440" y="30">Needs human approval</text>
+    <text class="eye" x="730" y="30">Never</text>
+    <g>
+      <rect class="box--emphasis" x="14" y="46" width="272" height="186" rx="10" />
+      <text class="label label--sm" x="150" y="80">read the repo</text>
+      <text class="label label--sm" x="150" y="108">edit its worktree</text>
+      <text class="label label--sm" x="150" y="136">run the test suite</text>
+      <text class="label label--sm" x="150" y="164">open a pull request</text>
+      <text class="label label--sm" x="150" y="192">write to scratch data</text>
+      <text class="label label--sm text--emphasis" x="150" y="220">cheap to undo</text>
+    </g>
+    <g>
+      <rect class="box--warm" x="304" y="46" width="272" height="186" rx="10" />
+      <text class="label label--sm" x="440" y="80">install a dependency</text>
+      <text class="label label--sm" x="440" y="108">run a migration</text>
+      <text class="label label--sm" x="440" y="136">call an external service</text>
+      <text class="label label--sm" x="440" y="164">delete anything</text>
+      <text class="label label--sm" x="440" y="192">spend money</text>
+      <text class="label label--sm text--warm" x="440" y="220">reversible, but not free</text>
+    </g>
+    <g>
+      <rect class="box--alt" x="594" y="46" width="272" height="186" rx="10" />
+      <text class="label label--sm" x="730" y="80">production credentials</text>
+      <text class="label label--sm" x="730" y="108">the production database</text>
+      <text class="label label--sm" x="730" y="136">merge to main</text>
+      <text class="label label--sm" x="730" y="164">deploy</text>
+      <text class="label label--sm" x="730" y="192">the engineer's machine</text>
+      <text class="label label--sm text--muted" x="730" y="220">you own the consequences</text>
+    </g>
+    <text class="eye" x="440" y="260">Decide the boundary before you need it, not after</text>
+  </svg>
+</Figure>
 
-Instrument the system as part of the feature, not as post-release cleanup. [OpenTelemetry describes observability](https://opentelemetry.io/docs/concepts/observability-primer/) through signals such as traces, metrics, and logs; together they let you investigate failures you did not predict when writing the tests. Correlate those signals with the release and the acceptance criteria.
+<Eyebrow num="Phase 07">Ship</Eyebrow>
 
-Then close the loop: compare production evidence with the intended outcome, turn surprises into new tickets, and update the specification when the system teaches you something. An agentic lifecycle is valuable because every phase produces artefacts that constrain and improve the next one.
+## Shipping is a hypothesis, not the finish line
+
+A feature that passed CI can still fail under real data, latency, permissions, and user behaviour. CI demonstrates that the system works under conditions you anticipated. Production tests it against conditions you did not.
+
+Define the production check before deployment. Which metric should move? What error rate or budget is acceptable? Which signal and dashboard will reveal a regression? What is the rollback path, in a sentence somebody can follow during an incident? Without those answers, a deployment is closer to hope than an experiment.
+
+Instrument the system as part of the feature, not as post-release cleanup. [OpenTelemetry describes observability](https://opentelemetry.io/docs/concepts/observability-primer/) through signals such as traces, metrics, and logs. Correlate those signals with the release and with the acceptance criteria. That connection tells you whether the behaviour you specified is the behaviour users received.
+
+Then close the loop. Compare production evidence with the intended outcome. Turn surprises into tickets. When the system reveals that an assumption or specification was wrong, update the artefact. A specification that stops being true after deployment was a plan; a living specification incorporates what the system teaches you.
+
+Do not confuse more telemetry with better feedback. Start from the user outcome and work backwards to the smallest set of signals that could confirm or disprove it. A dashboard full of infrastructure graphs may show that the service is healthy while users still cannot finish the journey. Operational health, product behaviour, and business outcome are related, but they are not interchangeable.
+
+<Figure
+  bleed
+  scroll
+  eyebrow="Figure 09 · production closes the loop"
+  caption="Production evidence is not the end of the pipeline. It is input to the next turn of it."
+>
+  <svg
+    class="diagram"
+    viewBox="0 0 880 268"
+    role="img"
+    aria-label="Specification leads to build, then ship, then production evidence from traces, metrics, and logs. Surprises become tickets and feed back into the specification."
+  >
+    <defs>
+      <marker id="ase-arrow-production" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+        <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
+      </marker>
+    </defs>
+    <g>
+      <rect class="box--alt" x="24" y="52" width="180" height="60" rx="8" />
+      <text class="label" x="114" y="78">Spec</text>
+      <text class="label label--sm" x="114" y="96">acceptance criteria</text>
+    </g>
+    <g>
+      <rect class="box--raised" x="250" y="52" width="180" height="60" rx="8" />
+      <text class="label" x="340" y="78">Build</text>
+      <text class="label label--sm" x="340" y="96">tests · review · merge</text>
+    </g>
+    <g>
+      <rect class="box--raised" x="476" y="52" width="180" height="60" rx="8" />
+      <text class="label" x="566" y="78">Ship</text>
+      <text class="label label--sm" x="566" y="96">with a stated check</text>
+    </g>
+    <g>
+      <rect class="box--emphasis" x="702" y="52" width="154" height="60" rx="8" />
+      <text class="label text--emphasis" x="779" y="78">Evidence</text>
+      <text class="label label--sm" x="779" y="96">traces · metrics · logs</text>
+    </g>
+    <line class="stroke" x1="204" y1="82" x2="248" y2="82" marker-end="url(#ase-arrow-production)" />
+    <line class="stroke" x1="430" y1="82" x2="474" y2="82" marker-end="url(#ase-arrow-production)" />
+    <line class="stroke" x1="656" y1="82" x2="700" y2="82" marker-end="url(#ase-arrow-production)" />
+    <path class="stroke stroke--dash" d="M779,112 C779,178 300,190 114,150" marker-end="url(#ase-arrow-production)" />
+    <text class="label label--sm text--emphasis" x="450" y="202">surprises become tickets · the spec gets corrected</text>
+    <text class="label label--sm text--warm" x="440" y="238">Before deploy: which number moves · what error rate is tolerable</text>
+    <text class="label label--sm text--warm" x="440" y="256">which signal shows a regression · what the rollback is</text>
+  </svg>
+</Figure>
 
 <Callout tag="The ownership principle">
   **The human remains accountable.** Models can generate options, code, tests, and reviews. They
@@ -418,13 +623,56 @@ Then close the loop: compare production evidence with the intended outcome, turn
   Faster execution increases the value of judgment; it does not replace it.
 </Callout>
 
+<Eyebrow num="Aside">What rigor leaves behind</Eyebrow>
+
+## Prefer decisions that produce inspectable artefacts
+
+The more rigorous version of a step usually leaves something another person or session can inspect. That does not mean maximising documentation. It means choosing the smallest durable artefact that preserves the decision or checks the claim.
+
+| Phase | Fragile shortcut | Durable alternative |
+|---|---|---|
+| Concept | Start with a framework scaffold | Prototype the journey and freeze visual references before choosing the stack |
+| Architect | Use the familiar technology | Record alternatives, rejection reasons, consequences, and a revisit trigger |
+| Foundation | Begin with disconnected layers | Plan a walking skeleton whose every increment boots |
+| Testing | Substitute a convenient fake everywhere | Exercise important boundaries against the real kind of service |
+| Features | Keep a list of screen names | Build a dependency graph and independently verifiable slices |
+| Specification | Leave assumptions in chat | Put canonical context, invariants, and acceptance criteria in the repository |
+| Ticketing | Publish issues manually | Use a resumable, idempotent synchroniser with stable identifiers |
+| Build | Report that tests passed | Attach commands, results, screenshots, traces, risks, and rollback to the pull request |
+| Authority | Accept the tool's default access | Write explicit allowed, approval-required, and unavailable capabilities |
+| Ship | Deploy and watch for complaints | State the expected metric, tolerated failure, regression signal, and rollback first |
+
+The heuristic is simple: if a consequential decision or claim leaves no inspectable trace, a later engineer—and a later agent session—will have to guess.
+
+<Eyebrow num="Limits">Where this process does not fit</Eyebrow>
+
+## Use the lifecycle in proportion to the risk
+
+This approach is front-loaded. You can spend days defining a product before the first production feature commit. If the concept is wrong, you may create a beautifully structured specification for the wrong thing. It is poorly suited to genuine exploration and too heavy for a two-hour utility.
+
+For exploratory work, vibe coding can be exactly right: prompt, inspect, adjust, and learn quickly. Build a disposable spike, answer the uncertain question, throw the spike away, and begin this lifecycle only if the result deserves to become a maintained system. The mistake is not improvisation; it is allowing exploratory code and undocumented assumptions to harden into production architecture.
+
+The lifecycle does not eliminate agent failure either. Agents still misread tickets, generate confident but wrong code, and sometimes claim a gate passed when it did not. Specifications and oracles reduce how often those failures reach the main branch. The moment you trust a “done” message instead of checking the evidence, you discard that benefit.
+
+There is a cognitive cost as well. Holding a system model, evaluating parallel work, and judging evidence can be more demanding than writing the code yourself. The promised relief may not arrive. What arrives is leverage, and leverage must be controlled.
+
 <Eyebrow num="Wrap">The difference</Eyebrow>
 
 ## The difference is not the model. It is the control loop.
 
-Vibe coding is useful for exploration: prompt, inspect, adjust, repeat. It becomes dangerous when that improvisation is mistaken for a production process.
+Vibe coding and agentic engineering can use the same model, tools, and prompts. The distinction is the system wrapped around them: explicit intent, architecture, bounded tasks, a versioned specification, executable acceptance criteria, constrained execution, independent review, and production feedback.
 
-Agentic software engineering adds the missing discipline: explicit intent, architecture, bounded tasks, executable acceptance criteria, constrained execution, independent review, and operational feedback. If you build in public, publish those artefacts as well as the final application. They are the evidence that you engineered the system rather than merely generated it.
+Vibe coding optimises for time-to-first-working-thing. That is useful for a prototype or a script you will discard. Agentic engineering optimises for **time-to-safe-change**. The seven phases exist to make the second change as understandable as the first, and the twentieth as safe as the second.
+
+The practical test is what survives the session. An improvisational session may leave working code whose reasoning is difficult to reconstruct next month. A controlled lifecycle leaves a specification, dependency graph, decision records, test suite, closed issues, review trail, and production evidence. The code is one artefact among many, and often not the most durable one.
+
+### The paper trail is the proof
+
+When building in public, the live application proves that something compiled and ran. The stronger signal is the paper trail: sequenced issues with real acceptance criteria; an architecture record that names rejected options and why; integration tests against the real kind of service; pull requests carrying review evidence; and a history in which each implemented increment boots.
+
+Publish the decisions you got wrong too—the architecture you revisited, the ticket that became three tickets, the acceptance criterion production disproved. A trail with no reversals is not necessarily evidence of judgment. It may only be evidence that the hard decisions were hidden.
+
+That record cannot be produced convincingly by somebody who skipped the thinking. It shows how uncertainty was reduced, how risk was bounded, and how claims were checked. **The thinking is the asset, not the typing.**
 
 ### References
 
