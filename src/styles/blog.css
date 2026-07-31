@@ -381,6 +381,7 @@ html[data-theme="dark"] .theme-toggle__sun { display: block; }
   display: inline-block;
 }
 .site-footer a:hover { color: var(--accent); }
+.site-footer__sha { font-family: var(--font-mono, monospace); font-size: 0.9em; }
 
 /* ---------- 5. PROSE -------------------------------------- */
 

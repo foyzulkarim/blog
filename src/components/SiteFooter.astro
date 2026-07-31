@@ -1,5 +1,17 @@
 ---
+import { execSync } from 'node:child_process';
+
 const year = new Date().getUTCFullYear();
+
+// Baked in at `astro build` time so the footer shows exactly what's deployed.
+// Deploys are local (`npm run deploy`), not CI, so `git` is always present here.
+let commitSha = '';
+try {
+  commitSha = execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
+} catch {
+  commitSha = '';
+}
+const repoUrl = 'https://github.com/foyzulkarim/blog';
 ---
 
 <footer class="site-footer">
@@ -9,6 +21,14 @@ const year = new Date().getUTCFullYear();
       <a href="/rss.xml">RSS</a>
       <span aria-hidden="true">·</span>
       <span>© {year}</span>
+      {commitSha && (
+        <>
+          <span aria-hidden="true">·</span>
+          <a href={`${repoUrl}/commit/${commitSha}`} class="site-footer__sha" title="Deployed commit">
+            {commitSha}
+          </a>
+        </>
+      )}
     </p>
   </div>
 </footer>
