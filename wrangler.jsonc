@@ -5,6 +5,17 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "blog-foyzul-com",
   "compatibility_date": "2026-07-30",
+
+  // Custom Domain, not a Route: Cloudflare creates the proxied DNS record in
+  // the foyzul.com zone and issues the cert on deploy. Do not hand-create a
+  // `blog` record — it would collide with the one provisioned here.
+  "routes": [
+    {
+      "pattern": "blog.foyzul.com",
+      "custom_domain": true
+    }
+  ],
+
   "assets": {
     "directory": "./dist",
 
