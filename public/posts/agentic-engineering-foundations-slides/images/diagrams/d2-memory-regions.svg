@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1920" viewBox="0 0 1920 1920" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrGold" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#FFC107"/></marker>
+    <marker id="arrTeal" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#03c6b2"/></marker>
+  </defs>
+  <rect width="1920" height="1920" fill="#131313"/>
+
+  <!-- Header -->
+  <text x="64" y="58" font-size="20" letter-spacing="3" fill="#FFC107" font-weight="bold">UNDER THE HOOD</text>
+  <text x="64" y="104" font-size="44" fill="#e5e2e1" font-weight="bold">The Three Memory Regions</text>
+  <text x="64" y="140" font-size="22" fill="#9b9795">Inside one inference server. Three distinct boxes — and only one of them ever holds your data.</text>
+
+  <!-- Server / unified memory container -->
+  <rect x="40" y="180" width="1270" height="790" rx="18" fill="#171717" stroke="#3a3a3a" stroke-width="2"/>
+  <rect x="40" y="180" width="690" height="40" rx="10" fill="#222"/>
+  <text x="62" y="207" font-size="19" fill="#cfccca" font-weight="bold">INFERENCE SERVER &#183; one unified / GPU memory pool, sliced by the runner</text>
+
+  <!-- (1) Weights -->
+  <rect x="90" y="250" width="560" height="300" rx="14" fill="#211d12" stroke="#FFC107" stroke-width="2.5"/>
+  <text x="116" y="298" font-size="28" fill="#FFC107" font-weight="bold">① Weights — the model</text>
+  <text x="116" y="340" font-size="20" fill="#e5e2e1">W&#8341; W&#8342; W&#8348; (project tokens &#8594; Q/K/V) + MLP layers</text>
+  <text x="116" y="378" font-size="20" fill="#cfccca">Loaded once at boot</text>
+  <text x="116" y="414" font-size="20" fill="#cfccca">Read-only &#183; shared by every request &#183; never cleared</text>
+  <text x="116" y="450" font-size="20" fill="#cfccca">Your tokens never go <tspan font-style="italic">into</tspan> it</text>
+  <rect x="116" y="486" width="180" height="38" rx="8" fill="#2a2410"/>
+  <text x="206" y="511" font-size="17" fill="#FFC107" text-anchor="middle">fixed machinery</text>
+
+  <!-- (2) KV store -->
+  <rect x="700" y="250" width="560" height="300" rx="14" fill="#102320" stroke="#03c6b2" stroke-width="2.5"/>
+  <text x="726" y="298" font-size="28" fill="#03c6b2" font-weight="bold">② KV Cache Store</text>
+  <text x="726" y="340" font-size="20" fill="#e5e2e1">A separate memory region — not inside the weights</text>
+  <text x="726" y="378" font-size="20" fill="#cfccca">Per-token Key/Value stack &#183; grows one row per token</text>
+  <text x="726" y="414" font-size="20" fill="#cfccca">Read + write</text>
+  <text x="726" y="450" font-size="20" fill="#e5e2e1" font-weight="bold">The only box that holds YOUR data</text>
+  <rect x="726" y="486" width="320" height="38" rx="8" fill="#0c1a18"/>
+  <text x="886" y="511" font-size="17" fill="#03c6b2" text-anchor="middle">kept or wiped — see "over time"</text>
+
+  <!-- (3) Forward pass -->
+  <rect x="240" y="640" width="870" height="280" rx="14" fill="#241b1a" stroke="#ffb4ab" stroke-width="2.5"/>
+  <text x="266" y="690" font-size="28" fill="#ffb4ab" font-weight="bold">③ Forward Pass — the compute</text>
+  <text x="266" y="732" font-size="20" fill="#e5e2e1">token in &#8594; matmuls (matrix multiplications) &#8594; token out</text>
+  <text x="266" y="770" font-size="20" fill="#cfccca">Runs on GPU cores &#183; this is where Prefill &amp; Decode happen</text>
+  <text x="266" y="808" font-size="20" fill="#cfccca"><tspan fill="#FFC107">reads the Weights</tspan> &#183; <tspan fill="#03c6b2">reads + appends the KV store</tspan></text>
+  <text x="266" y="846" font-size="20" fill="#e5e2e1" font-weight="bold">Transient — nothing persists here</text>
+  <rect x="266" y="874" width="150" height="34" rx="8" fill="#2a1916"/>
+  <text x="341" y="897" font-size="16" fill="#ffb4ab" text-anchor="middle">no memory of its own</text>
+
+  <!-- arrows: forward pass reads/writes -->
+  <path d="M430 640 C400 600, 380 575, 370 552" fill="none" stroke="#FFC107" stroke-width="3" marker-end="url(#arrGold)"/>
+  <text x="250" y="600" font-size="18" fill="#FFC107">reads</text>
+  <path d="M930 640 C960 600, 975 575, 985 552" fill="none" stroke="#03c6b2" stroke-width="3" marker-end="url(#arrTeal)"/>
+  <text x="1000" y="600" font-size="18" fill="#03c6b2">reads + appends</text>
+
+  <!-- oMLX mapping panel -->
+  <rect x="1340" y="180" width="516" height="790" rx="16" fill="#15191a" stroke="#2f6f68" stroke-width="2"/>
+  <text x="1366" y="224" font-size="24" fill="#03c6b2" font-weight="bold">Mapped to the oMLX dashboard</text>
+  <text x="1366" y="256" font-size="17" fill="#9b9795">Same boxes, shown live as three panels.</text>
+
+  <!-- map row 1 -->
+  <rect x="1366" y="290" width="464" height="180" rx="12" fill="#1c1c1c" stroke="#FFC107" stroke-width="2"/>
+  <circle cx="1392" cy="326" r="9" fill="#FFC107"/>
+  <text x="1414" y="333" font-size="22" fill="#FFC107" font-weight="bold">① Weights</text>
+  <text x="1390" y="372" font-size="18" fill="#cfccca">panel: "Active Models"</text>
+  <text x="1390" y="410" font-size="20" fill="#e5e2e1" font-weight="bold">Qwen3.5-9B &#183; 29.4 GB</text>
+  <text x="1390" y="444" font-size="16" fill="#9b9795">loaded once, shared</text>
+
+  <!-- map row 2 -->
+  <rect x="1366" y="490" width="464" height="180" rx="12" fill="#1c1c1c" stroke="#03c6b2" stroke-width="2"/>
+  <circle cx="1392" cy="526" r="9" fill="#03c6b2"/>
+  <text x="1414" y="533" font-size="22" fill="#03c6b2" font-weight="bold">② KV Store</text>
+  <text x="1390" y="572" font-size="18" fill="#cfccca">panel: "Runtime Cache Observability"</text>
+  <text x="1390" y="610" font-size="20" fill="#e5e2e1" font-weight="bold">16.1 / 32 GB &#183; 146 entries</text>
+  <text x="1390" y="644" font-size="16" fill="#9b9795">memory evictions 0</text>
+
+  <!-- map row 3 -->
+  <rect x="1366" y="690" width="464" height="180" rx="12" fill="#1c1c1c" stroke="#ffb4ab" stroke-width="2"/>
+  <circle cx="1392" cy="726" r="9" fill="#ffb4ab"/>
+  <text x="1414" y="733" font-size="22" fill="#ffb4ab" font-weight="bold">③ Forward Pass</text>
+  <text x="1390" y="772" font-size="18" fill="#cfccca">panel: "Average Speed"</text>
+  <text x="1390" y="810" font-size="20" fill="#e5e2e1" font-weight="bold">107.8 tok/s &#183; 8.0 tok/s</text>
+  <text x="1390" y="844" font-size="16" fill="#9b9795">prefill (parallel) &#183; decode (serial)</text>
+
+  <!-- Bottom takeaway -->
+  <rect x="40" y="990" width="1816" height="58" rx="10" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="1.5"/>
+  <text x="64" y="1026" font-size="21" fill="#cfccca">Weights are fixed machinery. The KV store sits <tspan font-style="italic">beside</tspan> them — a separate region holding your data — which is exactly why it <tspan fill="#03c6b2">can outlive one request</tspan>. The compute owns nothing.</text>
+</svg>

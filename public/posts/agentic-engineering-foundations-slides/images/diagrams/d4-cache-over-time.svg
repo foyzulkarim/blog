@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1920" viewBox="0 0 1920 1920" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#cfccca"/></marker>
+    <linearGradient id="writeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFC107"/><stop offset="1" stop-color="#03c6b2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1920" fill="#131313"/>
+
+  <!-- Header -->
+  <text x="64" y="58" font-size="20" letter-spacing="3" fill="#FFC107" font-weight="bold">UNDER THE HOOD</text>
+  <text x="64" y="104" font-size="44" fill="#e5e2e1" font-weight="bold">Cache Reuse Over Time</text>
+  <text x="64" y="140" font-size="22" fill="#9b9795">The server is stateless — you resend everything each turn. But its KV store keeps the prefix's K/V warm, so it isn't re-computed.</text>
+
+  <!-- Legend for input bars -->
+  <g font-size="17" fill="#cfccca">
+    <rect x="1360" y="44" width="22" height="22" rx="4" fill="#2a2410" stroke="#FFC107" stroke-width="1.5"/><text x="1390" y="61">stable prefix (system, tools, CLAUDE.md)</text>
+    <rect x="1360" y="74" width="22" height="22" rx="4" fill="#0c1a18" stroke="#03c6b2" stroke-width="1.5"/><text x="1390" y="91">volatile tail (conversation so far)</text>
+  </g>
+
+  <!-- ===== TURN CARDS ===== -->
+  <!-- Turn 1 -->
+  <rect x="64" y="190" width="424" height="370" rx="14" fill="#1c1c1c" stroke="#3a3a3a" stroke-width="2"/>
+  <text x="86" y="232" font-size="24" fill="#e5e2e1" font-weight="bold">TURN 1</text>
+  <rect x="330" y="208" width="136" height="34" rx="8" fill="#2a1916"/><text x="398" y="231" font-size="17" fill="#ffb4ab" font-weight="bold" text-anchor="middle">CACHE MISS</text>
+  <text x="86" y="272" font-size="15" fill="#9b9795">sent (full conversation):</text>
+  <rect x="86" y="284" width="160" height="40" rx="6" fill="#2a2410" stroke="#FFC107" stroke-width="1.5"/><text x="166" y="309" font-size="15" fill="#FFC107" text-anchor="middle">prefix</text>
+  <rect x="248" y="284" width="90" height="40" rx="6" fill="#0c1a18" stroke="#03c6b2" stroke-width="1.5"/><text x="293" y="309" font-size="14" fill="#03c6b2" text-anchor="middle">msg 1</text>
+  <text x="86" y="366" font-size="18" fill="#e5e2e1" font-weight="bold">Full prefill of everything</text>
+  <text x="86" y="396" font-size="17" fill="#cfccca">compute K/V for all tokens</text>
+  <text x="86" y="424" font-size="17" fill="#FFC107">→ write prefix K/V to store</text>
+  <rect x="86" y="470" width="380" height="60" rx="8" fill="#241b1a"/>
+  <text x="106" y="496" font-size="16" fill="#9b9795">cost</text>
+  <text x="106" y="520" font-size="18" fill="#ffb4ab" font-weight="bold">full input price (+~25% cache write)</text>
+
+  <!-- Turn 2 -->
+  <rect x="520" y="190" width="424" height="370" rx="14" fill="#1c1c1c" stroke="#3a3a3a" stroke-width="2"/>
+  <text x="542" y="232" font-size="24" fill="#e5e2e1" font-weight="bold">TURN 2</text>
+  <rect x="824" y="208" width="120" height="34" rx="8" fill="#0c2420"/><text x="884" y="231" font-size="17" fill="#03c6b2" font-weight="bold" text-anchor="middle">CACHE HIT</text>
+  <text x="542" y="272" font-size="15" fill="#9b9795">sent (full conversation):</text>
+  <rect x="542" y="284" width="160" height="40" rx="6" fill="#2a2410" stroke="#FFC107" stroke-width="1.5"/><text x="622" y="309" font-size="15" fill="#FFC107" text-anchor="middle">same prefix</text>
+  <rect x="704" y="284" width="190" height="40" rx="6" fill="#0c1a18" stroke="#03c6b2" stroke-width="1.5"/><text x="799" y="309" font-size="14" fill="#03c6b2" text-anchor="middle">msg1 · reply1 · msg2</text>
+  <text x="542" y="366" font-size="18" fill="#e5e2e1" font-weight="bold">hash(prefix) matches</text>
+  <text x="542" y="396" font-size="17" fill="#03c6b2">→ LOAD prefix K/V (skip prefill)</text>
+  <text x="542" y="424" font-size="17" fill="#cfccca">prefill only the new tail</text>
+  <rect x="542" y="470" width="380" height="60" rx="8" fill="#102320"/>
+  <text x="562" y="496" font-size="16" fill="#9b9795">cost</text>
+  <text x="562" y="520" font-size="18" fill="#03c6b2" font-weight="bold">prefix ~10%  ·  tail at full price</text>
+
+  <!-- Turn 3 -->
+  <rect x="976" y="190" width="424" height="370" rx="14" fill="#1c1c1c" stroke="#3a3a3a" stroke-width="2"/>
+  <text x="998" y="232" font-size="24" fill="#e5e2e1" font-weight="bold">TURN 3</text>
+  <rect x="1280" y="208" width="120" height="34" rx="8" fill="#0c2420"/><text x="1340" y="231" font-size="17" fill="#03c6b2" font-weight="bold" text-anchor="middle">CACHE HIT</text>
+  <text x="998" y="272" font-size="15" fill="#9b9795">sent (full conversation):</text>
+  <rect x="998" y="284" width="160" height="40" rx="6" fill="#2a2410" stroke="#FFC107" stroke-width="1.5"/><text x="1078" y="309" font-size="15" fill="#FFC107" text-anchor="middle">same prefix</text>
+  <rect x="1160" y="284" width="230" height="40" rx="6" fill="#0c1a18" stroke="#03c6b2" stroke-width="1.5"/><text x="1275" y="309" font-size="14" fill="#03c6b2" text-anchor="middle">longer tail …</text>
+  <text x="998" y="366" font-size="18" fill="#e5e2e1" font-weight="bold">load prefix K/V again</text>
+  <text x="998" y="396" font-size="17" fill="#cfccca">prefill only newest tokens</text>
+  <text x="998" y="424" font-size="17" fill="#03c6b2">each hit refreshes the TTL</text>
+  <rect x="998" y="470" width="380" height="60" rx="8" fill="#102320"/>
+  <text x="1018" y="496" font-size="16" fill="#9b9795">cost</text>
+  <text x="1018" y="520" font-size="18" fill="#03c6b2" font-weight="bold">prefix ~10%  ·  tail at full price</text>
+
+  <!-- Turn 4 -->
+  <rect x="1432" y="190" width="424" height="370" rx="14" fill="#1c1c1c" stroke="#3a3a3a" stroke-width="2"/>
+  <text x="1454" y="232" font-size="24" fill="#e5e2e1" font-weight="bold">TURN 4</text>
+  <rect x="1698" y="208" width="158" height="34" rx="8" fill="#2a1916"/><text x="1777" y="231" font-size="16" fill="#ffb4ab" font-weight="bold" text-anchor="middle">MISS AGAIN</text>
+  <text x="1454" y="272" font-size="15" fill="#9b9795">after the entry was evicted →</text>
+  <rect x="1454" y="284" width="160" height="40" rx="6" fill="#2a2410" stroke="#FFC107" stroke-width="1.5"/><text x="1534" y="309" font-size="15" fill="#FFC107" text-anchor="middle">same prefix</text>
+  <rect x="1616" y="284" width="190" height="40" rx="6" fill="#0c1a18" stroke="#03c6b2" stroke-width="1.5"/><text x="1711" y="309" font-size="14" fill="#03c6b2" text-anchor="middle">tail …</text>
+  <text x="1454" y="366" font-size="18" fill="#e5e2e1" font-weight="bold">hash misses — entry is gone</text>
+  <text x="1454" y="396" font-size="17" fill="#ffb4ab">→ full prefill of prefix again</text>
+  <text x="1454" y="424" font-size="17" fill="#cfccca">store re-written from scratch</text>
+  <rect x="1454" y="470" width="380" height="60" rx="8" fill="#241b1a"/>
+  <text x="1474" y="496" font-size="16" fill="#9b9795">cost</text>
+  <text x="1474" y="520" font-size="18" fill="#ffb4ab" font-weight="bold">back to full input price</text>
+
+  <!-- arrows between cards -->
+  <line x1="488" y1="375" x2="518" y2="375" stroke="#cfccca" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="944" y1="375" x2="974" y2="375" stroke="#cfccca" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="1400" y1="375" x2="1430" y2="375" stroke="#cfccca" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- ===== KV STORE LANE ===== -->
+  <text x="64" y="612" font-size="20" fill="#03c6b2" font-weight="bold">② KV Cache Store — the prefix entry over time</text>
+  <rect x="64" y="628" width="1792" height="120" rx="12" fill="#0e1413" stroke="#2f6f68" stroke-width="2"/>
+
+  <!-- entry segments aligned under turns -->
+  <!-- turn1: write -->
+  <rect x="84" y="660" width="384" height="56" rx="8" fill="url(#writeGrad)" opacity="0.85"/>
+  <text x="276" y="694" font-size="17" fill="#0c0c0c" font-weight="bold" text-anchor="middle">prefix K/V written</text>
+  <!-- turn2: warm -->
+  <rect x="540" y="660" width="384" height="56" rx="8" fill="#0c2420" stroke="#03c6b2" stroke-width="2"/>
+  <text x="732" y="694" font-size="17" fill="#03c6b2" font-weight="bold" text-anchor="middle">WARM — reused</text>
+  <!-- turn3: warm -->
+  <rect x="996" y="660" width="384" height="56" rx="8" fill="#0c2420" stroke="#03c6b2" stroke-width="2"/>
+  <text x="1188" y="694" font-size="17" fill="#03c6b2" font-weight="bold" text-anchor="middle">WARM — TTL refreshed</text>
+  <!-- eviction gap -->
+  <text x="1416" y="668" font-size="22" fill="#ffb4ab" font-weight="bold" text-anchor="middle">✕</text>
+  <text x="1416" y="700" font-size="13" fill="#ffb4ab" text-anchor="middle">EVICTED</text>
+  <text x="1416" y="718" font-size="12" fill="#9b9795" text-anchor="middle">idle &gt;~5 min</text>
+  <text x="1416" y="734" font-size="12" fill="#9b9795" text-anchor="middle">or memory pressure</text>
+  <!-- turn4: re-write -->
+  <rect x="1452" y="660" width="384" height="56" rx="8" fill="#2a2410" stroke="#FFC107" stroke-width="2"/>
+  <text x="1644" y="694" font-size="17" fill="#FFC107" font-weight="bold" text-anchor="middle">cold → re-written</text>
+
+  <!-- timeline axis -->
+  <line x1="84" y1="788" x2="1836" y2="788" stroke="#4a4a4a" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="84" y="816" font-size="16" fill="#9b9795">t = 0</text>
+  <text x="600" y="816" font-size="16" fill="#9b9795">+30s</text>
+  <text x="1080" y="816" font-size="16" fill="#9b9795">+1 min</text>
+  <text x="1640" y="816" font-size="16" fill="#9b9795">+8 min (after idle)</text>
+  <text x="1760" y="816" font-size="16" fill="#9b9795">time →</text>
+
+  <!-- Bottom takeaway -->
+  <rect x="64" y="858" width="1792" height="100" rx="10" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="1.5"/>
+  <text x="88" y="900" font-size="21" fill="#cfccca">Prompt caching is just the KV store the server <tspan font-style="italic">didn't free</tspan>. The cache keys on the <tspan fill="#FFC107" font-weight="bold">prefix</tspan>: whatever stays identical at the front rides cheap.</text>
+  <text x="88" y="934" font-size="21" fill="#cfccca">Change one early token, or let the entry lapse, and you pay the <tspan fill="#ffb4ab" font-weight="bold">full prefill</tspan> again from that point on.</text>
+</svg>

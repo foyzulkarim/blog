@@ -159,3 +159,8 @@ dist/
 # Playwright
 test-results/
 shots/
+
+# Reference source material (not part of the deployed site)
+htmls/
+
+.playwright-mcp

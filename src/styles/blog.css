@@ -1447,9 +1447,588 @@ figcaption b { color: var(--text-primary); font-weight: 600; }
   border-bottom: 0;
 }
 
-/* Mobile: split slides collapse to a single column so the diagram doesn't
-   squeeze the text. */
+/* Foundations deck — extended vocabulary. The 32-slide "Agentic Software
+   Engineering: Foundations" deck ports a richer design system: numbered
+   cards, grids, pipelines, code blocks, tree prints, badges, and a cover
+   layout that is distinct from the existing slide--cover. All rules are
+   scoped under .slides-deck so they never leak into the blog's prose. */
+
+.slides-deck {
+  /* Foundations palette — three role colours (gold/teal/red), two neutrals
+     (text-mute / text-dim) below --text-primary, and a tinted surface for
+     hero rows. All designed to clear 4.5:1 on --surface in both modes. */
+  --deck-gold:     light-dark(oklch(0.74 0.16 80),  oklch(0.84 0.14 82));
+  --deck-gold-dim: light-dark(oklch(0.62 0.13 80),  oklch(0.72 0.11 82));
+  --deck-teal:     light-dark(oklch(0.55 0.13 190), oklch(0.76 0.12 190));
+  --deck-red:      light-dark(oklch(0.55 0.16 25),  oklch(0.74 0.14 25));
+  --deck-text:     light-dark(oklch(0.20 0.014 258), oklch(0.91 0.006 258));
+  --deck-text-mute:light-dark(oklch(0.50 0.012 258), oklch(0.74 0.010 258));
+  --deck-text-dim: light-dark(oklch(0.42 0.012 258), oklch(0.66 0.010 258));
+  --deck-surface:  light-dark(oklch(0.965 0.005 258), oklch(0.165 0.010 258));
+  --deck-tint-gold:light-dark(oklch(0.96 0.025 80),  oklch(0.245 0.040 80));
+  --deck-tint-teal:light-dark(oklch(0.96 0.020 190), oklch(0.235 0.030 190));
+  --deck-tint-red: light-dark(oklch(0.96 0.020 25),  oklch(0.240 0.040 25));
+
+  /* The counter is dynamic — Astro renders the slide count at build time
+     into the deck element's data attribute. */
+  --slide-num: 1;
+  --slide-total: 32;
+}
+
+/* ----- Foundations: typography helpers ----- */
+
+.slides-deck .label-caps {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.slides-deck .mono {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  font-weight: 500;
+}
+.slides-deck .fine {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* ----- Foundations: color role classes ----- */
+
+.slides-deck .gold     { color: var(--deck-gold); }
+.slides-deck .teal     { color: var(--deck-teal); }
+.slides-deck .red      { color: var(--deck-red); }
+.slides-deck .mute     { color: var(--deck-text-mute); }
+.slides-deck .accent   { color: var(--accent); }
+.slides-deck .gold-dim { color: var(--deck-gold-dim); }
+
+/* ----- Foundations: cover (full-bleed title slide) ----- */
+
+.slides-deck .cover-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: var(--s-5);
+  width: 100%;
+  min-height: min(900px, 100vh);
+  padding: var(--s-7) var(--gutter);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.slides-deck .cover-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--deck-text-mute);
+}
+.slides-deck .cover-mark .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--deck-gold);
+  box-shadow: 0 0 0 4px var(--deck-tint-gold);
+}
+.slides-deck .cover-title {
+  font-family: var(--font-ui);
+  font-size: clamp(2rem, 1.2rem + 3.5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--deck-text);
+  margin: 0;
+  text-wrap: balance;
+  max-width: 16ch;
+}
+.slides-deck .cover-sub {
+  font-family: var(--font-body);
+  font-size: clamp(1.0625rem, 0.9rem + 0.5vw, 1.3125rem);
+  line-height: 1.55;
+  color: var(--deck-text-mute);
+  max-width: 56ch;
+  margin: var(--s-5) auto 0;
+}
+.slides-deck .cover-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+  color: var(--deck-text-mute);
+  border-top: var(--hairline) solid var(--border);
+  padding-top: var(--s-4);
+  margin-top: var(--s-7);
+}
+
+/* ----- Foundations: regular slide body ----- */
+
+.slides-deck .slide-body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  gap: var(--s-4);
+  min-height: 0;
+}
+.slides-deck .slide-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--deck-text-mute);
+  border-bottom: var(--hairline) solid var(--border);
+  padding-bottom: var(--s-3);
+}
+.slides-deck .slide-title {
+  font-family: var(--font-ui);
+  font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  color: var(--deck-text);
+  margin: 0;
+}
+.slides-deck .slide-lede {
+  font-family: var(--font-body);
+  font-size: clamp(1.0625rem, 0.95rem + 0.3vw, 1.1875rem);
+  line-height: 1.5;
+  color: var(--deck-text-mute);
+  margin: 0;
+  max-width: 80ch;
+}
+
+/* Demo cover (a slide that is itself a full-bleed cover) */
+.slides-deck .slide.cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--s-8) 0;
+}
+
+/* ----- Foundations: card system ----- */
+
+.slides-deck .card {
+  background: var(--surface-raised);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--s-4) var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  min-width: 0;
+}
+.slides-deck .card.flex-col { flex-direction: column; }
+.slides-deck .card.row {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s-5);
+}
+.slides-deck .card.tight {
+  padding: var(--s-3) var(--s-4);
+  gap: var(--s-2);
+}
+.slides-deck .card-num {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--deck-gold);
+  letter-spacing: 0.08em;
+}
+.slides-deck .card-num.red { color: var(--deck-red); }
+.slides-deck .card-h {
+  font-family: var(--font-ui);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--deck-text);
+  margin: 0;
+}
+.slides-deck .card-kick {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--deck-text-mute);
+}
+.slides-deck .card-foot {
+  margin-top: auto;
+  padding-top: var(--s-3);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  color: var(--deck-text-mute);
+  border-top: var(--hairline) solid var(--border);
+}
+.slides-deck .card .card-foot { color: inherit; }
+
+/* ----- Foundations: grid system ----- */
+
+.slides-deck .grid {
+  display: grid;
+  gap: var(--s-4);
+  min-width: 0;
+}
+.slides-deck .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.slides-deck .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.slides-deck .grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.slides-deck .grid.cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.slides-deck .flex-col { display: flex; flex-direction: column; }
+.slides-deck .gap-md { gap: var(--s-4); }
+.slides-deck .grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.25;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+/* ----- Foundations: takeaway box ----- */
+
+.slides-deck .takeaway {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5);
+  margin-top: var(--s-4);
+  background: var(--deck-tint-gold);
+  border-left: 3px solid var(--deck-gold);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--deck-text);
+}
+.slides-deck .takeaway .arrow {
+  color: var(--deck-gold);
+  font-weight: 700;
+  font-family: var(--font-ui);
+  flex-shrink: 0;
+}
+
+/* ----- Foundations: badges (Problem / Concept / Solution / Demo) ----- */
+
+.slides-deck .psbadge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.slides-deck .psbadge.problem  { color: var(--deck-red);  background: var(--deck-tint-red); }
+.slides-deck .psbadge.concept  { color: var(--deck-teal); background: var(--deck-tint-teal); }
+.slides-deck .psbadge.solution { color: var(--deck-gold); background: var(--deck-tint-gold); }
+
+/* ----- Foundations: pills (in scenario tables) ----- */
+
+.slides-deck .pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 2px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 999px;
+  color: var(--deck-gold);
+  background: var(--deck-tint-gold);
+}
+.slides-deck .pill.teal {
+  color: var(--deck-teal);
+  background: var(--deck-tint-teal);
+}
+
+/* ----- Foundations: pipeline (horizontal step diagram) ----- */
+
+.slides-deck .pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+}
+.slides-deck .pipeline .step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-4);
+  background: var(--surface-raised);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--deck-text);
+}
+.slides-deck .pipeline .step .n {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--deck-gold);
+  letter-spacing: 0.05em;
+}
+.slides-deck .pipeline .step.here {
+  border-color: var(--deck-gold);
+  background: var(--deck-tint-gold);
+}
+.slides-deck .pipeline .arrow {
+  color: var(--deck-text-dim);
+  font-family: var(--font-ui);
+}
+
+/* ----- Foundations: code block ----- */
+
+.slides-deck .code {
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: var(--hairline) solid var(--code-border);
+  border-radius: var(--radius);
+  padding: var(--s-4);
+  white-space: pre;
+  overflow-x: auto;
+}
+.slides-deck .code .cmt { color: var(--deck-text-dim); font-style: italic; }
+.slides-deck .code .str { color: var(--deck-teal); }
+.slides-deck .code .kw  { color: var(--deck-gold); font-weight: 500; }
+.slides-deck .code .gold { color: var(--deck-gold); }
+.slides-deck .code .teal { color: var(--deck-teal); }
+.slides-deck .code .red  { color: var(--deck-red); }
+.slides-deck .code .mono { color: inherit; }
+
+/* ----- Foundations: tree print (ASCII directory listings) ----- */
+
+.slides-deck .tree {
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--deck-text);
+  white-space: pre;
+  overflow-x: auto;
+  background: var(--deck-surface);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--s-4);
+}
+.slides-deck .tree .dir   { color: var(--deck-teal); }
+.slides-deck .tree .file  { color: var(--deck-gold); }
+.slides-deck .tree .branch { color: var(--deck-text-dim); }
+.slides-deck .tree .here  { color: var(--deck-red); font-weight: 600; }
+
+/* ----- Foundations: reflection ordered list ----- */
+
+.slides-deck ol.reflection {
+  list-style: none;
+  counter-reset: refl;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  font-family: var(--font-body);
+  font-size: clamp(1.25rem, 1rem + 0.6vw, 1.6875rem);
+  line-height: 1.5;
+  color: var(--deck-text);
+}
+.slides-deck ol.reflection li {
+  counter-increment: refl;
+  padding-left: 3.5rem;
+  position: relative;
+}
+.slides-deck ol.reflection li::before {
+  content: counter(refl, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--deck-gold);
+  letter-spacing: 0.05em;
+}
+
+/* ----- Foundations: deck table ----- */
+
+.slides-deck table.deck {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--deck-text);
+}
+.slides-deck table.deck th,
+.slides-deck table.deck td {
+  text-align: left;
+  padding: var(--s-3) var(--s-4);
+  border-bottom: var(--hairline) solid var(--border);
+}
+.slides-deck table.deck th {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--deck-text-mute);
+  border-bottom: 2px solid var(--border-strong);
+}
+.slides-deck table.deck td.num {
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--deck-gold);
+  width: 3rem;
+}
+
+/* ----- Foundations: section header (full-bleed divider) ----- */
+
+.slides-deck .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: min(700px, 80vh);
+  padding: var(--s-7) var(--gutter);
+  background: var(--deck-surface);
+  border-bottom: var(--hairline) solid var(--border);
+}
+.slides-deck .section-header-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.slides-deck .section-num {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--deck-gold);
+}
+.slides-deck .section-title {
+  font-family: var(--font-ui);
+  font-size: clamp(2.5rem, 2rem + 2vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--deck-text);
+  margin: 0;
+}
+.slides-deck .section-lede {
+  font-family: var(--font-body);
+  font-size: clamp(1.0625rem, 0.95rem + 0.4vw, 1.3125rem);
+  line-height: 1.55;
+  color: var(--deck-text-mute);
+  max-width: 70ch;
+  margin: 0 auto;
+}
+
+/* ----- Foundations: big number (for stage labels) ----- */
+
+.slides-deck .big-num {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* ----- Foundations: image slide (full-bleed picture) ----- */
+
+.slides-deck .slide.image {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+.slides-deck .slide.image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* ----- Foundations: cover-slide body content spacing ----- */
+
+.slides-deck .slide.cover .slide-body,
+.slides-deck .slide.cover .slide-lede {
+  max-width: none;
+}
+
+/* Mobile: collapse the multi-column grids and tighten the cover. */
 @media (max-width: 48rem) {
+  .slides-deck .grid.cols-2,
+  .slides-deck .grid.cols-3,
+  .slides-deck .grid.cols-4,
+  .slides-deck .grid.cols-5 {
+    grid-template-columns: 1fr;
+  }
+  .slides-deck .card.row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .slides-deck .slide--split {
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+  }
+  .slides-deck .slides-deck__nav {
+    flex-wrap: wrap;
+  }
+  .slides-deck__counter {
+    margin-left: 0;
+    width: 100%;
+    order: 99;
+  }
+  .slides-deck .cover-title {
+    font-size: clamp(2rem, 1.4rem + 4vw, 3rem);
+  }
+  .slides-deck .pipeline {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .slides-deck .pipeline .arrow {
+    display: none;
+  }
+}
+
+/* Print: one slide per page, hide the inline nav. The browser's
+   print-to-PDF gives a clean handout. */
+@media print {
   .slides-deck .slide--split {
     grid-template-columns: 1fr;
     gap: var(--s-5);
