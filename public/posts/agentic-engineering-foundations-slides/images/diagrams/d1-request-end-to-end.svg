@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1920" viewBox="0 0 1920 1920" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#cfccca"/></marker>
+    <marker id="arrTeal" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#03c6b2"/></marker>
+    <marker id="arrGold" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#FFC107"/></marker>
+    <marker id="arrRed" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 Z" fill="#ffb4ab"/></marker>
+  </defs>
+  <rect width="1920" height="1920" fill="#131313"/>
+
+  <!-- Header -->
+  <text x="64" y="58" font-size="20" letter-spacing="3" fill="#FFC107" font-weight="bold">UNDER THE HOOD</text>
+  <text x="64" y="104" font-size="44" fill="#e5e2e1" font-weight="bold">One Request, End to End</text>
+  <text x="64" y="140" font-size="22" fill="#9b9795">The same path runs every turn. The server keeps nothing between requests — the client resends the whole conversation.</text>
+
+  <!-- Legend -->
+  <g font-size="18" fill="#cfccca">
+    <rect x="1430" y="40" width="20" height="20" rx="4" fill="#6f6b69"/><text x="1458" y="56">CPU / host memory</text>
+    <rect x="1430" y="70" width="20" height="20" rx="4" fill="#FFC107"/><text x="1458" y="86">① Weights — read-only</text>
+    <rect x="1660" y="40" width="20" height="20" rx="4" fill="#03c6b2"/><text x="1688" y="56">② KV store — your data</text>
+    <rect x="1660" y="70" width="20" height="20" rx="4" fill="#ffb4ab"/><text x="1688" y="86">③ Forward pass — compute</text>
+  </g>
+
+  <!-- Client -->
+  <rect x="56" y="430" width="232" height="200" rx="14" fill="#1c1c1c" stroke="#6f6b69" stroke-width="2"/>
+  <text x="172" y="478" font-size="24" fill="#e5e2e1" font-weight="bold" text-anchor="middle">Client</text>
+  <text x="172" y="506" font-size="18" fill="#9b9795" text-anchor="middle">(CLI / app)</text>
+  <text x="172" y="556" font-size="17" fill="#cfccca" text-anchor="middle">sends the FULL</text>
+  <text x="172" y="578" font-size="17" fill="#cfccca" text-anchor="middle">conversation</text>
+  <text x="172" y="600" font-size="17" fill="#cfccca" text-anchor="middle">every turn</text>
+
+  <!-- Client -> server arrow -->
+  <line x1="288" y1="500" x2="356" y2="500" stroke="#cfccca" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="300" y="488" font-size="14" fill="#9b9795">request</text>
+  <!-- server -> client (response) -->
+  <line x1="356" y1="560" x2="290" y2="560" stroke="#03c6b2" stroke-width="2.5" marker-end="url(#arrTeal)"/>
+  <text x="300" y="582" font-size="14" fill="#03c6b2">stream out</text>
+
+  <!-- Server container -->
+  <rect x="340" y="180" width="1516" height="820" rx="18" fill="#171717" stroke="#3a3a3a" stroke-width="2"/>
+  <rect x="340" y="180" width="470" height="40" rx="10" fill="#222"/>
+  <text x="362" y="207" font-size="20" fill="#cfccca" font-weight="bold">INFERENCE SERVER &#183; runner process (oMLX / vLLM)</text>
+
+  <!-- Phase brackets -->
+  <text x="372" y="262" font-size="18" letter-spacing="2" fill="#ffb4ab" font-weight="bold">PREFILL PHASE — one parallel pass over all input tokens</text>
+  <text x="1224" y="262" font-size="18" letter-spacing="2" fill="#ffb4ab" font-weight="bold">DECODE PHASE — serial</text>
+
+  <!-- Pipeline boxes (top row) y=280 h=150 -->
+  <!-- 1 Tokenize -->
+  <rect x="372" y="280" width="244" height="150" rx="12" fill="#1c1c1c" stroke="#6f6b69" stroke-width="2"/>
+  <text x="392" y="318" font-size="22" fill="#e5e2e1" font-weight="bold">Tokenize</text>
+  <text x="392" y="350" font-size="17" fill="#cfccca">text &#8594; token IDs</text>
+  <text x="392" y="374" font-size="16" fill="#9b9795">"The cat" &#8594; [464, 2415]</text>
+  <text x="392" y="416" font-size="15" fill="#6f6b69">CPU &#183; ~free &#183; never cached</text>
+
+  <!-- 2 Embed -->
+  <rect x="648" y="280" width="244" height="150" rx="12" fill="#1c1c1c" stroke="#6f6b69" stroke-width="2"/>
+  <text x="668" y="318" font-size="22" fill="#e5e2e1" font-weight="bold">Embed</text>
+  <text x="668" y="350" font-size="17" fill="#cfccca">token IDs &#8594; vectors</text>
+  <text x="668" y="374" font-size="16" fill="#9b9795">one vector per token</text>
+  <text x="668" y="416" font-size="15" fill="#6f6b69">lookup in weights</text>
+
+  <!-- 3 Prefill -->
+  <rect x="924" y="280" width="244" height="150" rx="12" fill="#241b1a" stroke="#ffb4ab" stroke-width="2.5"/>
+  <text x="944" y="318" font-size="22" fill="#ffb4ab" font-weight="bold">Prefill</text>
+  <text x="944" y="350" font-size="17" fill="#cfccca">compute K / V for</text>
+  <text x="944" y="372" font-size="17" fill="#cfccca">every input token</text>
+  <text x="944" y="416" font-size="15" fill="#ffb4ab">GPU &#183; expensive &#183; ③</text>
+
+  <!-- 4 Decode -->
+  <rect x="1200" y="280" width="244" height="150" rx="12" fill="#241b1a" stroke="#ffb4ab" stroke-width="2.5"/>
+  <text x="1220" y="318" font-size="22" fill="#ffb4ab" font-weight="bold">Decode loop</text>
+  <text x="1220" y="350" font-size="17" fill="#cfccca">emit 1 token, then</text>
+  <text x="1220" y="372" font-size="17" fill="#cfccca">append its K / V</text>
+  <text x="1220" y="416" font-size="15" fill="#ffb4ab">GPU &#183; serial &#183; ③</text>
+
+  <!-- 5 Detokenize -->
+  <rect x="1476" y="280" width="244" height="150" rx="12" fill="#1c1c1c" stroke="#6f6b69" stroke-width="2"/>
+  <text x="1496" y="318" font-size="22" fill="#e5e2e1" font-weight="bold">Detokenize</text>
+  <text x="1496" y="350" font-size="17" fill="#cfccca">token IDs &#8594; text</text>
+  <text x="1496" y="374" font-size="16" fill="#9b9795">streamed to client</text>
+  <text x="1496" y="416" font-size="15" fill="#6f6b69">CPU</text>
+
+  <!-- pipeline arrows -->
+  <line x1="616" y1="355" x2="648" y2="355" stroke="#cfccca" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="892" y1="355" x2="924" y2="355" stroke="#cfccca" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="1168" y1="355" x2="1200" y2="355" stroke="#cfccca" stroke-width="2.5" marker-end="url(#arr)"/>
+  <line x1="1444" y1="355" x2="1476" y2="355" stroke="#cfccca" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- decode self-loop -->
+  <path d="M1322 280 C1322 244, 1410 244, 1410 280" fill="none" stroke="#ffb4ab" stroke-width="2.5" marker-end="url(#arrRed)"/>
+  <text x="1300" y="238" font-size="15" fill="#ffb4ab">repeat per output token</text>
+
+  <!-- Memory band -->
+  <!-- Weights box -->
+  <rect x="372" y="530" width="620" height="340" rx="14" fill="#211d12" stroke="#FFC107" stroke-width="2.5"/>
+  <text x="396" y="576" font-size="26" fill="#FFC107" font-weight="bold">① Weights — the model</text>
+  <text x="396" y="616" font-size="19" fill="#e5e2e1">W&#8341; &#183; W&#8342; &#183; W&#8348; (project tokens to Q/K/V) &#183; MLP layers</text>
+  <text x="396" y="652" font-size="19" fill="#cfccca">Loaded once at boot &#183; read-only &#183; shared by every request</text>
+  <text x="396" y="688" font-size="19" fill="#cfccca">Your tokens never enter here — it is fixed machinery</text>
+  <rect x="396" y="812" width="180" height="34" rx="8" fill="#2a2410"/>
+  <text x="486" y="835" font-size="16" fill="#FFC107" text-anchor="middle">GPU memory</text>
+  <text x="600" y="835" font-size="16" fill="#9b9795">oMLX: "Active Models &#183; 29.4 GB"</text>
+
+  <!-- KV store box -->
+  <rect x="1100" y="530" width="620" height="340" rx="14" fill="#102320" stroke="#03c6b2" stroke-width="2.5"/>
+  <text x="1124" y="576" font-size="26" fill="#03c6b2" font-weight="bold">② KV Cache Store</text>
+  <text x="1124" y="616" font-size="19" fill="#e5e2e1">per-token Key / Value stack — grows one row per token</text>
+  <text x="1124" y="652" font-size="19" fill="#cfccca">The only box that holds YOUR data (read + write)</text>
+  <text x="1124" y="688" font-size="19" fill="#ffb4ab">Freed when the response ends — unless kept warm (see D4)</text>
+  <!-- mini stack -->
+  <g>
+    <rect x="1124" y="720" width="300" height="20" rx="3" fill="#0c1a18" stroke="#03c6b2" stroke-width="1"/>
+    <rect x="1124" y="744" width="300" height="20" rx="3" fill="#0c1a18" stroke="#03c6b2" stroke-width="1"/>
+    <rect x="1124" y="768" width="300" height="20" rx="3" fill="#0c1a18" stroke="#03c6b2" stroke-width="1"/>
+    <text x="1434" y="760" font-size="15" fill="#9b9795">K,V per token…</text>
+  </g>
+  <text x="1124" y="835" font-size="16" fill="#9b9795">oMLX: "Runtime Cache &#183; 16.1 GB &#183; 146 entries"</text>
+
+  <!-- read/write arrows from compute to memory -->
+  <!-- Prefill -> Weights (read) -->
+  <path d="M1000 430 C950 470, 760 490, 690 528" fill="none" stroke="#FFC107" stroke-width="2.5" marker-end="url(#arrGold)"/>
+  <text x="720" y="500" font-size="16" fill="#FFC107">reads</text>
+  <!-- Prefill -> KV (write) -->
+  <path d="M1090 430 C1150 470, 1300 490, 1340 528" fill="none" stroke="#03c6b2" stroke-width="2.5" marker-end="url(#arrTeal)"/>
+  <text x="1230" y="500" font-size="16" fill="#03c6b2">writes K/V</text>
+  <!-- Decode -> KV (read+append) -->
+  <path d="M1322 430 C1380 470, 1480 490, 1500 528" fill="none" stroke="#03c6b2" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#arrTeal)"/>
+  <text x="1430" y="500" font-size="16" fill="#03c6b2">read + append</text>
+
+  <!-- Bottom takeaway -->
+  <rect x="340" y="930" width="1516" height="56" rx="10" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="1.5"/>
+  <text x="364" y="965" font-size="20" fill="#cfccca">The compute (red ③) is transient — it owns no memory. It <tspan fill="#FFC107">reads the Weights</tspan> and <tspan fill="#03c6b2">reads/writes the KV Store</tspan>. Only the KV Store holds your data — and only it can be kept warm across turns.</text>
+</svg>
