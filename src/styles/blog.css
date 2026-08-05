@@ -1010,3 +1010,472 @@ figcaption b { color: var(--text-primary); font-weight: 600; }
   font-family: var(--font-ui);
   font-size: var(--t--1);
 }
+
+/* ---------- 13. SLIDE DECK --------------------------------- */
+
+/* A presentation rendered as a blog post. Every slide rule is scoped under
+   .slides-deck so it never collides with the blog's prose vocabulary — the
+   slides use the same .eyebrow / .lede / .body / .table / .diagram class
+   names but with a different visual treatment. Diagrams keep the global
+   .box--* / .label / .arrow vocabulary (blog.css §8). */
+
+.slides-deck {
+  --slide-num: 1;
+  --slide-total: 15;
+  /* Escape the post measure so each slide can be viewport-tall. The article
+     exposes `full` via subgrid (blog.css §3) so .bleed here reaches 1280px
+     without splitting the post into multiple <article> elements. */
+  margin-block: var(--s-6);
+}
+
+.slides-deck .slides-deck__nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  margin: 0 0 var(--s-6);
+  background: color-mix(in oklch, var(--surface), transparent 12%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: var(--hairline) solid var(--border);
+  border-top: var(--hairline) solid var(--border);
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-secondary);
+}
+
+.slides-deck__title {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+  font-size: 0.75rem;
+}
+
+.slides-deck__counter {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.slides-deck__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 2rem;
+  padding: 0 var(--s-3);
+  background: var(--surface-raised);
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.slides-deck__btn:hover {
+  border-color: var(--border-strong);
+  color: var(--accent);
+}
+
+.slides-deck__btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.slides-deck__btn[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.slides-deck__present {
+  margin-left: var(--s-2);
+}
+
+/* One slide. Block-level, viewport-tall, vertically centered. The bottom
+   rule frames the slide and gives the reader a hard boundary. */
+.slides-deck .slide {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: center;
+  min-height: min(900px, 100vh);
+  padding: var(--s-7) 0;
+  border-bottom: var(--hairline) solid var(--border);
+  scroll-margin-top: var(--s-8);
+}
+
+.slides-deck .slide:last-child {
+  border-bottom: 0;
+}
+
+.slides-deck .slide--cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--s-8) 0;
+}
+
+.slides-deck .slide--split {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-7);
+  align-items: center;
+}
+
+.slides-deck .col-figure {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+}
+
+/* Slide chrome. The .eyebrow / .lede / .body class names collide with the
+   blog's prose vocabulary (blog.css §5, §9); scoping resets the visual
+   treatment while keeping the slide markup familiar. */
+.slides-deck .eyebrow {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.slides-deck .eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.slides-deck .headline {
+  font-family: var(--font-body);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.slides-deck .headline--xl { font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); }
+.slides-deck .headline--lg { font-size: clamp(1.875rem, 1.2rem + 2.5vw, 3rem); }
+.slides-deck .headline--md { font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.25rem); }
+
+.slides-deck .lede {
+  font-family: var(--font-body);
+  font-size: clamp(1.125rem, 0.95rem + 0.6vw, 1.5rem);
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 64ch;
+  margin: 0;
+}
+
+.slides-deck .body {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
+  line-height: 1.65;
+  color: var(--text-primary);
+  max-width: 60ch;
+  margin: 0;
+}
+
+.slides-deck .body--secondary { color: var(--text-secondary); }
+
+.slides-deck .stack { display: flex; flex-direction: column; gap: var(--s-5); }
+.slides-deck .stack--sm { gap: var(--s-3); }
+.slides-deck .stack--lg { gap: var(--s-7); }
+
+.slides-deck .rule {
+  width: 56px;
+  height: 1px;
+  background: var(--border-strong);
+  border: 0;
+  margin: 0;
+}
+
+.slides-deck .footer {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--text-faint);
+  max-width: 70ch;
+  line-height: 1.6;
+}
+
+.slides-deck .cover-eyebrow {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: var(--s-5);
+}
+
+.slides-deck .cover-title {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(3rem, 1.8rem + 5vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.slides-deck .cover-subtitle {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+  color: var(--text-secondary);
+  max-width: 28ch;
+  margin: var(--s-4) auto 0;
+}
+
+.slides-deck .cover-rule {
+  width: 80px;
+  height: 2px;
+  background: var(--accent);
+  border: 0;
+  margin: var(--s-6) auto 0;
+  flex-shrink: 0;
+}
+
+.slides-deck .cover-mark {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
+  color: var(--text-faint);
+  margin-top: var(--s-4);
+}
+
+.slides-deck .bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.slides-deck .bullets li {
+  position: relative;
+  padding-left: var(--s-4);
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.slides-deck .bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: var(--s-3);
+  height: 1px;
+  background: var(--accent);
+}
+
+.slides-deck .bullets li strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.slides-deck .bullets li em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.slides-deck .pullquote {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(1.25rem, 1rem + 0.8vw, 1.625rem);
+  line-height: 1.4;
+  color: var(--text-secondary);
+  max-width: 56ch;
+  margin: 0;
+  position: relative;
+  padding-left: var(--s-4);
+}
+
+.slides-deck .pullquote::before {
+  content: "\201C";
+  position: absolute;
+  left: -0.2em;
+  top: -0.2em;
+  font-size: 1.4em;
+  color: var(--accent);
+  opacity: 0.5;
+}
+
+/* Slide-specific table. The blog's prose .table lives in §7 with its own
+   colors and spacing — the deck uses a tighter version that fits inside a
+   viewport-tall split slide. */
+.slides-deck .table-wrap {
+  overflow-x: auto;
+  border: var(--hairline) solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.slides-deck .table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  table-layout: fixed;
+}
+
+.slides-deck .table caption {
+  text-align: left;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: var(--s-3) var(--s-4);
+  border-bottom: var(--hairline) solid var(--border);
+  caption-side: top;
+}
+
+.slides-deck .table th,
+.slides-deck .table td {
+  text-align: left;
+  padding: var(--s-3) var(--s-4);
+  border-bottom: var(--hairline) solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.slides-deck .table tr:last-child th,
+.slides-deck .table tr:last-child td {
+  border-bottom: 0;
+}
+
+.slides-deck .table th[scope="row"] {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  width: 22%;
+}
+
+.slides-deck .table th[scope="col"] {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.slides-deck .table td:first-child { color: var(--text-secondary); }
+.slides-deck .table td:last-child  { color: var(--text-primary); }
+
+/* Diagram sizing — the SVGs carry viewBox so this is the only sizing rule
+   they need. The .diagram / .box--* / .label / .arrow classes are all in
+   the global stylesheet (blog.css §8). */
+.slides-deck .diagram {
+  display: block;
+  width: 100%;
+  max-width: 880px;
+  height: auto;
+  margin-inline: auto;
+  color: var(--diagram-stroke);
+}
+
+/* Slide diagrams use larger label/eye text than prose diagrams (blog.css §8).
+   Declared under .slides-deck so the prose sizing is unchanged. */
+.slides-deck .diagram .label {
+  font-size: clamp(0.875rem, 0.7rem + 0.6vw, 1.375rem);
+  font-weight: 500;
+}
+.slides-deck .diagram .label--sm {
+  font-size: clamp(0.75rem, 0.65rem + 0.4vw, 1rem);
+  font-weight: 400;
+  fill: var(--diagram-text);
+  opacity: 0.78;
+  /* The slides centre every label on its x — without this, long label--sm
+     strings like "startup · routing · schema · security · observability · test
+     harness" extend right past the SVG's right edge and contribute to the
+     document's scrollWidth even though the SVG itself is clipped. */
+  text-anchor: middle;
+}
+.slides-deck .diagram .eye {
+  font-size: clamp(0.75rem, 0.6rem + 0.5vw, 1.125rem);
+  letter-spacing: 0.14em;
+  fill: var(--diagram-text);
+  opacity: 0.85;
+}
+
+/* Presentation mode: applied by JS to fill the viewport, hide the inline
+   nav, and let each slide snap to the top of the screen. Scroll-snap is
+   only enabled here, not in the inline reading view — a snap-scroll over
+   a long post would surprise readers. */
+.slides-deck.is-presented {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  margin: 0;
+  background: var(--surface);
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+}
+
+.slides-deck.is-presented .slides-deck__nav { display: none; }
+
+.slides-deck.is-presented .slide {
+  min-height: 100vh;
+  padding: var(--s-7) var(--s-6);
+  scroll-snap-align: start;
+  border-bottom: 0;
+}
+
+/* Mobile: split slides collapse to a single column so the diagram doesn't
+   squeeze the text. */
+@media (max-width: 48rem) {
+  .slides-deck .slide--split {
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+  }
+  .slides-deck .slides-deck__nav {
+    flex-wrap: wrap;
+  }
+  .slides-deck__counter {
+    margin-left: 0;
+    width: 100%;
+    order: 99;
+  }
+}
+
+/* Print: one slide per page, hide the inline nav. The browser's
+   print-to-PDF gives a clean handout. */
+@media print {
+  .slides-deck__nav { display: none; }
+  .slides-deck { margin: 0; padding: 0; }
+  .slides-deck .slide {
+    page-break-after: always;
+    min-height: auto;
+    border-bottom: 0;
+    padding: var(--s-5) 0;
+  }
+  .slides-deck .slide:last-child {
+    page-break-after: auto;
+  }
+}

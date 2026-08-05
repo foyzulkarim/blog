@@ -5,7 +5,14 @@ const BASE = 'http://localhost:4321';
 const OUT = '/private/tmp/claude-501/-Users-foyzul-personal-blog/bd91311e-ca9e-4b0f-bd28-3101ec377c1d/scratchpad/shots';
 mkdirSync(OUT, { recursive: true });
 
-const PAGES = ['/', '/agentic-software-engineering/', '/topics/', '/about/', '/404/'];
+const PAGES = [
+  '/',
+  '/agentic-software-engineering/',
+  '/agentic-software-engineering-slides/',
+  '/topics/',
+  '/about/',
+  '/404/',
+];
 const SIZES = [
   { name: '1440', width: 1440, height: 1000 },
   { name: '768', width: 768, height: 1000 },

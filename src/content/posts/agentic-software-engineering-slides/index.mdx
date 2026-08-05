@@ -1,0 +1,557 @@
+---
+title: Agentic Software Engineering — slides
+description: A 15-slide deck through the seven phases of building trustworthy software with AI agents, presented as a blog post.
+pubDate: 2026-08-04
+tags:
+  - Slides
+  - AI
+  - Architecture
+  - Engineering Practice
+---
+
+import SlidesNav from '../../../components/SlidesNav.astro';
+
+<SlidesNav />
+
+<p class="lede">
+  A fifteen-slide deck walking through the seven phases of agentic software engineering —
+  one idea per slide, with the diagrams from the canonical post. Use the arrow keys,
+  the on-screen controls, or the Present button to step through.
+</p>
+
+<div class="slides-deck bleed">
+  <div class="slides-deck__nav">
+    <span class="slides-deck__title">Slides</span>
+    <button class="slides-deck__btn" data-slides-prev type="button" aria-label="Previous slide">←</button>
+    <button class="slides-deck__btn" data-slides-next type="button" aria-label="Next slide">→</button>
+    <span class="slides-deck__counter" data-slides-counter>01 / 15</span>
+    <button class="slides-deck__btn slides-deck__present" data-slides-present type="button" aria-label="Enter presentation mode">Present</button>
+  </div>
+
+  <section class="slide slide--cover" data-slide="cover" aria-label="Cover">
+    <div class="cover-eyebrow">A SLIDE DECK · FROM THE BLOG</div>
+    <div class="cover-title">Agentic Software Engineering</div>
+    <p class="cover-subtitle">Building trustworthy software with AI agents.</p>
+    <hr class="cover-rule" />
+    <div class="cover-mark">fifteen slides through the seven phases</div>
+  </section>
+
+  <section class="slide" data-slide="thesis" aria-label="The thesis">
+    <div class="stack">
+      <span class="eyebrow">The thesis</span>
+    </div>
+    <div class="stack stack--lg" style="justify-self: center; text-align: center; max-width: 1100px;">
+      <h2 class="headline headline--lg">
+        Code generation is becoming abundant.
+        <span style="color: var(--text-secondary); font-style: italic;">Engineering judgment is not.</span>
+      </h2>
+      <p class="lede" style="margin: 0 auto;">
+        The real leverage comes from turning product intent into
+        architecture, executable constraints, reviewable changes,
+        and production evidence.
+      </p>
+    </div>
+    <div></div>
+  </section>
+
+  <section class="slide slide--split" data-slide="contract" aria-label="The operating contract">
+    <div class="stack">
+      <span class="eyebrow">Figure 01</span>
+      <h2 class="headline headline--lg">The operating contract</h2>
+      <p class="body body--secondary">
+        The model supplies execution capacity. The engineer retains
+        judgment and accountability. Gates keep the two connected
+        without confusing their roles.
+      </p>
+    </div>
+    <div class="col-figure">
+      <svg class="diagram" viewBox="0 0 880 280" role="img" aria-label="Three columns: the model proposes options, drafts code, and runs tools; gates test, define acceptance, review, and enforce policy; the engineer defines the system, sets constraints, approves risk, judges evidence, and owns the outcome.">
+        <defs>
+          <marker id="slide-arrow-contract" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+            <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
+          </marker>
+        </defs>
+        <text class="eye" x="150" y="32">The model</text>
+        <text class="eye text--warm" x="440" y="32">Gates</text>
+        <text class="eye text--emphasis" x="730" y="32">The engineer</text>
+        <g>
+          <rect class="box--alt" x="20" y="50" width="260" height="180" rx="10" />
+          <text class="label" x="150" y="86">proposes options</text>
+          <text class="label" x="150" y="118">drafts the code</text>
+          <text class="label" x="150" y="150">runs the tools</text>
+          <text class="label--sm" x="150" y="200">execution capacity</text>
+        </g>
+        <g>
+          <rect class="box--warm" x="310" y="50" width="260" height="180" rx="10" />
+          <text class="label" x="440" y="86">tests</text>
+          <text class="label" x="440" y="118">acceptance criteria</text>
+          <text class="label" x="440" y="150">review · security</text>
+          <text class="label--sm text--warm" x="440" y="200">nothing crosses unchecked</text>
+        </g>
+        <g>
+          <rect class="box--emphasis" x="600" y="50" width="260" height="180" rx="10" />
+          <text class="label" x="730" y="86">define the system</text>
+          <text class="label" x="730" y="118">set constraints</text>
+          <text class="label" x="730" y="150">approve risk</text>
+          <text class="label" x="730" y="182">own the outcome</text>
+          <text class="label--sm text--emphasis" x="730" y="212">judgment + accountability</text>
+        </g>
+        <line class="stroke" x1="282" y1="140" x2="306" y2="140" marker-end="url(#slide-arrow-contract)" />
+        <line class="stroke" x1="572" y1="140" x2="596" y2="140" marker-end="url(#slide-arrow-contract)" />
+      </svg>
+    </div>
+  </section>
+
+  <section class="slide slide--split" data-slide="lifecycle" aria-label="Seven phases, one loop">
+    <div class="stack">
+      <span class="eyebrow">Figure 02</span>
+      <h2 class="headline headline--lg">Seven phases, one loop</h2>
+      <p class="body">
+        Five phases reduce ambiguity before production implementation begins.
+        Build and ship run, then production evidence returns to the spec.
+      </p>
+      <p class="footer">
+        A specification that stops being true after deployment was a plan.
+        A living specification incorporates what the system teaches you.
+      </p>
+    </div>
+    <div class="col-figure">
+      <svg class="diagram" viewBox="0 0 880 320" role="img" aria-label="Seven-phase lifecycle: 01 Concept, 02 Architect, 03 Foundation, 04 Features, and 05 Spec happen before production implementation. 06 Build and 07 Ship follow, and production evidence loops back into the spec.">
+        <defs>
+          <marker id="slide-arrow-lifecycle" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+            <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
+          </marker>
+        </defs>
+        <text class="eye anchor-start" x="40" y="34">Think &amp; define</text>
+        <text class="eye text--emphasis anchor-start" x="640" y="34">Build &amp; learn</text>
+        <rect class="bar bar--a" x="40"  y="58" width="120" height="44" />
+        <rect class="bar bar--a" x="160" y="58" width="120" height="44" />
+        <rect class="bar bar--a" x="280" y="58" width="120" height="44" />
+        <rect class="bar bar--a" x="400" y="58" width="120" height="44" />
+        <rect class="bar bar--a" x="520" y="58" width="120" height="44" />
+        <rect class="bar bar--b" x="640" y="58" width="100" height="44" />
+        <rect class="bar bar--c" x="740" y="58" width="100" height="44" />
+        <rect class="stroke--frame" x="40" y="58" width="800" height="44" />
+        <line class="stroke stroke--dash" x1="640" y1="52" x2="640" y2="108" />
+        <text class="label" x="100" y="86">01</text>
+        <text class="label" x="220" y="86">02</text>
+        <text class="label" x="340" y="86">03</text>
+        <text class="label" x="460" y="86">04</text>
+        <text class="label" x="580" y="86">05</text>
+        <text class="label" x="690" y="86">06</text>
+        <text class="label" x="790" y="86">07</text>
+        <text class="label--sm" x="100" y="128">Concept</text>
+        <text class="label--sm" x="220" y="128">Architect</text>
+        <text class="label--sm" x="340" y="128">Foundation</text>
+        <text class="label--sm" x="460" y="128">Features</text>
+        <text class="label--sm" x="580" y="128">Spec</text>
+        <text class="label--sm" x="690" y="128">Build</text>
+        <text class="label--sm" x="790" y="128">Ship</text>
+        <path class="stroke stroke--dash" d="M790 152 C 870 200, 40 220, 86 168" marker-end="url(#slide-arrow-lifecycle)" />
+        <text class="label--sm text--emphasis" x="440" y="260">production evidence feeds back into spec</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="slide slide--split" data-slide="phase-01" aria-label="Phase 01 — Concept">
+    <div class="stack">
+      <span class="eyebrow">Phase 01 · Concept</span>
+      <h2 class="headline headline--lg">Prototype the experience before production code</h2>
+      <ul class="bullets">
+        <li>Generate screens with a design tool — keep the output as <strong>raw HTML + CSS</strong>, not React.</li>
+        <li>Render each screen to a <strong>PNG</strong> and check it in.</li>
+        <li>Prototype the awkward states too: empty, loading, error, denied.</li>
+        <li><strong>Don't pick a stack yet.</strong> Choose late enough to choose against requirements.</li>
+      </ul>
+    </div>
+    <div class="col-figure">
+      <svg class="diagram" viewBox="0 0 880 240" role="img" aria-label="Concept pipeline: talk it out, design tool, HTML and CSS, export PNG, reference set. The HTML is the sketchpad; the PNG is the survey marker.">
+        <defs>
+          <marker id="slide-arrow-concept" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+            <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
+          </marker>
+        </defs>
+        <g>
+          <rect class="box--raised" x="14"  y="60" width="150" height="70" rx="8" />
+          <text class="label" x="89"  y="92">Talk it out</text>
+          <text class="label--sm" x="89" y="110">what to build</text>
+        </g>
+        <g>
+          <rect class="box--raised" x="184" y="60" width="150" height="70" rx="8" />
+          <text class="label" x="259" y="92">Design tool</text>
+          <text class="label--sm" x="259" y="110">Claude · Lovable · Stitch</text>
+        </g>
+        <g>
+          <rect class="box--raised" x="354" y="60" width="150" height="70" rx="8" />
+          <text class="label" x="429" y="92">HTML + CSS</text>
+          <text class="label--sm" x="429" y="110">raw screens</text>
+        </g>
+        <g>
+          <rect class="box--raised" x="524" y="60" width="150" height="70" rx="8" />
+          <text class="label" x="599" y="92">Export PNG</text>
+          <text class="label--sm" x="599" y="110">one per screen</text>
+        </g>
+        <g>
+          <rect class="box--emphasis" x="694" y="60" width="172" height="70" rx="8" />
+          <text class="label text--emphasis" x="780" y="92">Reference set</text>
+          <text class="label--sm" x="780" y="110">checked in, used later</text>
+        </g>
+        <line class="stroke" x1="164" y1="95" x2="182" y2="95" marker-end="url(#slide-arrow-concept)" />
+        <line class="stroke" x1="334" y1="95" x2="352" y2="95" marker-end="url(#slide-arrow-concept)" />
+        <line class="stroke" x1="504" y1="95" x2="522" y2="95" marker-end="url(#slide-arrow-concept)" />
+        <line class="stroke" x1="674" y1="95" x2="692" y2="95" marker-end="url(#slide-arrow-concept)" />
+        <text class="eye" x="440" y="180">The HTML is the sketchpad. The PNG is the survey marker.</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="slide slide--split" data-slide="phase-02" aria-label="Phase 02 — Architect">
+    <div class="stack">
+      <span class="eyebrow">Phase 02 · Architect</span>
+      <h2 class="headline headline--lg">Separate product capabilities from foundation</h2>
+      <ul class="bullets">
+        <li>Decide tech after the <strong>constraints are visible</strong>.</li>
+        <li>Record decisions as <strong>ADRs</strong>: context, options, decision, trade-off, tripwire.</li>
+        <li>Disagree productively with a model built to agree — <em>specificity is signal, agreement is noise</em>.</li>
+      </ul>
+    </div>
+    <div class="col-figure">
+      <svg class="diagram" viewBox="0 0 880 320" role="img" aria-label="Feature pages on top of a shared foundation slab: Dashboard, Sessions, Session detail, Settings all rest on a base of startup, routing, schema, security, observability, and a test harness.">
+        <text class="eye anchor-start" x="120" y="32">Feature pages · built on top</text>
+        <g>
+          <rect class="box--raised" x="14"  y="52" width="170" height="56" rx="8" />
+          <text class="label" x="99"  y="86">Dashboard</text>
+          <rect class="box--raised" x="200" y="52" width="170" height="56" rx="8" />
+          <text class="label" x="285" y="86">Sessions</text>
+          <rect class="box--raised" x="386" y="52" width="170" height="56" rx="8" />
+          <text class="label" x="471" y="86">Session detail</text>
+          <rect class="box--raised" x="572" y="52" width="170" height="56" rx="8" />
+          <text class="label" x="657" y="86">Settings</text>
+          <rect class="box--raised" x="758" y="52" width="108" height="56" rx="8" />
+          <text class="label" x="812" y="86">…</text>
+        </g>
+        <g>
+          <line class="stroke stroke--dash" x1="99"  y1="108" x2="99"  y2="200" />
+          <line class="stroke stroke--dash" x1="285" y1="108" x2="285" y2="200" />
+          <line class="stroke stroke--dash" x1="471" y1="108" x2="471" y2="200" />
+          <line class="stroke stroke--dash" x1="657" y1="108" x2="657" y2="200" />
+          <line class="stroke stroke--dash" x1="812" y1="108" x2="812" y2="200" />
+        </g>
+        <rect class="box--alt" x="14" y="202" width="852" height="64" rx="8" />
+        <text class="label" x="440" y="228">FOUNDATION</text>
+        <text class="label--sm" x="440" y="250">startup · routing · schema · security · observability · test harness</text>
+        <text class="eye" x="440" y="296">Define the base before scheduling what rests on it.</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="slide slide--split" data-slide="phase-03" aria-label="Phase 03 — Foundation">
+    <div class="stack">
+      <span class="eyebrow">Phase 03 · Foundation</span>
+      <h2 class="headline headline--lg">Plan a walking skeleton. Every task must boot.</h2>
+      <ul class="bullets">
+        <li>Task 00: the start command opens something.</li>
+        <li>Task 01: one route resolves end-to-end.</li>
+        <li>Task 02: real data layer + a test that uses it.</li>
+        <li>Task 03: test harness with teeth.</li>
+      </ul>
+      <p class="footer">
+        Build <strong>oracles</strong>, not pyramids. PNG is the design oracle.
+        Acceptance criteria are behavioural. Testcontainers is the data oracle.
+        Playwright is the flow oracle.
+      </p>
+    </div>
+    <div class="col-figure">
+      <svg class="diagram" viewBox="0 0 880 240" role="img" aria-label="Four foundation tasks in sequence: starts, one route resolves, real data + test, test harness with teeth. Each one must boot.">
+        <defs>
+          <marker id="slide-arrow-skel" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+            <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
+          </marker>
+        </defs>
+        <g>
+          <rect class="box--alt" x="14"  y="50" width="190" height="68" rx="8" />
+          <text class="label" x="109" y="80">Task 00</text>
+          <text class="label--sm" x="109" y="100">it starts</text>
+        </g>
+        <g>
+          <rect class="box--alt" x="234" y="50" width="190" height="68" rx="8" />
+          <text class="label" x="329" y="80">Task 01</text>
+          <text class="label--sm" x="329" y="100">one route</text>
+        </g>
+        <g>
+          <rect class="box--alt" x="454" y="50" width="190" height="68" rx="8" />
+          <text class="label" x="549" y="80">Task 02</text>
+          <text class="label--sm" x="549" y="100">data + test</text>
+        </g>
+        <g>
+          <rect class="box--emphasis" x="674" y="50" width="192" height="68" rx="8" />
+          <text class="label text--emphasis" x="770" y="80">Task 03</text>
+          <text class="label--sm" x="770" y="100">test harness</text>
+        </g>
+        <line class="stroke" x1="204" y1="84" x2="232" y2="84" marker-end="url(#slide-arrow-skel)" />
+        <line class="stroke" x1="424" y1="84" x2="452" y2="84" marker-end="url(#slide-arrow-skel)" />
+        <line class="stroke" x1="644" y1="84" x2="672" y2="84" marker-end="url(#slide-arrow-skel)" />
+        <text class="label--sm text--emphasis" x="109" y="148">✓ boots</text>
+        <text class="label--sm text--emphasis" x="329" y="148">✓ boots</text>
+        <text class="label--sm text--emphasis" x="549" y="148">✓ boots</text>
+        <text class="label--sm text--emphasis" x="770" y="148">✓ boots</text>
+        <text class="eye" x="440" y="200">A change that cannot run cannot give evidence.</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="phase-04" aria-label="Phase 04 — Features">
+    <div class="stack">
+      <span class="eyebrow">Phase 04 · Features</span>
+    </div>
+    <div class="stack stack--lg" style="max-width: 1200px;">
+      <h2 class="headline headline--lg">Turn screens into contracts</h2>
+      <ul class="bullets">
+        <li>Map the <strong>dependency graph</strong>. Two tickets touching the same data contract are not independent.</li>
+        <li>Cut into <strong>vertical slices</strong> that can be demonstrated and tested independently.</li>
+        <li>Write for a competent stranger with no memory — that's the actual execution condition.</li>
+      </ul>
+      <hr class="rule" />
+      <p class="pullquote">
+        Could a fresh session with no conversation history produce the intended result from this ticket and its linked canonical artefacts?
+      </p>
+    </div>
+    <div></div>
+  </section>
+
+  <section class="slide" data-slide="phase-05" aria-label="Phase 05 — Spec and ticketing">
+    <div class="stack">
+      <span class="eyebrow">Phase 05 · Spec &amp; ticketing</span>
+    </div>
+    <div class="stack stack--lg" style="max-width: 1200px;">
+      <h2 class="headline headline--lg">The issue tracker is the agent's external memory</h2>
+      <ul class="bullets">
+        <li>Freeze the plan. Step away. Read it <strong>end-to-end</strong> — some errors live <em>between</em> tickets.</li>
+        <li>One ticket, one bounded context. Do not feed forty tickets into one session.</li>
+        <li>Publish with an <strong>idempotent</strong> script: draft / published / closed — recoverable from failure.</li>
+      </ul>
+      <hr class="rule" />
+      <p class="footer">
+        Persist the remote issue number. Re-running the synchroniser should update
+        the intended issue, never create a duplicate.
+      </p>
+    </div>
+    <div></div>
+  </section>
+
+  <section class="slide slide--split" data-slide="phase-06" aria-label="Phase 06 — Build">
+    <div class="stack">
+      <span class="eyebrow">Phase 06 · Build</span>
+      <h2 class="headline headline--lg">Now — and only now — implementation begins</h2>
+      <ul class="bullets">
+        <li>Per-ticket loop: <strong>requirement → implement → commit → PR → review → fix → merge</strong>.</li>
+        <li>Parallel by design — bought in Phase 04, not free. Worktrees materialise it.</li>
+        <li>Three-tier agent authority: <strong>allowed / needs approval / never</strong>.</li>
+      </ul>
+      <p class="footer">
+        PRs carry evidence, not claims. Commands, results, screenshots, traces,
+        risks, rollback. No side channel for quick fixes to main.
+      </p>
+    </div>
+    <div class="col-figure">
+      <svg class="diagram" viewBox="0 0 880 320" role="img" aria-label="Per-ticket loop: requirement, implement, commit, pull request, review, fix, merge, then pick the next ticket. Arrows connect the stages.">
+        <defs>
+          <marker id="slide-arrow-ticket" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+            <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
+          </marker>
+        </defs>
+        <g>
+          <rect class="box--raised" x="14"  y="60" width="170" height="60" rx="8" />
+          <text class="label" x="99"  y="96">Requirement</text>
+          <rect class="box--raised" x="214" y="60" width="170" height="60" rx="8" />
+          <text class="label" x="299" y="96">Implement</text>
+          <rect class="box--raised" x="414" y="60" width="170" height="60" rx="8" />
+          <text class="label" x="499" y="96">Commit</text>
+          <rect class="box--raised" x="614" y="60" width="252" height="60" rx="8" />
+          <text class="label" x="740" y="96">Pull request</text>
+        </g>
+        <line class="stroke" x1="184" y1="90" x2="212" y2="90" marker-end="url(#slide-arrow-ticket)" />
+        <line class="stroke" x1="384" y1="90" x2="412" y2="90" marker-end="url(#slide-arrow-ticket)" />
+        <line class="stroke" x1="584" y1="90" x2="612" y2="90" marker-end="url(#slide-arrow-ticket)" />
+        <line class="stroke" x1="740" y1="120" x2="740" y2="200" marker-end="url(#slide-arrow-ticket)" />
+        <g>
+          <rect class="box--raised" x="614" y="200" width="252" height="60" rx="8" />
+          <text class="label" x="740" y="236">Review</text>
+          <rect class="box--raised" x="414" y="200" width="170" height="60" rx="8" />
+          <text class="label" x="499" y="236">Fix</text>
+          <rect class="box--emphasis" x="214" y="200" width="170" height="60" rx="8" />
+          <text class="label text--emphasis" x="299" y="236">Merge</text>
+        </g>
+        <line class="stroke" x1="612" y1="230" x2="586" y2="230" marker-end="url(#slide-arrow-ticket)" />
+        <line class="stroke" x1="412" y1="230" x2="386" y2="230" marker-end="url(#slide-arrow-ticket)" />
+        <path class="stroke stroke--dash" d="M214 256 C 80 290, 20 200, 100 120" marker-end="url(#slide-arrow-ticket)" />
+        <text class="label--sm anchor-start" x="30" y="170">next ticket →</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="slide slide--split" data-slide="phase-07" aria-label="Phase 07 — Ship">
+    <div class="stack">
+      <span class="eyebrow">Phase 07 · Ship</span>
+      <h2 class="headline headline--lg">Shipping is a hypothesis</h2>
+      <p class="body body--secondary" style="font-style: italic;">
+        Before deploy, write down:
+      </p>
+      <ul class="bullets">
+        <li>Which metric should move?</li>
+        <li>What error rate is acceptable?</li>
+        <li>Which signal shows a regression?</li>
+        <li>What is the rollback, in one sentence?</li>
+      </ul>
+      <p class="footer">
+        Instrument with the feature, not after. Correlate traces, metrics, and logs
+        with the release and with the acceptance criteria.
+      </p>
+    </div>
+    <div class="col-figure">
+      <svg class="diagram" viewBox="0 0 880 280" role="img" aria-label="Ship loop: spec, build, ship, evidence. Surprises become tickets and feed back into the spec.">
+        <defs>
+          <marker id="slide-arrow-ship" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto">
+            <path d="M0,0 L7,3 L0,6 Z" class="arrow" />
+          </marker>
+        </defs>
+        <g>
+          <rect class="box--alt" x="20"  y="56" width="170" height="70" rx="8" />
+          <text class="label" x="105" y="86">Spec</text>
+          <text class="label--sm" x="105" y="106">acceptance criteria</text>
+        </g>
+        <g>
+          <rect class="box--raised" x="220" y="56" width="170" height="70" rx="8" />
+          <text class="label" x="305" y="86">Build</text>
+          <text class="label--sm" x="305" y="106">tests · review · merge</text>
+        </g>
+        <g>
+          <rect class="box--raised" x="420" y="56" width="170" height="70" rx="8" />
+          <text class="label" x="505" y="86">Ship</text>
+          <text class="label--sm" x="505" y="106">with a stated check</text>
+        </g>
+        <g>
+          <rect class="box--emphasis" x="620" y="56" width="240" height="70" rx="8" />
+          <text class="label text--emphasis" x="740" y="86">Evidence</text>
+          <text class="label--sm" x="740" y="106">traces · metrics · logs</text>
+        </g>
+        <line class="stroke" x1="190" y1="91" x2="218" y2="91" marker-end="url(#slide-arrow-ship)" />
+        <line class="stroke" x1="390" y1="91" x2="418" y2="91" marker-end="url(#slide-arrow-ship)" />
+        <line class="stroke" x1="590" y1="91" x2="618" y2="91" marker-end="url(#slide-arrow-ship)" />
+        <path class="stroke stroke--dash" d="M740 126 C 740 190, 280 250, 105 158" marker-end="url(#slide-arrow-ship)" />
+        <text class="label--sm text--emphasis" x="440" y="252">surprises become tickets · the spec gets corrected</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="rigor" aria-label="Shortcut vs rigor">
+    <div class="stack">
+      <span class="eyebrow">Aside</span>
+      <h2 class="headline headline--md">Prefer decisions that produce inspectable artefacts</h2>
+    </div>
+    <div class="table-wrap" style="overflow: hidden;">
+      <table class="table">
+        <caption>The more rigorous version usually leaves something another person or session can inspect.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Phase</th>
+            <th scope="col">Fragile shortcut</th>
+            <th scope="col">Durable alternative</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Concept</th>
+            <td>Start with a framework scaffold.</td>
+            <td>Prototype the journey and freeze visual references before choosing the stack.</td>
+          </tr>
+          <tr>
+            <th scope="row">Architect</th>
+            <td>Use the familiar technology.</td>
+            <td>Record alternatives, rejection reasons, consequences, and a revisit trigger.</td>
+          </tr>
+          <tr>
+            <th scope="row">Foundation</th>
+            <td>Begin with disconnected layers.</td>
+            <td>Plan a walking skeleton whose every increment boots.</td>
+          </tr>
+          <tr>
+            <th scope="row">Features</th>
+            <td>Keep a list of screen names.</td>
+            <td>Build a dependency graph and independently verifiable slices.</td>
+          </tr>
+          <tr>
+            <th scope="row">Build</th>
+            <td>Report that tests passed.</td>
+            <td>Attach commands, results, screenshots, traces, risks, and rollback to the PR.</td>
+          </tr>
+          <tr>
+            <th scope="row">Ship</th>
+            <td>Deploy and watch for complaints.</td>
+            <td>State the metric, tolerated failure, regression signal, and rollback first.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footer">
+      Heuristic: if a consequential decision leaves no inspectable trace, a later
+      engineer — and a later agent session — will have to guess.
+    </p>
+  </section>
+
+  <section class="slide" data-slide="paper-trail" aria-label="The paper trail">
+    <div class="stack">
+      <span class="eyebrow">The proof</span>
+    </div>
+    <div class="stack stack--lg" style="max-width: 1200px;">
+      <h2 class="headline headline--lg">The paper trail is the proof</h2>
+      <p class="lede">
+        What survives the session is not the code. It is the
+        <strong>specification, dependency graph, decision records, test suite,
+        closed issues, review trail, and production evidence</strong> —
+        the code is one artefact among many, and often not the most durable one.
+      </p>
+      <hr class="rule" />
+      <p class="pullquote">
+        The thinking is the asset, not the typing.
+      </p>
+    </div>
+    <div></div>
+  </section>
+
+  <section class="slide" data-slide="limits" aria-label="Where this doesn't fit">
+    <div class="stack">
+      <span class="eyebrow">Limits</span>
+    </div>
+    <div class="stack stack--lg" style="max-width: 1200px;">
+      <h2 class="headline headline--lg">Where this doesn't fit</h2>
+      <ul class="bullets">
+        <li>Exploratory spikes where the goal is to <em>learn fast</em>, not build forever.</li>
+        <li>Two-hour utilities that will be thrown away on Friday.</li>
+        <li>Cases where the concept is still wrong — a beautiful spec for the wrong thing.</li>
+      </ul>
+      <hr class="rule" />
+      <p class="pullquote">
+        Vibe coding optimises for time-to-first-working-thing.
+        Agentic engineering optimises for time-to-safe-change.
+      </p>
+    </div>
+    <div></div>
+  </section>
+
+  <section class="slide slide--cover" data-slide="closing" aria-label="Closing">
+    <div class="cover-eyebrow">Closing</div>
+    <h2 class="headline headline--lg" style="max-width: 90%; text-align: center; margin: 0 auto;">
+      The difference is not the model.
+      <span style="color: var(--accent); font-style: italic;">It is the control loop.</span>
+    </h2>
+    <hr class="cover-rule" />
+    <div class="cover-mark" style="text-align: center; max-width: 900px; margin: 0 auto;">
+      git worktree · Testcontainers · Playwright · OWASP AI Agent Security · OpenTelemetry
+    </div>
+    <div class="cover-mark" style="opacity: 0.6; margin-top: 36px;">
+      from the blog · claude-lens, built in public · also available in বাংলা
+    </div>
+  </section>
+</div>
+

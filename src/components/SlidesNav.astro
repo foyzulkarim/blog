@@ -1,0 +1,188 @@
+---
+/*
+ * SlidesNav — wires up the slide nav buttons, keyboard, and presentation mode
+ * for every .slides-deck block on the page. The <script> tag is processed by
+ * Astro's hoister and emitted as a module <script> in the page head, so it
+ * never runs during SSR (and therefore never touches `document` server-side).
+ *
+ * Keyboard:
+ *   → / PageDown / Space    next slide
+ *   ← / PageUp              previous slide
+ *   Home                    first slide
+ *   End                     last slide
+ *   Esc                     exit presentation mode
+ *
+ * Multiple decks on one page would not collide — each is scoped to its own
+ * .slides-deck subtree. Not a current use case, but cheap to be correct.
+ */
+---
+
+<script>
+  function initDecks() {
+    document.querySelectorAll<HTMLElement>('.slides-deck').forEach((deck) => {
+      const slides = Array.from(deck.querySelectorAll<HTMLElement>('.slide'));
+      if (!slides.length) return;
+
+      const counter = deck.querySelector<HTMLElement>('[data-slides-counter]');
+      const prevBtn = deck.querySelector<HTMLElement>('[data-slides-prev]');
+      const nextBtn = deck.querySelector<HTMLElement>('[data-slides-next]');
+      const presentBtn = deck.querySelector<HTMLElement>('[data-slides-present]');
+
+      const total = slides.length;
+      let current = 0;
+      let returnScrollY = 0;
+
+      const pad = (n: number) => String(n).padStart(2, '0');
+
+      function update(): void {
+        if (counter) counter.textContent = pad(current + 1) + ' / ' + pad(total);
+        if (prevBtn)
+          prevBtn.setAttribute('aria-disabled', current === 0 ? 'true' : 'false');
+        if (nextBtn)
+          nextBtn.setAttribute(
+            'aria-disabled',
+            current === total - 1 ? 'true' : 'false',
+          );
+      }
+
+      function go(i: number): void {
+        const next = Math.max(0, Math.min(total - 1, i));
+        if (next === current) return;
+        current = next;
+        update();
+        slides[current]!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      /* The negative rootMargin biases the trigger zone toward the top of the
+         viewport, so a slide becomes "active" once its top edge crosses the
+         upper portion of the screen — matches what a reader perceives as
+         "the current slide". */
+      /* On every callback, walk all slides (not just the entries) and pick
+         the bottom-most one whose rect still overlaps the trigger zone. The
+         IO only fires for slides whose intersection state changed, so on a
+         transition both the incoming and outgoing slide may be in the zone
+         but only one is in `entries` — relying on entries alone lets the
+         wrong slide win. Re-querying is cheap (15 elements). */
+      const observer = new IntersectionObserver(
+        () => {
+          let bestIdx = -1;
+          let bestTop = -Infinity;
+          for (let i = 0; i < slides.length; i++) {
+            const top = slides[i]!.getBoundingClientRect().top;
+            const bottom = top + slides[i]!.getBoundingClientRect().height;
+            const inZone = bottom > 90 && top < 270;
+            if (inZone && top > bestTop) {
+              bestTop = top;
+              bestIdx = i;
+            }
+          }
+          if (bestIdx !== -1 && bestIdx !== current) {
+            current = bestIdx;
+            update();
+          }
+        },
+        { rootMargin: '-10% 0px -70% 0px', threshold: 0 },
+      );
+      slides.forEach((s) => observer.observe(s));
+
+      prevBtn?.addEventListener('click', () => go(current - 1));
+      nextBtn?.addEventListener('click', () => go(current + 1));
+
+      document.addEventListener('keydown', (e) => {
+        /* Ignore modified keys so we don't hijack Cmd+ArrowLeft (back), etc. */
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        /* Don't fight text input on the page. */
+        if (
+          e.target instanceof HTMLInputElement ||
+          e.target instanceof HTMLTextAreaElement ||
+          (e.target instanceof HTMLElement && e.target.isContentEditable)
+        )
+          return;
+
+        switch (e.key) {
+          case 'ArrowRight':
+          case 'PageDown':
+          case ' ':
+            e.preventDefault();
+            go(current + 1);
+            break;
+          case 'ArrowLeft':
+          case 'PageUp':
+            e.preventDefault();
+            go(current - 1);
+            break;
+          case 'Home':
+            e.preventDefault();
+            go(0);
+            break;
+          case 'End':
+            e.preventDefault();
+            go(total - 1);
+            break;
+          case 'Escape':
+            if (deck.classList.contains('is-presented')) exitPresentation();
+            break;
+        }
+      });
+
+      function enterPresentation(): void {
+        returnScrollY = window.scrollY;
+        deck.classList.add('is-presented');
+        document.documentElement.style.overflow = 'hidden';
+        slides[current]!.scrollIntoView({ block: 'start' });
+        if (presentBtn) presentBtn.textContent = 'Exit';
+        /* requestFullscreen can reject (permissions, cross-origin iframes).
+           The visual takeover via .is-presented still applies — fullscreen is
+           a progressive enhancement, not a requirement. */
+        try {
+          const p = deck.requestFullscreen?.({ navigationUI: 'hide' } as FullscreenOptions);
+          if (p && typeof p.catch === 'function') p.catch(() => undefined);
+        } catch {
+          /* ignore */
+        }
+      }
+
+      function exitPresentation(): void {
+        deck.classList.remove('is-presented');
+        document.documentElement.style.overflow = '';
+        window.scrollTo(0, returnScrollY);
+        if (presentBtn) presentBtn.textContent = 'Present';
+        try {
+          if (document.fullscreenElement && document.exitFullscreen) {
+            const p = document.exitFullscreen();
+            if (p && typeof p.catch === 'function') p.catch(() => undefined);
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+
+      function togglePresentation(): void {
+        if (deck.classList.contains('is-presented')) exitPresentation();
+        else enterPresentation();
+      }
+
+      presentBtn?.addEventListener('click', togglePresentation);
+
+      /* The browser can also drop us out of fullscreen on its own (Esc on
+         desktop, focus loss on some mobile browsers). Keep the visual state
+         in sync. */
+      document.addEventListener('fullscreenchange', () => {
+        if (
+          !document.fullscreenElement &&
+          deck.classList.contains('is-presented')
+        ) {
+          exitPresentation();
+        }
+      });
+
+      update();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDecks, { once: true });
+  } else {
+    initDecks();
+  }
+</script>
