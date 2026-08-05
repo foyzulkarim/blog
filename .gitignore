@@ -162,3 +162,5 @@ shots/
 
 # Reference source material (not part of the deployed site)
 htmls/
+
+.playwright-mcp
