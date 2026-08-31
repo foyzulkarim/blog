@@ -49,6 +49,9 @@ const fullTitle = bareTitle ? title : `${title} — foyzul`;
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
 
+    {/* Umami analytics — replace YOUR_WEBSITE_ID with your actual Umami website ID */}
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="6ab9452a-5c1f-4f96-9625-e1909c654763"></script>
+
     {/* The two faces every English page renders immediately. */}
     <link
       rel="preload"
