@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import TagChips from '../components/TagChips.astro';
+import ShareButtons from '../components/ShareButtons.astro';
 import { formatDate, isoDate, type Post } from '../lib/posts';
 
 interface Props {
@@ -29,6 +30,7 @@ const { title, description, pubDate, updatedDate, tags, lang } = post.data;
         )
       }
     </p>
+    <ShareButtons url={Astro.url.href} title={title} />
     {/* The lede is authored in the post body, so the frontmatter
         description stays short enough for the index row (spec §5.2). */}
     <slot />

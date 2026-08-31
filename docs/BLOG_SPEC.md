@@ -407,6 +407,7 @@ Remaining:
 
 - **Tag chips link to `/topics/#<tag>`**, an anchor into the grouped page, not a filtered view.
   Per-tag routes (`/topics/<tag>/`) remain an option.
+- **Sharing buttons** appear at the bottom of each post (after the tag chips). Two buttons: X (Twitter) and LinkedIn, rendered as plain anchor tags with inline SVG icons. No third-party scripts, no tracking, no share counts. URL construction uses the platform's public intent/composer URLs with no API tokens required.
 - **About page links** to `linkedin.com` and `youtube.com` are inherited placeholders; they need
   real profile URLs.
 - §3.5's sticky-column table system and §3.3's code styling are implemented and unit-verified but

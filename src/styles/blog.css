@@ -2086,3 +2086,43 @@ figcaption b { color: var(--text-primary); font-weight: 600; }
     page-break-after: auto;
   }
 }
+
+/* ---------- Share buttons ---------------------------------- */
+/* Inline row just below the post title/meta, before the prose. */
+.share-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  margin-top: var(--s-5);
+  padding: var(--s-3) 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-faint);
+  text-decoration: none;
+  transition: color 150ms ease;
+  padding: var(--s-1) 0;
+}
+
+.share-btn:hover,
+.share-btn:focus-visible {
+  color: var(--accent);
+}
+
+.share-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.share-btn svg {
+  flex-shrink: 0;
+}
