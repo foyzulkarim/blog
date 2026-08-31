@@ -2093,10 +2093,9 @@ figcaption b { color: var(--text-primary); font-weight: 600; }
 /* Icon-only variant (used on the homepage list). */
 .share-buttons--icon-only {
   border: none;
-  padding: var(--s-3) 0 0;
+  padding: 0;
   margin-top: var(--s-2);
   gap: var(--s-3);
-  border-top: 1px solid var(--border);
 }
 
 .share-buttons--icon-only .share-btn {
