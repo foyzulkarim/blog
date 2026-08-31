@@ -1,0 +1,46 @@
+<svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Screenshot 04, Code understanding: a runtime behavior inventory, where every QA case traces back to a row" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title>Screenshot 04 — Code understanding</title>
+  <rect width="800" height="320" fill="#fafafa"/>
+
+  <text x="400" y="40" text-anchor="middle" font-size="14" font-weight="600" fill="#0f172a">Code understanding</text>
+  <text x="400" y="62" text-anchor="middle" font-size="12" fill="#64748b" font-style="italic">every case traces back to a row in the inventory</text>
+
+  <g>
+    <rect x="60" y="100" width="280" height="180" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect x="60" y="100" width="280" height="36" rx="8" fill="#f1f5f9"/>
+    <rect x="60" y="126" width="280" height="10" fill="#f1f5f9"/>
+    <text x="200" y="122" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">runtime behavior inventory</text>
+
+    <g font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#475569">
+      <text x="80" y="160">route / behavior 1</text>
+      <text x="80" y="180">route / behavior 2</text>
+      <text x="80" y="200">route / behavior 3</text>
+      <text x="80" y="220">route / behavior 4</text>
+      <text x="80" y="240">route / behavior 5</text>
+      <text x="80" y="260" fill="#94a3b8" font-style="italic">…</text>
+    </g>
+  </g>
+
+  <g>
+    <text x="400" y="175" text-anchor="middle" font-size="11" font-weight="500" fill="#475569">one row</text>
+    <text x="400" y="190" text-anchor="middle" font-size="11" font-weight="500" fill="#475569">per case</text>
+    <line x1="345" y1="205" x2="455" y2="205" stroke="#475569" stroke-width="2"/>
+    <polygon points="455,201 465,205 455,209" fill="#475569"/>
+  </g>
+
+  <g>
+    <rect x="460" y="100" width="280" height="180" rx="8" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+    <rect x="460" y="100" width="280" height="36" rx="8" fill="#e0e7ff"/>
+    <rect x="460" y="126" width="280" height="10" fill="#e0e7ff"/>
+    <text x="600" y="122" text-anchor="middle" font-size="12" font-weight="600" fill="#3730a3">QA cases</text>
+
+    <g font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#3730a3">
+      <text x="480" y="160">QA-1   case for behavior 1</text>
+      <text x="480" y="180">QA-2   case for behavior 2</text>
+      <text x="480" y="200">QA-3   case for behavior 3</text>
+      <text x="480" y="220">QA-4   case for behavior 4</text>
+      <text x="480" y="240">QA-5   case for behavior 5</text>
+      <text x="480" y="260" fill="#94a3b8" font-style="italic">…</text>
+    </g>
+  </g>
+</svg>

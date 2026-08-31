@@ -1,0 +1,69 @@
+<svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A run of plan-qa has five phases: Preflight, Walk the artifacts, Mine the human, Confirm the list, Output" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title>A run, phase by phase</title>
+  <rect width="1000" height="280" fill="#ffffff"/>
+
+  <text x="500" y="32" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a">A run, phase by phase</text>
+
+  <g font-size="12">
+    <g transform="translate(40, 80)">
+      <rect width="160" height="90" rx="8" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+      <text x="80" y="28" text-anchor="middle" font-weight="600" fill="#3730a3">Preflight</text>
+      <text x="80" y="50" text-anchor="middle" fill="#4338ca" font-size="10">detect stack, P0,</text>
+      <text x="80" y="64" text-anchor="middle" fill="#4338ca" font-size="10">drivers, harness</text>
+    </g>
+
+    <g transform="translate(230, 80)">
+      <rect width="160" height="90" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+      <text x="80" y="28" text-anchor="middle" font-weight="600" fill="#78350f">Walk the artifacts</text>
+      <text x="80" y="50" text-anchor="middle" fill="#92400e" font-size="10">read diff + specs,</text>
+      <text x="80" y="64" text-anchor="middle" fill="#92400e" font-size="10">propose scenarios</text>
+    </g>
+
+    <g transform="translate(420, 80)">
+      <rect width="160" height="90" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+      <text x="80" y="28" text-anchor="middle" font-weight="600" fill="#78350f">Mine the human</text>
+      <text x="80" y="50" text-anchor="middle" fill="#92400e" font-size="10">structured Q&amp;A,</text>
+      <text x="80" y="64" text-anchor="middle" fill="#92400e" font-size="10">traps, judgments</text>
+    </g>
+
+    <g transform="translate(610, 80)">
+      <rect width="160" height="90" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+      <text x="80" y="28" text-anchor="middle" font-weight="600" fill="#78350f">Confirm the list</text>
+      <text x="80" y="50" text-anchor="middle" fill="#92400e" font-size="10">human disposes,</text>
+      <text x="80" y="64" text-anchor="middle" fill="#92400e" font-size="10">agent writes artifact</text>
+    </g>
+
+    <g transform="translate(800, 80)">
+      <rect width="160" height="90" rx="8" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+      <text x="80" y="28" text-anchor="middle" font-weight="600" fill="#3730a3">Output</text>
+      <text x="80" y="50" text-anchor="middle" fill="#4338ca" font-size="10">specs/qa/QA-N-…</text>
+      <text x="80" y="64" text-anchor="middle" fill="#4338ca" font-size="10">machine-executable</text>
+    </g>
+  </g>
+
+  <g stroke="#94a3b8" stroke-width="1.5" fill="none">
+    <line x1="200" y1="125" x2="228" y2="125"/>
+    <polygon points="224,121 232,125 224,129" fill="#94a3b8"/>
+    <line x1="390" y1="125" x2="418" y2="125"/>
+    <polygon points="414,121 422,125 414,129" fill="#94a3b8"/>
+    <line x1="580" y1="125" x2="608" y2="125"/>
+    <polygon points="604,121 612,125 604,129" fill="#94a3b8"/>
+    <line x1="770" y1="125" x2="798" y2="125"/>
+    <polygon points="794,121 802,125 794,129" fill="#94a3b8"/>
+  </g>
+
+  <g font-size="10" fill="#475569" text-anchor="middle">
+    <text x="120" y="195">agent</text>
+    <text x="310" y="195">agent + human</text>
+    <text x="500" y="195">human + agent</text>
+    <text x="690" y="195">human decides</text>
+    <text x="880" y="195">agent</text>
+  </g>
+
+  <g font-size="10" fill="#475569">
+    <rect x="40" y="225" width="14" height="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="1"/>
+    <text x="60" y="236">agent-led</text>
+    <rect x="170" y="225" width="14" height="14" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+    <text x="190" y="236">judgment in the loop</text>
+  </g>
+</svg>

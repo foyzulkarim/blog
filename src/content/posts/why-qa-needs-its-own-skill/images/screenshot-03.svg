@@ -1,0 +1,39 @@
+<svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Screenshot 03, Questions and answers: the agent asks a structured question, the human disposes" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title>Screenshot 03 — Questions and answers</title>
+  <rect width="800" height="320" fill="#fafafa"/>
+
+  <text x="400" y="40" text-anchor="middle" font-size="14" font-weight="600" fill="#0f172a">Questions and answers</text>
+  <text x="400" y="62" text-anchor="middle" font-size="12" fill="#64748b" font-style="italic">the agent proposes, the human disposes</text>
+
+  <g>
+    <rect x="80" y="110" width="220" height="160" rx="8" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.5"/>
+    <text x="190" y="138" text-anchor="middle" font-size="13" font-weight="600" fill="#3730a3">agent</text>
+    <text x="190" y="160" text-anchor="middle" font-size="11" fill="#4338ca">asks a structured question</text>
+    <text x="190" y="178" text-anchor="middle" font-size="11" fill="#4338ca">with options, a recommendation,</text>
+    <text x="190" y="196" text-anchor="middle" font-size="11" fill="#4338ca">and reasoning for each</text>
+    <text x="190" y="232" text-anchor="middle" font-size="10" fill="#6366f1" font-style="italic">synthesizes the answer</text>
+    <text x="190" y="250" text-anchor="middle" font-size="10" fill="#6366f1" font-style="italic">into the plan</text>
+  </g>
+
+  <g>
+    <rect x="500" y="110" width="220" height="160" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+    <text x="610" y="138" text-anchor="middle" font-size="13" font-weight="600" fill="#78350f">human</text>
+    <text x="610" y="160" text-anchor="middle" font-size="11" fill="#92400e">clicks an option,</text>
+    <text x="610" y="178" text-anchor="middle" font-size="11" fill="#92400e">overrides it, or says</text>
+    <text x="610" y="196" text-anchor="middle" font-size="11" fill="#92400e">"I do not know"</text>
+    <text x="610" y="232" text-anchor="middle" font-size="10" fill="#a16207" font-style="italic">judgment, not synthesis</text>
+    <text x="610" y="250" text-anchor="middle" font-size="10" fill="#a16207" font-style="italic">about ten minutes total</text>
+  </g>
+
+  <g>
+    <text x="400" y="158" text-anchor="middle" font-size="11" font-weight="500" fill="#475569">asks</text>
+    <line x1="305" y1="175" x2="495" y2="175" stroke="#475569" stroke-width="2"/>
+    <polygon points="495,171 505,175 495,179" fill="#475569"/>
+  </g>
+
+  <g>
+    <text x="400" y="225" text-anchor="middle" font-size="11" font-weight="500" fill="#475569">disposes</text>
+    <line x1="495" y1="240" x2="305" y2="240" stroke="#475569" stroke-width="2"/>
+    <polygon points="305,236 295,240 305,244" fill="#475569"/>
+  </g>
+</svg>
