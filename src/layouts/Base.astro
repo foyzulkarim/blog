@@ -10,6 +10,10 @@ interface Props {
   lang?: 'en' | 'bn';
   /** Home page supplies its own full title instead of the "— foyzul" suffix. */
   bareTitle?: boolean;
+  /** Override og:type (e.g. 'article' for blog posts). Defaults to 'website'. */
+  ogType?: string;
+  /** Override og:image with a per-page image URL. Defaults to site default. */
+  ogImage?: string;
 }
 
 const { title, description, lang = 'en', bareTitle = false } = Astro.props;
@@ -43,11 +47,16 @@ const fullTitle = bareTitle ? title : `${title} — foyzul`;
     <link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title="foyzul" href="/rss.xml" />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={Astro.props.ogType ?? 'website'} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:site_name" content="foyzul" />
+    <meta property="og:image" content={Astro.props.ogImage ?? new URL('/og-default.png', Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={Astro.props.ogImage ?? new URL('/og-default.png', Astro.site)} />
 
     {/* Umami analytics — replace YOUR_WEBSITE_ID with your actual Umami website ID */}
     <script defer src="https://cloud.umami.is/script.js" data-website-id="6ab9452a-5c1f-4f96-9625-e1909c654763"></script>

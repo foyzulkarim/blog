@@ -10,9 +10,11 @@ interface Props {
 
 const { post } = Astro.props;
 const { title, description, pubDate, updatedDate, tags, lang } = post.data;
+const postSlug = post.slug;
+const ogImage = new URL(`/og-${postSlug}.png`, Astro.site).href;
 ---
 
-<Base title={title} description={description} lang={lang}>
+<Base title={title} description={description} lang={lang} ogType="article" ogImage={ogImage}>
   {/*
     Spec §5.1 / §9.2: exactly ONE <article> per post. It spans every grid
     track and re-exposes them via subgrid (blog.css §3), so a bleed figure
