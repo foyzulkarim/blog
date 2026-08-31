@@ -1,5 +1,6 @@
 ---
 import TagChips from './TagChips.astro';
+import ShareButtons from './ShareButtons.astro';
 import { formatDate, isoDate, type Post } from '../lib/posts';
 
 interface Props {
@@ -29,6 +30,11 @@ const { posts } = Astro.props;
               {post.data.description}
             </p>
             <TagChips tags={post.data.tags} lang={post.data.lang} />
+            <ShareButtons
+              url={new URL(`/${post.id}/`, Astro.site).href}
+              title={post.data.title}
+              iconOnly={true}
+            />
           </article>
         </li>
       );
