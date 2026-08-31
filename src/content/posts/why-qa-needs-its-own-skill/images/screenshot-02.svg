@@ -1,0 +1,37 @@
+<svg viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Screenshot 02, Self-exploration: the pull request splits into two parallel investigations, spec recovery and runtime surface" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title>Screenshot 02 — Self-exploration</title>
+  <rect width="800" height="340" fill="#fafafa"/>
+
+  <text x="400" y="40" text-anchor="middle" font-size="14" font-weight="600" fill="#0f172a">Self-exploration</text>
+  <text x="400" y="62" text-anchor="middle" font-size="12" fill="#64748b" font-style="italic">two parallel investigations, run side by side</text>
+
+  <g>
+    <rect x="340" y="100" width="120" height="56" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="400" y="124" text-anchor="middle" font-size="12" font-weight="600" fill="#475569">the pull request</text>
+    <text x="400" y="142" text-anchor="middle" font-size="10" fill="#94a3b8" font-style="italic">the only input</text>
+  </g>
+
+  <g>
+    <line x1="370" y1="156" x2="200" y2="200" stroke="#475569" stroke-width="1.5"/>
+    <line x1="200" y1="200" x2="200" y2="240" stroke="#475569" stroke-width="1.5"/>
+  </g>
+
+  <g>
+    <line x1="430" y1="156" x2="600" y2="200" stroke="#475569" stroke-width="1.5"/>
+    <line x1="600" y1="200" x2="600" y2="240" stroke="#475569" stroke-width="1.5"/>
+  </g>
+
+  <g>
+    <rect x="80" y="240" width="240" height="68" rx="8" fill="#faf5ff" stroke="#a855f7" stroke-width="1.5"/>
+    <text x="200" y="266" text-anchor="middle" font-size="12" font-weight="600" fill="#7e22ce">what we planned to build</text>
+    <text x="200" y="286" text-anchor="middle" font-size="11" fill="#6b21a8">spec recovery · git history</text>
+    <text x="200" y="302" text-anchor="middle" font-size="10" fill="#7e22ce" font-style="italic">acceptance criteria, areas</text>
+  </g>
+
+  <g>
+    <rect x="480" y="240" width="240" height="68" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+    <text x="600" y="266" text-anchor="middle" font-size="12" font-weight="600" fill="#047857">what we actually built</text>
+    <text x="600" y="286" text-anchor="middle" font-size="11" fill="#065f46">runtime surface · from diff</text>
+    <text x="600" y="302" text-anchor="middle" font-size="10" fill="#047857" font-style="italic">routes, fns, env, migrations</text>
+  </g>
+</svg>
