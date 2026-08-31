@@ -77,6 +77,7 @@ the post has images; use a flat file for pure prose.
 | `tags` | no | Free text. Chips link to `/topics/#<tag>`; the topics page builds itself. |
 | `lang` | no | `bn` swaps to Noto Sans Bengali, loosens the line height, and adds a বাংলা chip. |
 | `draft` | no | `true` shows in `npm run dev`, excluded from build, index count, RSS, and sitemap. |
+| `ogImage` | no | Path relative to the post. **Use 1.91:1 viewBox (1200×630)**, render at 2x to 2400×1260 webp. LinkedIn always crops link previews to 1.91:1, so 1:1 squares lose top/bottom and 16:9 wides lose left/right. If unset, the layout falls back to `images/hero.webp`, then `public/og-<id>.png`, then `public/og-default.png`. |
 
 Anything invalid fails the build with the field name — the schema is in `src/content.config.ts`.
 
