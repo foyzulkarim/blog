@@ -21,7 +21,7 @@ const posts = defineCollection({
         .replace(/\.mdx?$/, '')
         .replace(/\/$/, ''),
   }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     // Spec §5.2: exactly one concise description, rendered on the index.
     description: z.string(),
@@ -32,6 +32,10 @@ const posts = defineCollection({
     // swap, and the বাংলা chip. Deliberately not a magic tag string.
     lang: z.enum(['en', 'bn']).default('en'),
     draft: z.boolean().default(false),
+    // Optional explicit social-card image. Path is relative to the post file,
+    // e.g. `ogImage: ./images/plan-execute-split.webp`. When unset, the
+    // Post layout falls back to images/hero.webp, then to public/og-default.png.
+    ogImage: image().optional(),
   }),
 });
 

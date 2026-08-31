@@ -10,8 +10,36 @@ interface Props {
 
 const { post } = Astro.props;
 const { title, description, pubDate, updatedDate, tags, lang } = post.data;
-const postSlug = post.slug;
-const ogImage = new URL(`/og-${postSlug}.png`, Astro.site).href;
+// Astro 7's glob loader no longer exposes `.slug` on the collection entry —
+// only `.id`. The route param in [...slug].astro is also derived from `id`,
+// so this stays in sync with the public URL.
+//
+// Per-post OG image resolution, in order:
+//   1. frontmatter `ogImage` (explicit, post-author choice — preferred)
+//   2. src/content/posts/<id>/images/hero.webp  (convention)
+//   3. public/og-<id>.png                       (legacy curated social cards)
+//   4. public/og-default.png                    (site fallback)
+const explicitOg = post.data.ogImage?.src;
+
+const heroWebps = import.meta.glob<string>(
+  '/src/content/posts/*/images/hero.webp',
+  { eager: true, query: '?url', import: 'default' },
+);
+const heroRel = heroWebps[`/src/content/posts/${post.id}/images/hero.webp`];
+
+const publicOgPngs = import.meta.glob<string>('/public/og-*.png', {
+  eager: true,
+  import: 'default',
+});
+const hasPublicOg = Object.keys(publicOgPngs).some((p) =>
+  p.endsWith(`/og-${post.id}.png`),
+);
+
+const ogRel =
+  explicitOg ??
+  heroRel ??
+  (hasPublicOg ? `/og-${post.id}.png` : '/og-default.png');
+const ogImage = new URL(ogRel, Astro.site).href;
 ---
 
 <Base title={title} description={description} lang={lang} ogType="article" ogImage={ogImage}>
