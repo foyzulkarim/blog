@@ -1,7 +1,7 @@
 // Renders the three in-body figures for the "Agentic session efficiency" post.
 // `node scripts/figures-dos-donts.mjs` — writes fig-*.webp next to the post.
 //
-// The post's existing visuals (og-dos-donts.webp, image.png) are fixed dark
+// The post's existing visuals (og-dos-donts-v1.webp, image.png) are fixed dark
 // One Dark cards, so these match that surface rather than following the page
 // theme. Marks use #3987e5 / #d95926, validated for CVD separation and 3:1
 // contrast against #282c34. Text stays on ink tokens — the marks carry identity.
@@ -72,19 +72,6 @@ body { background: #14161b; }
 .under { display: flex; gap: 7px; margin-top: 8px; font-size: 11.5px; color: var(--ink-3); }
 .span { border-top: 1px solid var(--hairline); border-inline: 1px solid var(--hairline); height: 7px; }
 .big { font-size: 30px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
-
-/* ── og / hero card ── */
-.card--og { width: 1200px; height: 630px; padding: 60px 64px; position: relative; display: flex; flex-direction: column; }
-.og-main { flex: 1; display: flex; align-items: center; gap: 48px; }
-.og-headline { font-size: 84px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; margin-top: 14px; white-space: nowrap; }
-.og-headline .to { color: var(--ink-3); font-weight: 400; }
-.og-chart text { paint-order: stroke; stroke: #282c34; stroke-width: 5px; }
-.og-sub { font-size: 17px; color: var(--ink-2); margin-top: 18px; line-height: 1.5; }
-.og-chart { flex: none; }
-.og-foot { position: absolute; right: 64px; bottom: 34px; font-size: 14px; color: var(--ink-3); }
-.og-skill { font-size: 30px; font-weight: 600; color: #e5c07b; letter-spacing: 0.01em; }
-.og-skillrow { display: flex; align-items: baseline; gap: 18px; }
-.og-skillrow .rest { font-size: 14px; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; }
 `;
 
 const rep = (n, html) => Array.from({ length: n }, html).join('');
@@ -171,39 +158,10 @@ const fig3 = `
 const page_ = (body, cls = '') =>
   `<!doctype html><meta charset="utf-8"><style>${CSS}</style><div class="card ${cls}">${body}</div>`;
 
-// ── og / hero card ─────────────────────────────────────────────────────────
-// Waste-rate trend across the four audit runs: 0.69 → 0.66 → 0.46 → 0.42.
-const trend = [0.69, 0.66, 0.46, 0.42];
-const W = 460, H = 300, PAD = 46;
-const x = (i) => PAD + (i * (W - 2 * PAD)) / (trend.length - 1);
-const y = (v) => PAD + ((0.75 - v) / (0.75 - 0.38)) * (H - 2 * PAD);
-const pts = trend.map((v, i) => [x(i), y(v)]);
-const og = `
-<div class="og-main">
-  <div>
-    <div class="og-skillrow"><span class="og-skill">/session-audit</span><span class="rest">→ 1,048 of my sessions · 4 runs</span></div>
-    <div class="og-headline">0.69% <span class="to">→</span> 0.42%</div>
-    <div class="og-sub">session-token waste rate — the fixes that were applied held</div>
-  </div>
-  <svg class="og-chart" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" fill="none">
-    <polyline points="${pts.map((p) => p.join(',')).join(' ')}" stroke="#3987e5" stroke-width="3"/>
-    ${pts
-      .map(
-        ([px, py], i) => `
-    <circle cx="${px}" cy="${py}" r="6" fill="#3987e5"/>
-    <text x="${px}" y="${py - 18}" text-anchor="middle" font-family="Plex" font-size="17" font-weight="600" fill="${i === trend.length - 1 ? '#3987e5' : '#a4acbc'}">${trend[i].toFixed(2)}%</text>`,
-      )
-      .join('')}
-  </svg>
-</div>
-<div class="og-foot">blog.foyzul.com</div>
-`;
-
 const FIGS = [
   ['fig-delegate-scanning', fig1],
   ['fig-cache-ttl', fig2],
   ['fig-re-reads', fig3],
-  ['og-dos-donts', og, 'card--og'],
 ];
 
 const dir = mkdtempSync(join(tmpdir(), 'figs-'));
