@@ -2049,6 +2049,274 @@ figcaption b { color: var(--text-primary); font-weight: 600; }
   max-width: none;
 }
 
+/* ============================================================
+   Foundations: per-slide transcripts (Workstream A)
+   An in-slide segmented control ("Slide / Transcript") reveals a
+   transcript overlay that sits over the slide body without shifting
+   layout — so the deck reads as the full talk and presents cleanly.
+   Injected by SlideTranscripts.astro; styled here with the existing
+   --deck-* tokens so it themes in light/dark for free.
+   ============================================================ */
+
+.slides-deck .slide.has-transcript {
+  position: relative;
+}
+
+/* The segmented control, pinned to the top-right of the slide frame. */
+.slides-deck .slide-transcript {
+  position: absolute;
+  top: var(--s-4);
+  right: var(--s-4);
+  z-index: 3;
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border: var(--hairline) solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--deck-surface) 82%, transparent);
+  backdrop-filter: saturate(1.2) blur(6px);
+  -webkit-backdrop-filter: saturate(1.2) blur(6px);
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.06);
+}
+
+.slides-deck .slide-transcript__seg {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: var(--deck-text-mute);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: color 140ms ease, background-color 140ms ease;
+}
+
+.slides-deck .slide-transcript__seg:hover {
+  color: var(--deck-text);
+}
+
+.slides-deck .slide-transcript__seg[aria-pressed="true"] {
+  color: var(--surface);
+  background: var(--accent);
+}
+
+.slides-deck .slide-transcript__seg:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* The overlay panel. Covers the slide body; independently scrollable so long
+   ("big chunk") transcripts never resize the slide. */
+.slides-deck .slide-transcript__panel {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  align-items: center;
+  padding: clamp(var(--s-6), 4vw, var(--s-8));
+  background: color-mix(in oklab, var(--deck-surface) 94%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 200ms ease, transform 200ms ease, visibility 0s linear 200ms;
+  overflow-y: auto;
+}
+
+.slides-deck .slide.transcript-open .slide-transcript__panel {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 200ms ease, transform 200ms ease, visibility 0s;
+}
+
+.slides-deck .slide-transcript__panel:focus-visible {
+  outline: none;
+}
+
+.slides-deck .slide-transcript__inner {
+  width: 100%;
+  max-width: 68ch;
+  margin: 0 auto;
+}
+
+.slides-deck .slide-transcript__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  margin-bottom: var(--s-5);
+  padding-bottom: var(--s-3);
+  border-bottom: var(--hairline) solid var(--border);
+}
+
+.slides-deck .slide-transcript__kicker {
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--deck-gold);
+}
+
+.slides-deck .slide-transcript__title {
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--deck-text-mute);
+  margin-right: auto;
+}
+
+.slides-deck .slide-transcript__close {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--deck-text-mute);
+  background: transparent;
+  border: var(--hairline) solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease;
+}
+
+.slides-deck .slide-transcript__close:hover {
+  color: var(--deck-text);
+  border-color: var(--border-strong);
+}
+
+.slides-deck .slide-transcript__close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.slides-deck .slide-transcript__body {
+  font-family: var(--font-body);
+  font-size: clamp(1.0625rem, 0.98rem + 0.35vw, 1.25rem);
+  line-height: 1.7;
+  color: var(--deck-text);
+}
+
+.slides-deck .slide-transcript__body p {
+  margin: 0 0 var(--s-4);
+}
+
+.slides-deck .slide-transcript__body p:last-child {
+  margin-bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slides-deck .slide-transcript__panel {
+    transition: visibility 0s linear 0s;
+    transform: none;
+  }
+  .slides-deck .slide.transcript-open .slide-transcript__panel {
+    transition: visibility 0s;
+  }
+}
+
+/* ============================================================
+   Foundations: presentation-friendly present mode (Workstream B)
+   Discrete one-slide-at-a-time stepping with a cross-fade, a
+   fit-to-screen scale hook, and a progress bar + position chip.
+   Only active while .is-presented; the reading view is unchanged.
+   ============================================================ */
+
+/* B2 — one slide at a time. In present mode we no longer scroll; the active
+   slide is shown and the rest are taken out of flow. SlidesNav toggles
+   .is-active on exactly one slide. */
+.slides-deck.is-presented {
+  scroll-snap-type: none;
+  overflow: hidden;
+}
+
+.slides-deck.is-presented .slide {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  scroll-snap-align: none;
+  transition: opacity 180ms ease, visibility 0s linear 180ms;
+}
+
+.slides-deck.is-presented .slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 180ms ease, visibility 0s;
+}
+
+/* B1 — fit-to-screen. SlidesNav measures the active slide's content and sets
+   an inline transform on its wrapper (chosen at runtime) so nothing clips or
+   inner-scrolls. CSS only supplies the origin + transition. */
+.slides-deck.is-presented .slide .slide-fit-target {
+  transform-origin: top center;
+  transition: transform 180ms ease;
+}
+
+/* When a slide is scaled to fit, anchor its content to the top of the frame
+   so the (visually shorter) scaled box doesn't drift above the viewport. */
+.slides-deck.is-presented .slide.is-fitting {
+  align-content: start;
+}
+
+/* B3 — progress bar + position chip, only in present mode. */
+.slides-deck .deck-progress {
+  display: none;
+}
+
+.slides-deck.is-presented .deck-progress {
+  display: block;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 200;
+  background: color-mix(in oklab, var(--deck-text-mute) 22%, transparent);
+}
+
+.slides-deck.is-presented .deck-progress__bar {
+  height: 100%;
+  width: calc(var(--slide-num) / var(--slide-total) * 100%);
+  background: var(--accent);
+  transition: width 180ms ease;
+}
+
+.slides-deck.is-presented .deck-progress__chip {
+  position: fixed;
+  right: var(--s-5);
+  bottom: var(--s-5);
+  z-index: 200;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--deck-text-mute);
+  background: color-mix(in oklab, var(--deck-surface) 82%, transparent);
+  border: var(--hairline) solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slides-deck.is-presented .slide,
+  .slides-deck.is-presented .slide.is-active,
+  .slides-deck.is-presented .slide .slide-fit-target,
+  .slides-deck.is-presented .deck-progress__bar {
+    transition: none;
+  }
+}
+
 /* Mobile: collapse the multi-column grids and tighten the cover. */
 @media (max-width: 48rem) {
   .slides-deck .grid.cols-2,

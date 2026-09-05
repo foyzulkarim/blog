@@ -5,6 +5,17 @@
  * Astro's hoister and emitted as a module <script> in the page head, so it
  * never runs during SSR (and therefore never touches `document` server-side).
  *
+ * Reading view: the deck is one long vertical scroll; nav/keys scroll the
+ * target slide into view and an IntersectionObserver tracks the active one.
+ *
+ * Present mode (.is-presented): a fullscreen takeover that shows ONE slide at
+ * a time (crisp cross-fade, no scrolling), scales each slide to fit the screen
+ * so nothing clips, and shows a progress bar + position chip. The active slide
+ * carries `.is-active`.
+ *
+ * Deep-linking: the active slide is mirrored to the URL hash (`#s12`) and read
+ * back on load, so you can refresh or share at a specific slide.
+ *
  * Keyboard:
  *   → / PageDown / Space    next slide
  *   ← / PageUp              previous slide
@@ -31,11 +42,80 @@
       const total = slides.length;
       let current = 0;
       let returnScrollY = 0;
+      let hashTimer: number | null = null;
 
       const pad = (n: number) => String(n).padStart(2, '0');
+      const isPresented = () => deck.classList.contains('is-presented');
+
+      /* Progress bar + position chip. Created here (not in markup) so the deck
+         stays clean; CSS keeps them hidden outside .is-presented. */
+      const progress = document.createElement('div');
+      progress.className = 'deck-progress';
+      progress.setAttribute('aria-hidden', 'true');
+      const progressBar = document.createElement('div');
+      progressBar.className = 'deck-progress__bar';
+      progress.appendChild(progressBar);
+      const chip = document.createElement('div');
+      chip.className = 'deck-progress__chip';
+      chip.setAttribute('aria-hidden', 'true');
+      deck.append(progress, chip);
+
+      /* ----- Fit-to-screen (present mode) ----- */
+      function fitTarget(slide: HTMLElement): HTMLElement | null {
+        return slide.querySelector<HTMLElement>(
+          ':scope > .slide-body, :scope > .cover-inner, :scope > .section-header-inner',
+        );
+      }
+
+      function clearFit(): void {
+        for (const slide of slides) {
+          slide.classList.remove('is-fitting');
+          const t = fitTarget(slide);
+          if (t) {
+            t.classList.remove('slide-fit-target');
+            t.style.transform = '';
+          }
+        }
+      }
+
+      function fitActive(): void {
+        clearFit();
+        if (!isPresented()) return;
+        const slide = slides[current];
+        if (!slide) return;
+        const target = fitTarget(slide);
+        if (!target) return;
+        target.classList.add('slide-fit-target');
+        /* Measure at natural scale, then shrink to fit the padded slide box. */
+        const cs = getComputedStyle(slide);
+        const padY =
+          parseFloat(cs.paddingTop || '0') + parseFloat(cs.paddingBottom || '0');
+        const avail = slide.clientHeight - padY;
+        const natural = target.scrollHeight;
+        if (natural > avail && avail > 0) {
+          const scale = Math.max(0.5, avail / natural);
+          target.style.transform = `scale(${scale})`;
+          slide.classList.add('is-fitting'); // top-align while scaled
+        } else {
+          target.style.transform = '';
+        }
+      }
+
+      /* ----- Deep-link hash ----- */
+      function writeHash(): void {
+        if (hashTimer != null) return;
+        hashTimer = window.setTimeout(() => {
+          hashTimer = null;
+          const h = '#s' + (current + 1);
+          if (location.hash !== h) {
+            history.replaceState(null, '', h);
+          }
+        }, 150);
+      }
 
       function update(): void {
         if (counter) counter.textContent = pad(current + 1) + ' / ' + pad(total);
+        if (chip) chip.textContent = pad(current + 1) + ' / ' + pad(total);
         if (prevBtn)
           prevBtn.setAttribute('aria-disabled', current === 0 ? 'true' : 'false');
         if (nextBtn)
@@ -43,6 +123,13 @@
             'aria-disabled',
             current === total - 1 ? 'true' : 'false',
           );
+
+        slides.forEach((s, i) => s.classList.toggle('is-active', i === current));
+        deck.style.setProperty('--slide-num', String(current + 1));
+        deck.style.setProperty('--slide-total', String(total));
+
+        if (isPresented()) fitActive();
+        writeHash();
       }
 
       function go(i: number): void {
@@ -50,7 +137,11 @@
         if (next === current) return;
         current = next;
         update();
-        slides[current]!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        /* Present mode swaps slides via .is-active (CSS cross-fade); only the
+           reading view scrolls. */
+        if (!isPresented()) {
+          slides[current]!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
 
       /* The negative rootMargin biases the trigger zone toward the top of the
@@ -65,6 +156,9 @@
          wrong slide win. Re-querying is cheap (15 elements). */
       const observer = new IntersectionObserver(
         () => {
+          /* In present mode slides are stacked/hidden, so their rects are
+             meaningless — the present-mode current is authoritative. */
+          if (isPresented()) return;
           let bestIdx = -1;
           let bestTop = -Infinity;
           for (let i = 0; i < slides.length; i++) {
@@ -120,7 +214,7 @@
             go(total - 1);
             break;
           case 'Escape':
-            if (deck.classList.contains('is-presented')) exitPresentation();
+            if (isPresented()) exitPresentation();
             break;
         }
       });
@@ -129,7 +223,9 @@
         returnScrollY = window.scrollY;
         deck.classList.add('is-presented');
         document.documentElement.style.overflow = 'hidden';
-        slides[current]!.scrollIntoView({ block: 'start' });
+        update();
+        /* Fit after the browser has applied the fullscreen layout. */
+        requestAnimationFrame(fitActive);
         if (presentBtn) presentBtn.textContent = 'Exit';
         /* requestFullscreen can reject (permissions, cross-origin iframes).
            The visual takeover via .is-presented still applies — fullscreen is
@@ -145,8 +241,12 @@
       function exitPresentation(): void {
         deck.classList.remove('is-presented');
         document.documentElement.style.overflow = '';
-        window.scrollTo(0, returnScrollY);
+        clearFit();
         if (presentBtn) presentBtn.textContent = 'Present';
+        /* Land the reading view on the slide we ended on, rather than the
+           pre-present scroll position — keeps the reader's place. */
+        slides[current]!.scrollIntoView({ block: 'start' });
+        void returnScrollY;
         try {
           if (document.fullscreenElement && document.exitFullscreen) {
             const p = document.exitFullscreen();
@@ -158,25 +258,41 @@
       }
 
       function togglePresentation(): void {
-        if (deck.classList.contains('is-presented')) exitPresentation();
+        if (isPresented()) exitPresentation();
         else enterPresentation();
       }
 
       presentBtn?.addEventListener('click', togglePresentation);
 
+      /* Re-fit on resize/orientation change while presenting. */
+      window.addEventListener('resize', () => {
+        if (isPresented()) fitActive();
+      });
+
       /* The browser can also drop us out of fullscreen on its own (Esc on
          desktop, focus loss on some mobile browsers). Keep the visual state
          in sync. */
       document.addEventListener('fullscreenchange', () => {
-        if (
-          !document.fullscreenElement &&
-          deck.classList.contains('is-presented')
-        ) {
+        if (!document.fullscreenElement && isPresented()) {
           exitPresentation();
         }
       });
 
+      /* Open at the slide named in the URL hash (#s12), if valid. */
+      const hashMatch = /^#s(\d+)$/.exec(location.hash);
+      if (hashMatch) {
+        const idx = parseInt(hashMatch[1]!, 10) - 1;
+        if (idx >= 0 && idx < total) current = idx;
+      }
+
       update();
+
+      if (hashMatch && current > 0) {
+        /* Defer so layout is settled before we jump. */
+        requestAnimationFrame(() =>
+          slides[current]!.scrollIntoView({ block: 'start' }),
+        );
+      }
     });
   }
 
