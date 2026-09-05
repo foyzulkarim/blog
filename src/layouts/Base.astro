@@ -62,6 +62,26 @@ const fullTitle = bareTitle ? title : `${title} — foyzul`;
     {/* Umami analytics — replace YOUR_WEBSITE_ID with your actual Umami website ID */}
     <script defer src="https://cloud.umami.is/script.js" data-website-id="6ab9452a-5c1f-4f96-9625-e1909c654763"></script>
 
+    {/* Google Translate — free widget, no API key. pageLanguage:'auto' picks up
+        the html lang attribute (en or bn) so translated posts are detected.
+        SIMPLE layout drops the "Powered by" line so the header stays clean. */}
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: 'auto',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false,
+          },
+          'google_translate_element',
+        );
+      }
+    </script>
+    <script
+      type="text/javascript"
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+    ></script>
+
     {/* The two faces every English page renders immediately. */}
     <link
       rel="preload"
