@@ -1,0 +1,70 @@
+<svg viewBox="0 0 1200 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hero diagram: a latency distribution with two clumps — fast cache hits around 15 milliseconds and slow cache misses around 400 milliseconds — plus a thin tail. A dashed amber average line sits in the empty valley between the clumps, where no request ever landed. p50 sits in the fast clump, p99 sits in the tail." font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title>Usually fine. Occasionally terrible. The average sits where no request ever landed.</title>
+  <rect width="1200" height="360" fill="#ffffff"/>
+
+  <text x="600" y="62" text-anchor="middle" font-size="26" font-weight="700" fill="#12242B">Usually fine. Occasionally terrible.</text>
+
+  <!-- fast clump: cache hits -->
+  <g fill="#0E7C7B" opacity="0.85">
+    <rect x="212" y="260" width="10" height="20"/>
+    <rect x="226" y="235" width="10" height="45"/>
+    <rect x="240" y="200" width="10" height="80"/>
+    <rect x="254" y="165" width="10" height="115"/>
+    <rect x="268" y="140" width="10" height="140"/>
+    <rect x="282" y="130" width="10" height="150"/>
+    <rect x="296" y="125" width="10" height="155"/>
+    <rect x="310" y="132" width="10" height="148"/>
+    <rect x="324" y="150" width="10" height="130"/>
+    <rect x="338" y="180" width="10" height="100"/>
+    <rect x="352" y="210" width="10" height="70"/>
+    <rect x="366" y="238" width="10" height="42"/>
+    <rect x="380" y="258" width="10" height="22"/>
+  </g>
+
+  <!-- slow clump: cache misses -->
+  <g fill="#A32E63" opacity="0.85">
+    <rect x="716" y="265" width="10" height="15"/>
+    <rect x="730" y="245" width="10" height="35"/>
+    <rect x="744" y="220" width="10" height="60"/>
+    <rect x="758" y="195" width="10" height="85"/>
+    <rect x="772" y="180" width="10" height="100"/>
+    <rect x="786" y="172" width="10" height="108"/>
+    <rect x="800" y="175" width="10" height="105"/>
+    <rect x="814" y="185" width="10" height="95"/>
+    <rect x="828" y="200" width="10" height="80"/>
+    <rect x="842" y="220" width="10" height="60"/>
+    <rect x="856" y="242" width="10" height="38"/>
+    <rect x="870" y="260" width="10" height="20"/>
+  </g>
+
+  <!-- the tail -->
+  <g fill="#A32E63" opacity="0.6">
+    <rect x="912" y="268" width="10" height="12"/>
+    <rect x="954" y="271" width="10" height="9"/>
+    <rect x="996" y="273" width="10" height="7"/>
+    <rect x="1038" y="274" width="10" height="6"/>
+    <rect x="1080" y="275" width="10" height="5"/>
+  </g>
+
+  <!-- axis -->
+  <line x1="60" y1="280" x2="1140" y2="280" stroke="#12242B" stroke-width="1.2"/>
+
+  <!-- p50 marker, inside the fast clump -->
+  <line x1="296" y1="110" x2="296" y2="280" stroke="#12242B" stroke-width="1.6"/>
+  <text x="296" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#12242B" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">p50</text>
+
+  <!-- average marker, in the empty valley -->
+  <line x1="520" y1="140" x2="520" y2="280" stroke="#B45309" stroke-width="1.4" stroke-dasharray="4 4"/>
+  <text x="520" y="298" text-anchor="middle" font-size="11.5" fill="#B45309">the average — no request landed here</text>
+
+  <!-- p99 marker, in the tail -->
+  <line x1="1080" y1="150" x2="1080" y2="280" stroke="#12242B" stroke-width="1.6"/>
+  <text x="1080" y="142" text-anchor="middle" font-size="13" font-weight="700" fill="#12242B" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">p99</text>
+
+  <!-- clump labels -->
+  <text x="296" y="318" text-anchor="middle" font-size="12" font-weight="600" fill="#0E7C7B">cache hits · 10–25ms</text>
+  <text x="800" y="318" text-anchor="middle" font-size="12" font-weight="600" fill="#A32E63">cache misses · ~400ms</text>
+  <text x="1080" y="318" text-anchor="middle" font-size="12" fill="#A32E63">the tail</text>
+
+  <text x="600" y="346" text-anchor="middle" font-size="13.5" fill="#4B5F66">Read the shape, not the number — the average describes a request that never happened.</text>
+</svg>

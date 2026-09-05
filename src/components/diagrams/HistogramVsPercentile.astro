@@ -1,0 +1,56 @@
+---
+/** Equal value width and uneven counts, versus equal counts and uneven value width. */
+interface Props { caption?: string }
+const { caption = "Same 10 samples in each percentile box; wildly different value spans." } = Astro.props;
+---
+<figure class="perf-figure">
+  <svg viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="A histogram uses equal value widths with uneven counts. Percentiles use equal counts with uneven value widths.">
+    <text x="0" y="14" class="head">Histogram — equal value width, uneven counts</text>
+
+    <rect x="0" y="28" width="470" height="26" class="fast-a" />
+    <text x="480" y="46" class="mono">940</text>
+    <text x="530" y="46" class="mono-s">0–30ms</text>
+
+    <rect x="0" y="60" width="26" height="26" class="fast-b" />
+    <text x="480" y="78" class="mono">52</text>
+    <text x="530" y="78" class="mono-s">30–60ms</text>
+
+    <rect x="0" y="92" width="5" height="26" class="slow-a" />
+    <text x="480" y="110" class="mono">3</text>
+    <text x="530" y="110" class="mono-s">60–90ms</text>
+
+    <text x="0" y="136" class="mono-s">⋮  most buckets empty</text>
+
+    <rect x="0" y="148" width="3" height="20" class="slow-b" />
+    <text x="480" y="163" class="mono">1</text>
+    <text x="530" y="163" class="mono-s">2970–3000</text>
+
+    <line x1="0" y1="188" x2="620" y2="188" class="rule" />
+
+    <text x="0" y="212" class="head">Percentile — equal count, uneven value width</text>
+
+    <rect x="0" y="226" width="18" height="26" class="fast-b" />
+    <text x="30"  y="244" class="mono-s">box 1</text>
+    <text x="110" y="244" class="mono">10 samples</text>
+    <text x="215" y="244" class="mono-s">18–19ms</text>
+
+    <rect x="0" y="258" width="18" height="26" class="fast-b" />
+    <text x="30"  y="276" class="mono-s">box 99</text>
+    <text x="110" y="276" class="mono">10 samples</text>
+    <text x="215" y="276" class="mono-slow">240–2400ms</text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .fast-a { fill: var(--perf-fast, #0E7C7B); opacity: .8 }
+  .fast-b { fill: var(--perf-fast, #0E7C7B); opacity: .85 }
+  .slow-a { fill: var(--perf-slow, #A32E63); opacity: .6 }
+  .slow-b { fill: var(--perf-slow, #A32E63) }
+  .rule   { stroke: var(--perf-rule, #C6D0CD) }
+  .head   { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 13.5px; font-weight: 640; fill: var(--perf-ink, #12242B) }
+  .mono   { font-family: var(--perf-mono, ui-monospace, monospace); font-size: 12px; fill: var(--perf-ink, #12242B) }
+  .mono-s { font-family: var(--perf-mono, ui-monospace, monospace); font-size: 11.5px; fill: var(--perf-ink-soft, #4B5F66) }
+  .mono-slow { font-family: var(--perf-mono, ui-monospace, monospace); font-size: 12px; font-weight: 700; fill: var(--perf-slow, #A32E63) }
+</style>

@@ -1,0 +1,42 @@
+---
+/**
+ * Latency: one request's clock. A browser, a server, and a single
+ * request/response pair — the round-trip time is the whole idea.
+ */
+---
+<figure class="perf-figure">
+  <svg viewBox="0 0 620 190" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="A browser and a server connected by two arrows: one request going out, one response coming back, with a single 22 millisecond round-trip time. Latency is the clock on exactly one request.">
+    <rect x="30" y="60" width="92" height="64" rx="6" class="panel" />
+    <line x1="30" y1="78" x2="122" y2="78" class="rule" />
+    <circle cx="42" cy="69" r="2" class="dot" />
+    <circle cx="52" cy="69" r="2" class="dot" />
+    <rect x="498" y="52" width="92" height="72" rx="6" class="panel" />
+    <line x1="506" y1="68" x2="582" y2="68" class="rule" />
+    <line x1="506" y1="80" x2="582" y2="80" class="rule" />
+    <line x1="506" y1="92" x2="582" y2="92" class="rule" />
+    <circle cx="514" cy="108" r="2" class="led" />
+    <circle cx="524" cy="108" r="2" class="led" />
+    <line x1="132" y1="88" x2="468" y2="88" class="trip" />
+    <polygon points="478,88 468,83.5 468,92.5" class="trip-head" />
+    <line x1="488" y1="112" x2="152" y2="112" class="trip" />
+    <polygon points="142,112 152,107.5 152,116.5" class="trip-head" />
+    <text x="305" y="76" text-anchor="middle" class="lbl">request</text>
+    <text x="305" y="132" text-anchor="middle" class="lbl">response</text>
+    <text x="76" y="150" text-anchor="middle" class="lbl">browser</text>
+    <text x="544" y="150" text-anchor="middle" class="lbl">server</text>
+    <text x="310" y="176" text-anchor="middle" class="mono-b">round trip 22 ms</text>
+  </svg>
+  <figcaption>How long does <em>one</em> request take?</figcaption>
+</figure>
+
+<style>
+  .panel  { fill: var(--perf-panel, #FFFFFF); stroke: var(--perf-ink, #12242B); stroke-width: 1.4 }
+  .rule   { stroke: var(--perf-rule, #C6D0CD); stroke-width: 1 }
+  .dot    { fill: var(--perf-ink-soft, #4B5F66) }
+  .led    { fill: var(--perf-fast, #0E7C7B) }
+  .trip   { stroke: var(--perf-fast, #0E7C7B); stroke-width: 1.8 }
+  .trip-head { fill: var(--perf-fast, #0E7C7B) }
+  .lbl    { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 12px; fill: var(--perf-ink-soft, #4B5F66) }
+  .mono-b { font-family: var(--perf-mono, ui-monospace, monospace); font-size: 13px; fill: var(--perf-ink, #12242B) }
+</style>

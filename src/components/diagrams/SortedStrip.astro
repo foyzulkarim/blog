@@ -1,0 +1,55 @@
+---
+/**
+ * The whole module in one picture: 1,000 sorted requests, two populations,
+ * and an average that describes neither.
+ */
+interface Props { caption?: string }
+const { caption = "A single number can describe a population that does not exist." } = Astro.props;
+---
+<figure class="perf-figure">
+  <svg viewBox="0 0 620 210" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="A sorted strip of 1,000 request durations divided into equal-count boxes, with p50 and p95 marked. 940 fast requests, 60 slow ones, and an average of 46ms that matches neither band.">
+    <text x="0" y="14" class="lbl">1,000 requests, sorted fastest to slowest</text>
+
+    <rect x="0" y="30" width="580" height="40" class="fast-fill" />
+    <rect x="580" y="30" width="34" height="40" class="slow-fill" />
+
+    <g class="knockout">
+      <line x1="61"  y1="30" x2="61"  y2="70" /><line x1="123" y1="30" x2="123" y2="70" />
+      <line x1="184" y1="30" x2="184" y2="70" /><line x1="246" y1="30" x2="246" y2="70" />
+      <line x1="307" y1="30" x2="307" y2="70" /><line x1="369" y1="30" x2="369" y2="70" />
+      <line x1="430" y1="30" x2="430" y2="70" /><line x1="492" y1="30" x2="492" y2="70" />
+      <line x1="553" y1="30" x2="553" y2="70" />
+    </g>
+
+    <line x1="0" y1="78" x2="614" y2="78" class="rule" />
+
+    <line x1="307" y1="30" x2="307" y2="104" class="marker" />
+    <text x="307" y="120" text-anchor="middle" class="mono-b">p50</text>
+    <text x="307" y="136" text-anchor="middle" class="mono-s">22ms</text>
+
+    <line x1="583" y1="30" x2="583" y2="104" class="marker" />
+    <text x="583" y="120" text-anchor="end" class="mono-b">p95</text>
+    <text x="583" y="136" text-anchor="end" class="mono-s">230ms</text>
+
+    <text x="0"   y="164" class="key-fast">940 fast — warm pool</text>
+    <text x="614" y="164" text-anchor="end" class="key-slow">60 slow</text>
+
+    <text x="0" y="194" class="body">Average says 46ms. Neither band is anywhere near 46ms.</text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .fast-fill { fill: var(--perf-fast, #0E7C7B); opacity: .82 }
+  .slow-fill { fill: var(--perf-slow, #A32E63); opacity: .85 }
+  .knockout line { stroke: var(--perf-paper, #F1F3F2); stroke-width: 1; opacity: .5 }
+  .rule   { stroke: var(--perf-rule, #C6D0CD); stroke-width: 1 }
+  .marker { stroke: var(--perf-ink, #12242B); stroke-width: 1.6 }
+  .lbl    { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 12px; fill: var(--perf-ink-soft, #4B5F66) }
+  .body   { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 13px; fill: var(--perf-ink, #12242B) }
+  .mono-b { font-family: var(--perf-mono, ui-monospace, monospace); font-size: 12px; fill: var(--perf-ink, #12242B) }
+  .mono-s { font-family: var(--perf-mono, ui-monospace, monospace); font-size: 11px; fill: var(--perf-ink-soft, #4B5F66) }
+  .key-fast { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 12.5px; font-weight: 600; fill: var(--perf-fast, #0E7C7B) }
+  .key-slow { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 12.5px; font-weight: 600; fill: var(--perf-slow, #A32E63) }
+</style>

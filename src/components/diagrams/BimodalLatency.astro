@@ -1,0 +1,52 @@
+---
+/** Two clumps, an average in the empty valley, and p50 sliding between them. */
+interface Props { caption?: string }
+const { caption } = Astro.props;
+---
+<figure class="perf-figure">
+  <svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="Two clumps of latency: cache hits near 15ms and cache misses near 400ms. The average lands in the empty valley between them, a value that never occurs. As hit rate falls from 70 to 45 percent, the p50 boundary crosses from one clump to the other.">
+    <line x1="0" y1="150" x2="600" y2="150" class="axis" />
+
+    <g class="fast-fill">
+      <rect x="70"  y="60" width="16" height="90" />
+      <rect x="90"  y="40" width="16" height="110" />
+      <rect x="110" y="52" width="16" height="98" />
+    </g>
+    <g class="slow-fill">
+      <rect x="430" y="96"  width="16" height="54" />
+      <rect x="450" y="86"  width="16" height="64" />
+      <rect x="470" y="104" width="16" height="46" />
+    </g>
+
+    <text x="98"  y="172" text-anchor="middle" class="mono-fast">15ms</text>
+    <text x="98"  y="188" text-anchor="middle" class="cap-soft">cache hit</text>
+    <text x="458" y="172" text-anchor="middle" class="mono-slow">400ms</text>
+    <text x="458" y="188" text-anchor="middle" class="cap-soft">cache miss</text>
+
+    <line x1="278" y1="30" x2="278" y2="150" class="flag-line" />
+    <text x="278" y="24"  text-anchor="middle" class="cap-flag">the average lands here</text>
+    <text x="278" y="172" text-anchor="middle" class="cap-flag-s">a value that never occurs</text>
+
+    <line x1="0" y1="216" x2="620" y2="216" class="rule" />
+    <text x="0" y="242" class="body">Hit rate 70% → p50 sits in the left clump → reports <tspan class="t-fast">15ms</tspan></text>
+    <text x="0" y="266" class="body">Hit rate 45% → p50 crosses into the right clump → reports <tspan class="t-slow">400ms</tspan></text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .fast-fill { fill: var(--perf-fast, #0E7C7B); opacity: .85 }
+  .slow-fill { fill: var(--perf-slow, #A32E63); opacity: .85 }
+  .axis { stroke: var(--perf-ink, #12242B); stroke-width: 1.2 }
+  .rule { stroke: var(--perf-rule, #C6D0CD) }
+  .flag-line { stroke: var(--perf-flag, #B45309); stroke-width: 1.4; stroke-dasharray: 4 4 }
+  .body { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 13.5px; fill: var(--perf-ink, #12242B) }
+  .cap-soft   { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 12px; fill: var(--perf-ink-soft, #4B5F66) }
+  .cap-flag   { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 12.5px; font-weight: 600; fill: var(--perf-flag, #B45309) }
+  .cap-flag-s { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 12px; fill: var(--perf-flag, #B45309) }
+  .mono-fast { font-family: var(--perf-mono, ui-monospace, monospace); font-size: 12px; font-weight: 700; fill: var(--perf-fast, #0E7C7B) }
+  .mono-slow { font-family: var(--perf-mono, ui-monospace, monospace); font-size: 12px; font-weight: 700; fill: var(--perf-slow, #A32E63) }
+  .t-fast { font-family: var(--perf-mono, ui-monospace, monospace); font-weight: 700; fill: var(--perf-fast, #0E7C7B) }
+  .t-slow { font-family: var(--perf-mono, ui-monospace, monospace); font-weight: 700; fill: var(--perf-slow, #A32E63) }
+</style>

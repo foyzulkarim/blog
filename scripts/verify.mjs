@@ -9,6 +9,7 @@ const PAGES = [
   '/',
   '/agentic-software-engineering/',
   '/agentic-software-engineering-slides/',
+  '/how-to-think-about-performance/',
   '/topics/',
   '/about/',
   '/404/',

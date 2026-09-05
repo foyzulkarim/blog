@@ -1,0 +1,24 @@
+---
+/** The three questions every performance investigation reduces to. */
+interface Props { caption?: string }
+const { caption } = Astro.props;
+---
+<figure class="perf-figure">
+  <svg viewBox="0 0 620 180" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="Three questions: where does time go, where does memory go, and what is the limiting resource — the one people skip.">
+    <text x="0" y="34"  class="q">Where does <tspan class="b">time</tspan> go?</text>
+    <text x="0" y="80"  class="q">Where does <tspan class="b">memory</tspan> go?</text>
+    <text x="0" y="126" class="q accent">What is the <tspan class="b">limiting resource</tspan>?</text>
+    <text x="0" y="150" class="cap-soft">the one people skip</text>
+    <line x1="0" y1="166" x2="620" y2="166" class="rule" />
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .q      { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 18px; fill: var(--perf-ink, #12242B) }
+  .accent { fill: var(--perf-slow, #A32E63) }
+  .b      { font-weight: 700 }
+  .cap-soft { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 13px; fill: var(--perf-ink-soft, #4B5F66) }
+  .rule   { stroke: var(--perf-rule, #C6D0CD) }
+</style>

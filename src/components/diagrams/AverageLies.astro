@@ -1,0 +1,46 @@
+---
+/** Eleven sorted samples: the median holds at 13ms, the average is dragged to 285ms. */
+interface Props { caption?: string }
+const { caption } = Astro.props;
+---
+<figure class="perf-figure">
+  <svg viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="Eleven sorted samples. The median is the sixth value, 13 milliseconds. A single 3000 millisecond outlier drags the average to 285 milliseconds.">
+    <g class="mono">
+      <text x="0"   y="30">10</text><text x="42"  y="30">10</text><text x="84"  y="30">11</text>
+      <text x="126" y="30">12</text><text x="168" y="30">12</text>
+      <text x="210" y="30" class="fast-t">13</text>
+      <text x="252" y="30">14</text><text x="294" y="30">15</text>
+      <text x="336" y="30">20</text><text x="378" y="30">25</text>
+      <text x="420" y="30" class="slow-t">3000</text>
+    </g>
+
+    <line x1="219" y1="40" x2="219" y2="62" class="fast-s" />
+    <text x="219" y="78" text-anchor="middle" class="cap-fast">median = 13ms</text>
+    <text x="219" y="95" text-anchor="middle" class="cap-soft">the 6th of 11 — the middle one</text>
+
+    <line x1="447" y1="40" x2="447" y2="62" class="slow-s" />
+    <text x="447" y="78" text-anchor="middle" class="cap-slow">one outlier</text>
+
+    <line x1="0" y1="122" x2="620" y2="122" class="rule" />
+
+    <text x="0" y="150" class="body">Average = <tspan class="mono-slow">285ms</tspan> — no request took anywhere near this</text>
+    <text x="0" y="176" class="body">Median = <tspan class="mono-fast">13ms</tspan> — this describes reality</text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .mono text, .mono { font-family: var(--perf-mono, ui-monospace, monospace); font-size: 13px; fill: var(--perf-ink, #12242B) }
+  .fast-t { fill: var(--perf-fast, #0E7C7B); font-weight: 700 }
+  .slow-t { fill: var(--perf-slow, #A32E63); font-weight: 700 }
+  .fast-s { stroke: var(--perf-fast, #0E7C7B); stroke-width: 1.6 }
+  .slow-s { stroke: var(--perf-slow, #A32E63); stroke-width: 1.6 }
+  .rule   { stroke: var(--perf-rule, #C6D0CD) }
+  .body     { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 14px; fill: var(--perf-ink, #12242B) }
+  .cap-fast { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 12.5px; font-weight: 600; fill: var(--perf-fast, #0E7C7B) }
+  .cap-slow { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 12.5px; font-weight: 600; fill: var(--perf-slow, #A32E63) }
+  .cap-soft { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 12px; fill: var(--perf-ink-soft, #4B5F66) }
+  .mono-slow { font-family: var(--perf-mono, ui-monospace, monospace); font-weight: 700; fill: var(--perf-slow, #A32E63) }
+  .mono-fast { font-family: var(--perf-mono, ui-monospace, monospace); font-weight: 700; fill: var(--perf-fast, #0E7C7B) }
+</style>

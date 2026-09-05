@@ -1,0 +1,42 @@
+---
+/** USE for resources, RED for services. */
+interface Props { caption?: string }
+const { caption } = Astro.props;
+---
+<figure class="perf-figure">
+  <svg viewBox="0 0 620 230" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="USE method for resources — utilization, saturation, errors. RED method for services — rate, errors, duration.">
+    <rect x="0" y="0" width="290" height="180" class="panel" />
+    <rect x="0" y="0" width="290" height="4" class="tab-fast" />
+    <text x="18" y="34" class="title">USE</text>
+    <text x="18" y="54" class="cap-soft">for resources — CPU, pool, memory</text>
+    <g class="item">
+      <text x="18" y="90">Utilization — how busy</text>
+      <text x="18" y="118">Saturation — work queued</text>
+      <text x="18" y="146">Errors — failures</text>
+    </g>
+
+    <rect x="320" y="0" width="290" height="180" class="panel" />
+    <rect x="320" y="0" width="290" height="4" class="tab-slow" />
+    <text x="338" y="34" class="title">RED</text>
+    <text x="338" y="54" class="cap-soft">for services — endpoints</text>
+    <g class="item">
+      <text x="338" y="90">Rate — requests/sec</text>
+      <text x="338" y="118">Errors — failure rate</text>
+      <text x="338" y="146">Duration — latency spread</text>
+    </g>
+
+    <text x="0" y="212" class="body">RED says the patient has a fever. USE tells you why.</text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .panel    { fill: var(--perf-panel, #FFFFFF); stroke: var(--perf-rule, #C6D0CD) }
+  .tab-fast { fill: var(--perf-fast, #0E7C7B) }
+  .tab-slow { fill: var(--perf-slow, #A32E63) }
+  .title    { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 17px; font-weight: 700; fill: var(--perf-ink, #12242B) }
+  .cap-soft { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 13px; fill: var(--perf-ink-soft, #4B5F66) }
+  .item text { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 14.5px; fill: var(--perf-ink, #12242B) }
+  .body     { font-family: var(--perf-font, ui-sans-serif, sans-serif); font-size: 14px; fill: var(--perf-ink, #12242B) }
+</style>
