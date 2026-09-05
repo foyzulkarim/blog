@@ -356,6 +356,37 @@ html:not([data-theme]) .theme-toggle__moon { display: block; }
 html[data-theme="light"] .theme-toggle__moon { display: block; }
 html[data-theme="dark"] .theme-toggle__sun { display: block; }
 
+/* Google Translate widget. The gadget injects its own .skiptranslate wrapper
+   and a <select> — the wrapper is the only thing we style. The gadget banner
+   is hidden via autoDisplay:false in Base.astro, so the only on-page footprint
+   is the SIMPLE-layout dropdown, which is treated like the theme toggle. */
+.google-translate {
+  align-self: center;
+  font-family: var(--font-ui);
+  font-size: var(--t--1);
+  color: var(--text-secondary);
+}
+.google-translate .goog-te-gadget { font-size: inherit; }
+.google-translate .goog-te-gadget .goog-te-combo {
+  font: inherit;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 var(--s-2);
+  height: 32px;
+  cursor: pointer;
+}
+.google-translate .goog-te-gadget .goog-te-combo:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+/* Hide the iframe banner the widget injects at the top of the body once a
+   translation is active — it would otherwise push the whole page down. */
+body { top: 0 !important; }
+.skiptranslate iframe.skiptranslate,
+.goog-te-banner-frame.skiptranslate { display: none !important; }
+
 .site-footer {
   border-top: var(--hairline) solid var(--border);
   margin-top: var(--s-8);
