@@ -1,0 +1,77 @@
+---
+/**
+ * One question with a hidden answer. Uses a native <details> element, so it
+ * needs no JavaScript and works with the keyboard and screen readers.
+ *
+ *   <QuizItem>
+ *     <Fragment slot="question">Why does X beat Y?</Fragment>
+ *     Because ... (Markdown, becomes the answer)
+ *   </QuizItem>
+ *
+ * The whole question line is the toggle. The "Show answer" pill after the
+ * question mark is the visible affordance; it reads "Hide answer" when open.
+ */
+---
+
+<li>
+  <details class="quiz-item">
+    <summary>
+      <span class="quiz-item__q"><slot name="question" /></span>
+      <span class="quiz-item__toggle" aria-hidden="true"></span>
+    </summary>
+    <div class="quiz-item__a">
+      <slot />
+    </div>
+  </details>
+</li>
+
+<style>
+  .quiz-item > summary {
+    cursor: pointer;
+    list-style: none;
+  }
+  .quiz-item > summary::-webkit-details-marker {
+    display: none;
+  }
+  .quiz-item__toggle {
+    display: inline-block;
+    margin-left: 0.5em;
+    padding: 0.1em 0.7em;
+    font-family: var(--font-ui);
+    font-size: var(--t--1);
+    line-height: 1.6;
+    color: var(--accent);
+    background: var(--accent-quiet);
+    border: var(--hairline) solid var(--accent);
+    border-radius: 999px;
+    vertical-align: 0.15em;
+    white-space: nowrap;
+  }
+  .quiz-item__toggle::after {
+    content: 'Show answer';
+  }
+  .quiz-item[open] .quiz-item__toggle::after {
+    content: 'Hide answer';
+  }
+  .quiz-item > summary:hover .quiz-item__toggle,
+  .quiz-item > summary:focus-visible .quiz-item__toggle {
+    background: var(--accent);
+    color: var(--surface-raised, #fff);
+  }
+  .quiz-item > summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-lg);
+  }
+  .quiz-item__a {
+    margin-top: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    border-left: 3px solid var(--accent);
+    background: var(--accent-quiet);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    color: var(--text-secondary);
+  }
+  .quiz-item__a > :global(:last-child) {
+    margin-bottom: 0;
+  }
+</style>

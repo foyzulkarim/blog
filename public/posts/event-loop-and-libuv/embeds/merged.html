@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Loop + Two Kitchens — Merged</title>
+<style>
+  body {
+    margin: 0;
+    padding: 24px 16px 40px;
+    background: #F5F6F8;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #1E2430;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .wrap { max-width: 920px; width: 100%; }
+  svg { width: 100%; height: auto; display: block; }
+
+  .node-box {
+    fill: #FFFFFF;
+    stroke: #34506B;
+    stroke-width: 2;
+    transition: fill 300ms ease, stroke 300ms ease, stroke-width 300ms ease;
+  }
+  .node-box.active { fill: #FFF3E9; stroke: #D64545; stroke-width: 4; }
+  .node-box.poll { fill: #E7F5F2; stroke: #1F7A6C; stroke-width: 3; }
+  .node-box.poll.active { fill: #FFF3E9; stroke: #D64545; stroke-width: 4; }
+  .node-box.poll.flash { stroke: #D64545; stroke-width: 6; }
+
+  .badge { fill: #34506B; transition: fill 300ms ease; }
+  .badge.active { fill: #D64545; }
+
+  #marker { fill: #D64545; stroke: #FFFFFF; stroke-width: 2.5; }
+
+  .k1-token { fill: #FFFFFF; stroke: #1F7A6C; stroke-width: 2; }
+  .k1-token.ready { fill: #1F7A6C; }
+
+  .k2-queue { fill: #FFFFFF; stroke: #B8712B; stroke-width: 2; }
+  .k2-ready { fill: #B8712B; stroke: #7A4B15; stroke-width: 1.5; }
+
+  .chef { fill: #FFFFFF; stroke: #B8712B; stroke-width: 2; transition: fill 200ms ease; }
+  .chef.busy { fill: #B8712B; }
+
+  .captions { margin-top: 18px; text-align: center; min-height: 56px; }
+  #captionMain { font-size: 17px; font-weight: 700; color: #1E2430; }
+  #captionSub { font-size: 13px; color: #5B6B7A; margin-top: 4px; }
+
+  .controls { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  button {
+    font-family: inherit; font-size: 14px; padding: 8px 16px; border-radius: 8px;
+    border: 1.5px solid #34506B; background: #FFFFFF; color: #1E2430; cursor: pointer;
+  }
+  button:hover { background: #EEF1F4; }
+  button.speed-active { background: #34506B; color: #FFFFFF; }
+  .legend { margin-top: 18px; font-size: 12px; color: #8A93A3; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <svg id="scene" viewBox="0 0 900 1400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#6B7686"/>
+      </marker>
+    </defs>
+
+    <rect x="0" y="0" width="900" height="1400" fill="#F5F6F8"/>
+
+    <text x="450" y="34" text-anchor="middle" font-size="21" font-weight="700" fill="#1E2430">The Event Loop + The Two Kitchens</text>
+    <text x="450" y="58" text-anchor="middle" font-size="12.5" fill="#5B6B7A">Dispatched while code runs. Cooked on the kitchen's own clock. Collected only here, at poll.</text>
+
+    <!-- ============ THE HEXAGON ============ -->
+    <line x1="510.6" y1="205" x2="614.6" y2="265" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="675.2" y1="370" x2="675.2" y2="490" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="614.6" y1="595" x2="510.6" y2="655" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="389.4" y1="655" x2="285.4" y2="595" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="224.8" y1="490" x2="224.8" y2="370" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="285.4" y1="265" x2="389.4" y2="205" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <rect x="320" y="375" width="260" height="110" rx="12" fill="none" stroke="#97A1B0" stroke-width="2" stroke-dasharray="6,5"/>
+    <text x="450" y="405" text-anchor="middle" font-size="12.5" font-weight="700" fill="#445066">Between every callback:</text>
+    <text x="450" y="426" text-anchor="middle" font-size="12.5" fill="#445066">drain nextTick, then Promise queue</text>
+    <text x="450" y="447" text-anchor="middle" font-size="12.5" fill="#445066">(repeat until both are empty)</text>
+    <text x="450" y="468" text-anchor="middle" font-size="11" font-style="italic" fill="#8A93A3">Not tied to any one phase — not animated here.</text>
+
+    <g data-node="timers">
+      <rect class="node-box" x="345" y="120" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="363" cy="138" r="14"/>
+      <text x="363" y="143" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">1</text>
+      <text x="450" y="162" text-anchor="middle" font-size="16" font-weight="700" fill="#1E2430">Timers</text>
+      <text x="450" y="184" text-anchor="middle" font-size="12" fill="#5B6B7A">sticky notes — fire when due</text>
+    </g>
+    <g data-node="pending">
+      <rect class="node-box" x="570.2" y="250" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="588.2" cy="268" r="14"/>
+      <text x="588.2" y="273" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2</text>
+      <text x="675.2" y="292" text-anchor="middle" font-size="16" font-weight="700" fill="#1E2430">Pending Callbacks</text>
+      <text x="675.2" y="314" text-anchor="middle" font-size="12" fill="#5B6B7A">rare, housekeeping</text>
+    </g>
+    <g data-node="idle">
+      <rect class="node-box" x="570.2" y="510" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="588.2" cy="528" r="14"/>
+      <text x="588.2" y="533" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">3</text>
+      <text x="675.2" y="558" text-anchor="middle" font-size="16" font-weight="700" fill="#1E2430">Idle / Prepare</text>
+      <text x="675.2" y="580" text-anchor="middle" font-size="12" fill="#5B6B7A">internal to libuv</text>
+    </g>
+    <g data-node="poll">
+      <rect class="node-box poll" x="345" y="640" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="363" cy="658" r="14"/>
+      <text x="363" y="663" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">4</text>
+      <text x="450" y="682" text-anchor="middle" font-size="16" font-weight="700" fill="#0F4D42">Poll</text>
+      <text x="450" y="704" text-anchor="middle" font-size="12" fill="#1F5A50">the only gate to both kitchens</text>
+    </g>
+    <g data-node="check">
+      <rect class="node-box" x="119.8" y="510" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="137.8" cy="528" r="14"/>
+      <text x="137.8" y="533" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">5</text>
+      <text x="224.8" y="558" text-anchor="middle" font-size="16" font-weight="700" fill="#1E2430">Check</text>
+      <text x="224.8" y="580" text-anchor="middle" font-size="12" fill="#5B6B7A">setImmediate callbacks</text>
+    </g>
+    <g data-node="close">
+      <rect class="node-box" x="119.8" y="250" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="137.8" cy="268" r="14"/>
+      <text x="137.8" y="273" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">6</text>
+      <text x="224.8" y="292" text-anchor="middle" font-size="16" font-weight="700" fill="#1E2430">Close Callbacks</text>
+      <text x="224.8" y="314" text-anchor="middle" font-size="12" fill="#5B6B7A">cleanup, socket close</text>
+    </g>
+
+    <!-- ============ CONNECTING GUIDES ============ -->
+    <path d="M450,740 Q340,795 235,845" fill="none" stroke="#97A1B0" stroke-width="1.5" stroke-dasharray="5,5"/>
+    <path d="M450,740 Q560,795 665,845" fill="none" stroke="#97A1B0" stroke-width="1.5" stroke-dasharray="5,5"/>
+    <text x="450" y="765" text-anchor="middle" font-size="11" fill="#8A93A3">out: dispatched during any callback</text>
+    <text x="450" y="780" text-anchor="middle" font-size="11" fill="#8A93A3">in: collected only here, at poll</text>
+
+    <!-- ============ KITCHEN ONE ============ -->
+    <rect x="40" y="840" width="390" height="402" rx="14" fill="#F0FAF8" stroke="#1F7A6C" stroke-width="2.5"/>
+    <text x="235" y="874" text-anchor="middle" font-size="19" font-weight="700" fill="#0F4D42">Kitchen One</text>
+    <text x="235" y="896" text-anchor="middle" font-size="13" fill="#1F5A50">the order board (OS sockets, epoll)</text>
+    <text x="235" y="924" text-anchor="middle" font-size="12" fill="#1E2430">network calls — HTTP, Postgres,</text>
+    <text x="235" y="944" text-anchor="middle" font-size="12" fill="#1E2430">fetch, Redis</text>
+    <rect x="70" y="967" width="330" height="185" rx="10" fill="#FBFEFD" stroke="#8FBDB5" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="235" y="1172" text-anchor="middle" font-size="13" font-weight="700" id="k1Counter" fill="#0F4D42">active: 0</text>
+    <text x="235" y="1197" text-anchor="middle" font-size="12" fill="#1F5A50">No threads — waiting costs nothing.</text>
+
+    <!-- ============ KITCHEN TWO ============ -->
+    <rect x="470" y="840" width="390" height="402" rx="14" fill="#FBF3E8" stroke="#B8712B" stroke-width="2.5"/>
+    <text x="665" y="874" text-anchor="middle" font-size="19" font-weight="700" fill="#7A4B15">Kitchen Two</text>
+    <text x="665" y="896" text-anchor="middle" font-size="13" fill="#8A5A1E">four chefs (libuv thread pool)</text>
+    <text x="665" y="924" text-anchor="middle" font-size="12" fill="#1E2430">fs.*, dns.lookup, crypto,</text>
+    <text x="665" y="944" text-anchor="middle" font-size="12" fill="#1E2430">zlib (gzip, deflate...)</text>
+    <rect x="500" y="967" width="330" height="185" rx="10" fill="#FFFCF7" stroke="#D9A968" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <g>
+      <rect x="529" y="975" width="24" height="10" rx="4" fill="#B8712B"/>
+      <circle class="chef" data-chef="0" cx="541" cy="1007" r="20"/>
+      <rect x="612" y="975" width="24" height="10" rx="4" fill="#B8712B"/>
+      <circle class="chef" data-chef="1" cx="624" cy="1007" r="20"/>
+      <rect x="694" y="975" width="24" height="10" rx="4" fill="#B8712B"/>
+      <circle class="chef" data-chef="2" cx="706" cy="1007" r="20"/>
+      <rect x="777" y="975" width="24" height="10" rx="4" fill="#B8712B"/>
+      <circle class="chef" data-chef="3" cx="789" cy="1007" r="20"/>
+    </g>
+    <text x="665" y="1172" text-anchor="middle" font-size="13" font-weight="700" id="k2Counter" fill="#7A4B15">chefs busy: 0/4 · queue: 0</text>
+    <text x="665" y="1197" text-anchor="middle" font-size="12" fill="#8A5A1E">Pool size 4 by default.</text>
+
+    <g id="k1Layer"></g>
+    <g id="k2Layer"></g>
+
+    <!-- the moving marker: the single JS thread, drawn last so it's always on top -->
+    <circle id="marker" r="10" cx="389.4" cy="205"/>
+
+    <!-- ============ BOTTOM STRIP ============ -->
+    <rect x="40" y="1262" width="820" height="110" rx="12" fill="#FFFFFF" stroke="#97A1B0" stroke-width="1.5"/>
+    <text x="450" y="1287" text-anchor="middle" font-size="15" font-weight="700" fill="#1E2430">Why timing here matters</text>
+    <text x="450" y="1310" text-anchor="middle" font-size="13" fill="#3A4552">Both kitchens finish work on their own schedule — the loop doesn't wait for either.</text>
+    <text x="450" y="1332" text-anchor="middle" font-size="13" fill="#3A4552">But results only get handed back to your code when the loop's circuit reaches poll.</text>
+    <text x="450" y="1354" text-anchor="middle" font-size="11" font-style="italic" fill="#5B6B7A">A busy loop delays every callback — even ones whose work finished long ago.</text>
+  </svg>
+
+  <div class="captions">
+    <div id="captionMain">Normal traffic — everything on its own clock</div>
+    <div id="captionSub">the loop keeps circling · kitchens handle a few requests</div>
+  </div>
+
+  <div class="controls">
+    <button id="playPauseBtn">Pause</button>
+    <button id="restartBtn">Restart</button>
+    <button id="stepBtn">Step ▶</button>
+    <button class="speed-btn" data-speed="0.5">0.5×</button>
+    <button class="speed-btn speed-active" data-speed="1">1×</button>
+    <button class="speed-btn" data-speed="2">2×</button>
+  </div>
+
+  <div class="legend">red dot = the JS thread &nbsp;·&nbsp; teal/amber = requests waiting on a kitchen &nbsp;·&nbsp; poll flashes on delivery &nbsp;·&nbsp; Step ▶ jumps to the next event</div>
+</div>
+
+<script>
+(function () {
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag) { return document.createElementNS(SVGNS, tag); }
+  function easeInOutQuad(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  // =========================================================================
+  // PART A — the hexagon's own timeline (identical timings to the standalone
+  // event-loop animation, so poll's position in the cycle is exactly known).
+  // =========================================================================
+
+  const phases = [
+    { node: 'timers',  dwellDur: 900,  edgeDur: 350, from: [389.4, 205], to: [510.6, 205], edgeTo: [614.6, 265] },
+    { node: 'pending', dwellDur: 500,  edgeDur: 350, from: [614.6, 265], to: [675.2, 370], edgeTo: [675.2, 490] },
+    { node: 'idle',    dwellDur: 400,  edgeDur: 350, from: [675.2, 490], to: [614.6, 595], edgeTo: [510.6, 655] },
+    { node: 'poll',    dwellDur: 1800, edgeDur: 350, from: [510.6, 655], to: [389.4, 655], edgeTo: [285.4, 595] },
+    { node: 'check',   dwellDur: 600,  edgeDur: 350, from: [285.4, 595], to: [224.8, 490], edgeTo: [224.8, 370] },
+    { node: 'close',   dwellDur: 500,  edgeDur: 350, from: [224.8, 370], to: [285.4, 265], edgeTo: [389.4, 205] }
+  ];
+
+  const segments = [];
+  phases.forEach(p => {
+    segments.push({ type: 'dwell', node: p.node, from: p.from, to: p.to, duration: p.dwellDur });
+    segments.push({ type: 'edge',  node: p.node, from: p.to,   to: p.edgeTo, duration: p.edgeDur });
+  });
+
+  const HEX_CYCLE = segments.reduce((s, seg) => s + seg.duration, 0); // 6800ms
+  const POLL_SEG_INDEX = segments.findIndex(s => s.type === 'dwell' && s.node === 'poll'); // 6
+  const POLL_START_OFFSET = segments.slice(0, POLL_SEG_INDEX).reduce((s, seg) => s + seg.duration, 0); // 2850
+  const POLL_DURATION = segments[POLL_SEG_INDEX].duration; // 1800
+
+  // Given an absolute (never-wrapping) time, find which segment we're in —
+  // recomputed fresh each frame, so there's no drift and nothing to reset.
+  function hexStateAt(absoluteT) {
+    const hexT = ((absoluteT % HEX_CYCLE) + HEX_CYCLE) % HEX_CYCLE;
+    let acc = 0;
+    for (let i = 0; i < segments.length; i++) {
+      const seg = segments[i];
+      if (hexT < acc + seg.duration) {
+        const localT = hexT - acc;
+        const t = easeInOutQuad(Math.min(localT / seg.duration, 1));
+        return {
+          index: i,
+          node: seg.node,
+          x: lerp(seg.from[0], seg.to[0], t),
+          y: lerp(seg.from[1], seg.to[1], t),
+          isDwell: seg.type === 'dwell'
+        };
+      }
+      acc += seg.duration;
+    }
+    // Shouldn't happen, but fall back to the very start.
+    return { index: 0, node: segments[0].node, x: segments[0].from[0], y: segments[0].from[1], isDwell: true };
+  }
+
+  // The core cross-system fact: given when a kitchen result becomes ready
+  // (in absolute time), when does the loop next actually collect it?
+  // If poll is already open right now, immediately. Otherwise, whenever
+  // poll next opens — which might be later this lap, or all the way
+  // around on the next one.
+  function nextPollPickup(absoluteReadyTime) {
+    const cyclePos = ((absoluteReadyTime % HEX_CYCLE) + HEX_CYCLE) % HEX_CYCLE;
+    const cycleStart = absoluteReadyTime - cyclePos;
+    if (cyclePos >= POLL_START_OFFSET && cyclePos < POLL_START_OFFSET + POLL_DURATION) {
+      return absoluteReadyTime; // poll is open right now — picked up immediately
+    }
+    if (cyclePos < POLL_START_OFFSET) {
+      return cycleStart + POLL_START_OFFSET; // poll opens later this same lap
+    }
+    return cycleStart + HEX_CYCLE + POLL_START_OFFSET; // must wait for next lap
+  }
+
+  // =========================================================================
+  // PART B — the kitchen traffic script (same events as the standalone
+  // kitchens animation), plus the queueing simulation for Kitchen Two.
+  // =========================================================================
+
+  const K1_SLOTS = [
+    [111, 1012], [194, 1012], [276, 1012], [359, 1012],
+    [111, 1097], [194, 1097], [276, 1097], [359, 1097]
+  ];
+  const POLL_GATE = [450, 740];
+  const DISPATCH_MS = 300;
+  const DELIVER_MS = 350;
+
+  const k1Raw = [
+    { id: 'k1-1',  label: 'HTTP request', arrival: 300,  duration: 900 },
+    { id: 'k1-2',  label: 'Postgres query', arrival: 1200, duration: 1400 },
+    { id: 'k1-3',  label: 'fetch call', arrival: 2400, duration: 700 },
+    { id: 'k1-4',  label: 'HTTP request', arrival: 3300, duration: 1000 },
+    { id: 'k1-5',  label: 'fetch call', arrival: 4050, duration: 600 },
+    { id: 'k1-6',  label: 'Postgres query', arrival: 4400, duration: 800 },
+    { id: 'k1-7',  label: 'fetch call', arrival: 4800, duration: 500 },
+    { id: 'k1-8',  label: 'HTTP request', arrival: 6200, duration: 700 },
+    { id: 'k1-9',  label: 'HTTP request', arrival: 7500, duration: 800 }
+  ];
+
+  const k2Raw = [
+    { id: 'k2-1',   label: 'fs.readFile', arrival: 600,  duration: 500 },
+    { id: 'k2-2',   label: 'dns.lookup', arrival: 2000, duration: 400 },
+    { id: 'k2-3',   label: 'dns.lookup', arrival: 4000, duration: 700 },
+    { id: 'k2-4',   label: 'dns.lookup', arrival: 4080, duration: 700 },
+    { id: 'k2-5',   label: 'dns.lookup', arrival: 4160, duration: 700 },
+    { id: 'k2-6',   label: 'dns.lookup', arrival: 4240, duration: 700 },
+    { id: 'k2-7',   label: 'dns.lookup', arrival: 4320, duration: 700 },
+    { id: 'k2-8',   label: 'dns.lookup', arrival: 4400, duration: 700 },
+    { id: 'k2-9',   label: 'dns.lookup', arrival: 4480, duration: 700 },
+    { id: 'k2-10',  label: 'dns.lookup', arrival: 4560, duration: 700 },
+    { id: 'k2-11',  label: 'dns.lookup', arrival: 4640, duration: 700 },
+    { id: 'k2-12',  label: 'dns.lookup', arrival: 4720, duration: 700 },
+    { id: 'k2-13',  label: 'fs.readFile', arrival: 7800, duration: 400 }
+  ];
+
+  function scheduleK1(events) {
+    const sorted = events.slice().sort((a, b) => a.arrival - b.arrival);
+    return sorted.map(ev => {
+      const serviceEnd = ev.arrival + ev.duration;
+      return Object.assign({}, ev, { serviceEnd });
+    });
+  }
+
+  function scheduleK2(events) {
+    const sorted = events.slice().sort((a, b) => a.arrival - b.arrival);
+    const chefFreeAt = [0, 0, 0, 0];
+    return sorted.map(ev => {
+      let chef = 0;
+      for (let i = 1; i < chefFreeAt.length; i++) if (chefFreeAt[i] < chefFreeAt[chef]) chef = i;
+      const serviceStart = Math.max(ev.arrival, chefFreeAt[chef]);
+      const serviceEnd = serviceStart + ev.duration;
+      chefFreeAt[chef] = serviceEnd;
+      return Object.assign({}, ev, { chef, serviceStart, serviceEnd });
+    });
+  }
+
+  const k1Schedule = scheduleK1(k1Raw);
+  const k2Schedule = scheduleK2(k2Raw);
+
+  const TOTAL_SPAN = 9500;   // last scripted arrival + its tail, roughly
+  const IDLE_GAP = 2000;     // breathing room before the scenario repeats
+  const KITCHEN_CYCLE = TOTAL_SPAN + IDLE_GAP; // 11500ms
+
+  const captionEvents = [
+    { time: 0,    main: 'Normal traffic — everything on its own clock',
+                  sub: 'the loop keeps circling · kitchens handle a few requests' },
+    { time: 2850, main: 'Poll comes around — early results get collected',
+                  sub: "kitchen one's socket data and kitchen two's file read land now" },
+    { time: 4000, main: 'Burst: 10 outbound calls hit kitchen two at once',
+                  sub: "kitchen one stays flat — kitchen two's queue builds fast" },
+    { time: 6300, main: 'Burst finished cooking — but poll already passed',
+                  sub: 'results sit ready, waiting for the loop to come back around' },
+    { time: 9650, main: 'Poll returns — the whole backlog gets collected at once',
+                  sub: 'a busy loop delays callbacks, even after the work is done' },
+    { time: 10200, main: 'Back to idle for a moment',
+                  sub: 'replay starts automatically — or press Restart' }
+  ];
+
+  // =========================================================================
+  // PART C — rendering. Every position is a pure function of `accumulated`
+  // (the one clock both systems share), so nothing needs manual resetting.
+  // =========================================================================
+
+  const marker = document.getElementById('marker');
+  const captionMain = document.getElementById('captionMain');
+  const captionSub = document.getElementById('captionSub');
+  const k1Counter = document.getElementById('k1Counter');
+  const k2Counter = document.getElementById('k2Counter');
+  const k1Layer = document.getElementById('k1Layer');
+  const k2Layer = document.getElementById('k2Layer');
+  const chefEls = Array.from(document.querySelectorAll('.chef'));
+  const nodeBoxes = {}, badges = {};
+  document.querySelectorAll('[data-node]').forEach(g => {
+    const name = g.getAttribute('data-node');
+    nodeBoxes[name] = g.querySelector('.node-box');
+    badges[name] = g.querySelector('.badge');
+  });
+
+  const k1Els = {};
+  const k2Els = {};
+
+  // Absolute schedule for repetition N of the kitchen script. Poll pickup
+  // depends on absolute time, so this is per repetition, not per script.
+  function k1Abs(N) {
+    const base = N * KITCHEN_CYCLE;
+    return k1Schedule.map(ev => {
+      const absArrival = base + ev.arrival;
+      const absServiceEnd = base + ev.serviceEnd;
+      const absPickup = nextPollPickup(absServiceEnd);
+      const absDeliverEnd = absPickup + DELIVER_MS;
+      return Object.assign({}, ev, { absArrival, absServiceEnd, absPickup, absDeliverEnd });
+    });
+  }
+  function k2Abs(N) {
+    const base = N * KITCHEN_CYCLE;
+    return k2Schedule.map(ev => {
+      const absArrival = base + ev.arrival;
+      const absServiceStart = base + ev.serviceStart;
+      const absServiceEnd = base + ev.serviceEnd;
+      const absPickup = nextPollPickup(absServiceEnd);
+      const absDeliverEnd = absPickup + DELIVER_MS;
+      return Object.assign({}, ev, { absArrival, absServiceStart, absServiceEnd, absPickup, absDeliverEnd });
+    });
+  }
+
+  // ---- Step support -------------------------------------------------------
+  // A "step" is the next moment at which something changes: a request
+  // arrives, a queued request gets a chef, a request finishes, poll opens, or poll collects a result.
+  // Moments closer than STEP_CLUSTER_MS are treated as one step, so the
+  // ten-call burst reads as one event rather than ten clicks.
+  const STEP_CLUSTER_MS = 100;
+  function clusterSteps(events) {
+    const sorted = events.slice().sort((a, b) => a.time - b.time);
+    const clusters = [];
+    sorted.forEach(ev => {
+      const last = clusters[clusters.length - 1];
+      if (last && ev.time - last.end <= STEP_CLUSTER_MS) { last.end = ev.time; last.events.push(ev); }
+      else clusters.push({ start: ev.time, end: ev.time, events: [ev] });
+    });
+    return clusters;
+  }
+  const STEP_VERBS = {
+    arrive: ['arrives at kitchen', 'arrive at kitchen'],
+    start:  ['starts cooking at kitchen', 'start cooking at kitchen'],
+    done:   ['finishes at kitchen', 'finish at kitchen'],
+    pickup: ['is collected at poll', 'are collected at poll']
+  };
+  function describeStep(cluster) {
+    const groups = {};
+    cluster.events.forEach(ev => {
+      if (ev.kind === 'caption') return;
+      if (ev.kind === 'pollOpen') { groups.pollOpen = { kind: 'pollOpen' }; return; }
+      const key = ev.kind + ':' + ev.kitchen;
+      (groups[key] = groups[key] || { kind: ev.kind, kitchen: ev.kitchen, labels: [] }).labels.push(ev.label);
+    });
+    return Object.values(groups).map(g => {
+      if (g.kind === 'pollOpen') return 'poll opens';
+      const n = g.labels.length;
+      const unique = Array.from(new Set(g.labels));
+      const who = unique.length === 1 ? unique[0] + (n > 1 ? ' ×' + n : '') : n + ' requests (' + unique.join(', ') + ')';
+      const verb = STEP_VERBS[g.kind][n > 1 ? 1 : 0] + (g.kind === 'pickup' ? '' : ' ' + g.kitchen);
+      return who + ' ' + verb;
+    }).join(' · ');
+  }
+
+  function buildSteps(N) {
+    const base = N * KITCHEN_CYCLE;
+    const events = [];
+    k1Abs(N).forEach(ev => {
+      events.push({ time: ev.absArrival,    kind: 'arrive', kitchen: 'one', label: ev.label });
+      events.push({ time: ev.absServiceEnd, kind: 'done',   kitchen: 'one', label: ev.label });
+      events.push({ time: ev.absPickup,     kind: 'pickup', kitchen: 'one', label: ev.label });
+    });
+    k2Abs(N).forEach(ev => {
+      events.push({ time: ev.absArrival,    kind: 'arrive', kitchen: 'two', label: ev.label });
+      if (ev.absServiceStart > ev.absArrival) events.push({ time: ev.absServiceStart, kind: 'start', kitchen: 'two', label: ev.label });
+      events.push({ time: ev.absServiceEnd, kind: 'done',   kitchen: 'two', label: ev.label });
+      events.push({ time: ev.absPickup,     kind: 'pickup', kitchen: 'two', label: ev.label });
+    });
+    for (let k = Math.ceil((base - POLL_START_OFFSET) / HEX_CYCLE); ; k++) {
+      const t = POLL_START_OFFSET + k * HEX_CYCLE;
+      if (t >= base + KITCHEN_CYCLE) break;
+      if (t >= base) events.push({ time: t, kind: 'pollOpen' });
+    }
+    captionEvents.forEach(c => events.push({ time: base + c.time, kind: 'caption' }));
+    return clusterSteps(events);
+  }
+
+  function renderHex(accumulated) {
+    const state = hexStateAt(accumulated);
+    marker.setAttribute('cx', state.x);
+    marker.setAttribute('cy', state.y);
+    Object.keys(nodeBoxes).forEach(key => {
+      const isActive = state.isDwell && key === state.node;
+      nodeBoxes[key].classList.toggle('active', isActive);
+      badges[key].classList.toggle('active', isActive);
+    });
+    return state;
+  }
+
+  function renderK1(accumulated, N) {
+    const withAbs = k1Abs(N);
+
+    // Board position is assigned by rank among whoever is currently visible —
+    // not a fixed reservation. A delayed poll pass can leave several tokens
+    // glowing at once; ranking keeps them from ever sharing a spot.
+    const visible = withAbs
+      .filter(ev => accumulated >= ev.absArrival && accumulated < ev.absDeliverEnd)
+      .sort((a, b) => a.absArrival - b.absArrival);
+    const visibleIds = new Set(visible.map(ev => ev.id));
+
+    Object.keys(k1Els).forEach(id => {
+      if (!visibleIds.has(id)) { k1Layer.removeChild(k1Els[id]); delete k1Els[id]; }
+    });
+
+    visible.forEach((ev, rank) => {
+      const slotPos = K1_SLOTS[rank % K1_SLOTS.length];
+      let el = k1Els[ev.id];
+      if (!el) {
+        el = svgEl('circle');
+        el.setAttribute('r', 10);
+        el.setAttribute('class', 'k1-token');
+        k1Layer.appendChild(el);
+        k1Els[ev.id] = el;
+      }
+      const dispatchMs = Math.min(DISPATCH_MS, ev.duration);
+
+      if (accumulated < ev.absArrival + dispatchMs) {
+        const t = easeInOutQuad((accumulated - ev.absArrival) / dispatchMs);
+        el.setAttribute('cx', lerp(POLL_GATE[0], slotPos[0], t));
+        el.setAttribute('cy', lerp(POLL_GATE[1], slotPos[1], t));
+        el.setAttribute('class', 'k1-token');
+      } else if (accumulated < ev.absServiceEnd) {
+        el.setAttribute('cx', slotPos[0]);
+        el.setAttribute('cy', slotPos[1]);
+        el.setAttribute('class', 'k1-token');
+      } else if (accumulated < ev.absPickup) {
+        el.setAttribute('cx', slotPos[0]);
+        el.setAttribute('cy', slotPos[1]);
+        el.setAttribute('class', 'k1-token ready');
+      } else {
+        const t = easeInOutQuad((accumulated - ev.absPickup) / DELIVER_MS);
+        el.setAttribute('cx', lerp(slotPos[0], POLL_GATE[0], t));
+        el.setAttribute('cy', lerp(slotPos[1], POLL_GATE[1], t));
+        el.setAttribute('class', 'k1-token ready');
+      }
+    });
+
+    k1Counter.textContent = 'active: ' + visible.length;
+    return withAbs;
+  }
+
+  function renderK2(accumulated, N) {
+    const withAbs = k2Abs(N);
+
+    const waiting = withAbs
+      .filter(ev => accumulated >= ev.absArrival && accumulated < ev.absServiceStart)
+      .sort((a, b) => a.absArrival - b.absArrival);
+
+    // Ready-for-pickup tray: ranked by who finished cooking first, not by
+    // which chef made it. Several chefs can each finish more than once
+    // before poll comes back around, so this needs its own growing lane
+    // rather than one fixed spot per chef.
+    const readyList = withAbs
+      .filter(ev => accumulated >= ev.absServiceEnd && accumulated < ev.absDeliverEnd)
+      .sort((a, b) => a.absServiceEnd - b.absServiceEnd);
+    const readyRankOf = {};
+    readyList.forEach((ev, i) => { readyRankOf[ev.id] = i; });
+    const READY_COLS = 7;
+
+    withAbs.forEach(ev => {
+      let el = k2Els[ev.id];
+      const stillQueued = accumulated >= ev.absArrival && accumulated < ev.absServiceStart && ev.absServiceStart > ev.absArrival;
+
+      if (!stillQueued && el && el.dataset.kind === 'queue') {
+        k2Layer.removeChild(el); delete k2Els[ev.id]; el = null;
+      }
+      if (stillQueued) {
+        const rank = waiting.indexOf(ev);
+        const row = Math.floor(rank / 9);
+        const col = rank % 9;
+        const targetX = 515 + col * 32;
+        const targetY = 1082 + row * 35;
+        if (!el) {
+          el = svgEl('rect');
+          el.setAttribute('width', 14);
+          el.setAttribute('height', 14);
+          el.setAttribute('rx', 3);
+          el.setAttribute('class', 'k2-queue');
+          el.dataset.kind = 'queue';
+          k2Layer.appendChild(el);
+          k2Els[ev.id] = el;
+        }
+        const dispatchMs = Math.min(DISPATCH_MS, ev.absServiceStart - ev.absArrival);
+        if (accumulated < ev.absArrival + dispatchMs) {
+          const t = easeInOutQuad((accumulated - ev.absArrival) / dispatchMs);
+          el.setAttribute('x', lerp(POLL_GATE[0], targetX, t) - 7);
+          el.setAttribute('y', lerp(POLL_GATE[1], targetY, t) - 7);
+        } else {
+          el.setAttribute('x', targetX - 7);
+          el.setAttribute('y', targetY - 7);
+        }
+      }
+
+      // Ready-for-delivery token: exists from serviceEnd until delivered.
+      const isReadyOrDelivering = accumulated >= ev.absServiceEnd && accumulated < ev.absDeliverEnd;
+      let readyEl = k2Els[ev.id + '-ready'];
+      if (!isReadyOrDelivering && readyEl) {
+        k2Layer.removeChild(readyEl); delete k2Els[ev.id + '-ready']; readyEl = null;
+      }
+      if (isReadyOrDelivering) {
+        if (!readyEl) {
+          readyEl = svgEl('circle');
+          readyEl.setAttribute('r', 8);
+          readyEl.setAttribute('class', 'k2-ready');
+          k2Layer.appendChild(readyEl);
+          k2Els[ev.id + '-ready'] = readyEl;
+        }
+        const rank = readyRankOf[ev.id];
+        const col = rank % READY_COLS;
+        const row = Math.floor(rank / READY_COLS);
+        const readyX = 515 + col * 44;
+        const readyY = 1040 + row * 24;
+        if (accumulated < ev.absPickup) {
+          readyEl.setAttribute('cx', readyX);
+          readyEl.setAttribute('cy', readyY);
+        } else {
+          const t = easeInOutQuad((accumulated - ev.absPickup) / DELIVER_MS);
+          readyEl.setAttribute('cx', lerp(readyX, POLL_GATE[0], t));
+          readyEl.setAttribute('cy', lerp(readyY, POLL_GATE[1], t));
+        }
+      }
+    });
+
+    const chefBusy = [false, false, false, false];
+    withAbs.forEach(ev => {
+      if (accumulated >= ev.absServiceStart && accumulated < ev.absServiceEnd) chefBusy[ev.chef] = true;
+    });
+    chefEls.forEach(el => {
+      el.classList.toggle('busy', chefBusy[parseInt(el.dataset.chef, 10)]);
+    });
+    k2Counter.textContent = 'chefs busy: ' + chefBusy.filter(Boolean).length + '/4 · queue: ' + waiting.length;
+
+    return withAbs;
+  }
+
+  function pollFlashActive(accumulated, k1Events, k2Events) {
+    const FLASH_WINDOW = 220;
+    const recent = ev => accumulated >= ev.absDeliverEnd - FLASH_WINDOW && accumulated < ev.absDeliverEnd;
+    return k1Events.some(recent) || k2Events.some(recent);
+  }
+
+  let lastCaptionIndex = -1;
+  let stepInfo = null;     // set by Step, cleared by Play and Restart
+  let lastSubText = null;
+  function renderCaption(kRaw) {
+    let idx = 0;
+    for (let i = 0; i < captionEvents.length; i++) if (captionEvents[i].time <= kRaw) idx = i;
+    if (idx !== lastCaptionIndex) {
+      captionMain.textContent = captionEvents[idx].main;
+      lastCaptionIndex = idx;
+    }
+    // While stepping, the sub-caption says what just happened.
+    const subText = stepInfo || captionEvents[idx].sub;
+    if (subText !== lastSubText) { captionSub.textContent = subText; lastSubText = subText; }
+  }
+
+  // ---- Playback loop -------------------------------------------------------
+  let accumulated = 0;
+  let speed = 1;
+  let paused = false;
+  let lastTimestamp = null;
+
+  function frame(timestamp) {
+    if (lastTimestamp === null) lastTimestamp = timestamp;
+    const dt = timestamp - lastTimestamp;
+    lastTimestamp = timestamp;
+    if (!paused) accumulated += dt * speed;
+
+    const N = Math.floor(accumulated / KITCHEN_CYCLE);
+    const kRaw = accumulated - N * KITCHEN_CYCLE;
+
+    renderHex(accumulated);
+    const k1WithAbs = renderK1(accumulated, N);
+    const k2WithAbs = renderK2(accumulated, N);
+    renderCaption(kRaw);
+
+    const pollBox = nodeBoxes['poll'];
+    pollBox.classList.toggle('flash', pollFlashActive(accumulated, k1WithAbs, k2WithAbs));
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ---- Controls -------------------------------------------------------------
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const restartBtn = document.getElementById('restartBtn');
+  const stepBtn = document.getElementById('stepBtn');
+  const speedBtns = document.querySelectorAll('.speed-btn');
+
+  playPauseBtn.addEventListener('click', () => {
+    paused = !paused;
+    playPauseBtn.textContent = paused ? 'Play' : 'Pause';
+    if (!paused) { lastTimestamp = null; stepInfo = null; }
+  });
+
+  restartBtn.addEventListener('click', () => {
+    accumulated = 0;
+    lastCaptionIndex = -1;
+    stepInfo = null;
+    paused = false;
+    playPauseBtn.textContent = 'Pause';
+    lastTimestamp = null;
+  });
+
+  stepBtn.addEventListener('click', () => {
+    // Jump to the next moment something changes, and pause there.
+    const N = Math.floor(accumulated / KITCHEN_CYCLE);
+    const next = buildSteps(N).find(c => c.start > accumulated) || buildSteps(N + 1)[0];
+    accumulated = next.end + 1;
+    paused = true;
+    playPauseBtn.textContent = 'Play';
+    lastCaptionIndex = -1;
+    stepInfo = describeStep(next) || null;
+  });
+
+  speedBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      speed = parseFloat(btn.dataset.speed);
+      speedBtns.forEach(b => b.classList.remove('speed-active'));
+      btn.classList.add('speed-active');
+    });
+  });
+})();
+</script>
+
+
+<!-- Reports the document height to the parent page so the embedding iframe can
+     size itself to the content at any viewport width. See EmbedFrame.astro. -->
+<script>
+(function () {
+  if (window.parent === window) return;
+  function report() {
+    window.parent.postMessage(
+      { type: 'embed-height', height: document.body.offsetHeight },
+      '*'
+    );
+  }
+  new ResizeObserver(report).observe(document.body);
+  window.addEventListener('load', report);
+  report();
+})();
+</script>
+</body>
+</html>

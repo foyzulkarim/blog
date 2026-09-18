@@ -1,0 +1,55 @@
+---
+/**
+ * A same-site interactive page (public/posts/<id>/embeds/*.html) shown inside
+ * the post. The embedded page posts its body height (see the reporter script at
+ * the end of each embed), so the frame fits the content at every width instead
+ * of relying on a fixed height. `height` is only the pre-load fallback.
+ */
+interface Props {
+  src: string;
+  title: string;
+  /** Fallback height in px, used until the first height message arrives. */
+  height?: number;
+}
+
+const { src, title, height = 600 } = Astro.props;
+---
+
+<div class="embed-frame">
+  <iframe
+    src={src}
+    title={title}
+    loading="lazy"
+    scrolling="no"
+    style={`height:${height}px`}
+    data-embed-frame
+  ></iframe>
+</div>
+
+<style>
+  .embed-frame {
+    border: var(--hairline) solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    /* The embeds keep their own light palette, like the static SVGs. */
+    background: #f5f6f8;
+  }
+  .embed-frame iframe {
+    display: block;
+    width: 100%;
+    border: 0;
+  }
+</style>
+
+<script>
+  window.addEventListener('message', (event) => {
+    const data = event.data;
+    if (!data || data.type !== 'embed-height' || typeof data.height !== 'number') return;
+    const frames = document.querySelectorAll<HTMLIFrameElement>('iframe[data-embed-frame]');
+    for (const frame of frames) {
+      if (frame.contentWindow === event.source) {
+        frame.style.height = `${Math.ceil(data.height)}px`;
+      }
+    }
+  });
+</script>

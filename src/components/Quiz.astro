@@ -1,0 +1,19 @@
+---
+/**
+ * Numbered list of QuizItem entries at the end of a post. Only a wrapper;
+ * the disclosure behaviour and styling live in QuizItem.astro.
+ */
+---
+
+<ol class="quiz">
+  <slot />
+</ol>
+
+<style>
+  .quiz {
+    padding-left: 1.6em;
+  }
+  .quiz > :global(li) {
+    margin-bottom: var(--s-4);
+  }
+</style>

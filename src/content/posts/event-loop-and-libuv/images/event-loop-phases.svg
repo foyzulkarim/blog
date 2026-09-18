@@ -1,0 +1,90 @@
+<svg viewBox="0 0 800 860" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6B7686"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="800" height="860" fill="#F5F6F8"/>
+
+  <text x="400" y="42" text-anchor="middle" font-size="24" font-weight="700" fill="#1E2430">Node.js Event Loop — libuv's Six Phases</text>
+  <text x="400" y="68" text-anchor="middle" font-size="14" fill="#5B6B7A">One circuit = one full pass. The order below is fixed and always the same.</text>
+
+  <!-- connecting lines, drawn under the nodes -->
+  <line x1="460.6" y1="205" x2="564.6" y2="265" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="625.2" y1="370" x2="625.2" y2="490" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="564.6" y1="595" x2="460.6" y2="655" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="339.4" y1="655" x2="235.4" y2="595" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="174.8" y1="490" x2="174.8" y2="370" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="235.4" y1="265" x2="339.4" y2="205" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- center: microtask note -->
+  <rect x="270" y="375" width="260" height="110" rx="12" fill="none" stroke="#97A1B0" stroke-width="2" stroke-dasharray="6,5"/>
+  <text x="400" y="405" text-anchor="middle" font-size="13" font-weight="700" fill="#445066">Between every callback:</text>
+  <text x="400" y="426" text-anchor="middle" font-size="13" fill="#445066">drain nextTick, then Promise queue</text>
+  <text x="400" y="447" text-anchor="middle" font-size="13" fill="#445066">(repeat until both are empty)</text>
+  <text x="400" y="470" text-anchor="middle" font-size="12" font-style="italic" fill="#8A93A3">This can happen after any phase's callback — not one fixed spot.</text>
+
+  <!-- Node 1: Timers -->
+  <g>
+    <rect x="295" y="120" width="210" height="100" rx="10" fill="#FFFFFF" stroke="#34506B" stroke-width="2"/>
+    <circle cx="313" cy="138" r="14" fill="#34506B"/>
+    <text x="313" y="143" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">1</text>
+    <text x="400" y="162" text-anchor="middle" font-size="16" font-weight="700" fill="#1E2430">Timers</text>
+    <text x="400" y="184" text-anchor="middle" font-size="12" fill="#5B6B7A">sticky notes — fire when due</text>
+    <text x="400" y="200" text-anchor="middle" font-size="12" fill="#5B6B7A">(late is possible, early is not)</text>
+  </g>
+
+  <!-- Node 2: Pending callbacks -->
+  <g>
+    <rect x="520.2" y="250" width="210" height="100" rx="10" fill="#FFFFFF" stroke="#34506B" stroke-width="2"/>
+    <circle cx="538.2" cy="268" r="14" fill="#34506B"/>
+    <text x="538.2" y="273" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">2</text>
+    <text x="625.2" y="292" text-anchor="middle" font-size="16" font-weight="700" fill="#1E2430">Pending Callbacks</text>
+    <text x="625.2" y="314" text-anchor="middle" font-size="12" fill="#5B6B7A">leftover tray —</text>
+    <text x="625.2" y="330" text-anchor="middle" font-size="12" fill="#5B6B7A">rare, housekeeping</text>
+  </g>
+
+  <!-- Node 3: Idle/prepare -->
+  <g>
+    <rect x="520.2" y="510" width="210" height="100" rx="10" fill="#FFFFFF" stroke="#34506B" stroke-width="2"/>
+    <circle cx="538.2" cy="528" r="14" fill="#34506B"/>
+    <text x="538.2" y="533" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">3</text>
+    <text x="625.2" y="558" text-anchor="middle" font-size="16" font-weight="700" fill="#1E2430">Idle / Prepare</text>
+    <text x="625.2" y="580" text-anchor="middle" font-size="12" fill="#5B6B7A">internal to libuv</text>
+  </g>
+
+  <!-- Node 4: Poll (highlighted) -->
+  <g>
+    <rect x="295" y="640" width="210" height="100" rx="10" fill="#E7F5F2" stroke="#1F7A6C" stroke-width="3"/>
+    <circle cx="313" cy="658" r="14" fill="#1F7A6C"/>
+    <text x="313" y="663" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">4</text>
+    <text x="400" y="682" text-anchor="middle" font-size="16" font-weight="700" fill="#0F4D42">Poll — rests here</text>
+    <text x="400" y="704" text-anchor="middle" font-size="12" fill="#1F5A50">kitchen window — deliver finished I/O;</text>
+    <text x="400" y="720" text-anchor="middle" font-size="12" fill="#1F5A50">waits here when idle</text>
+  </g>
+
+  <!-- Node 5: Check -->
+  <g>
+    <rect x="69.8" y="510" width="210" height="100" rx="10" fill="#FFFFFF" stroke="#34506B" stroke-width="2"/>
+    <circle cx="87.8" cy="528" r="14" fill="#34506B"/>
+    <text x="87.8" y="533" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">5</text>
+    <text x="174.8" y="558" text-anchor="middle" font-size="16" font-weight="700" fill="#1E2430">Check</text>
+    <text x="174.8" y="580" text-anchor="middle" font-size="12" fill="#5B6B7A">table by the window —</text>
+    <text x="174.8" y="596" text-anchor="middle" font-size="12" fill="#5B6B7A">setImmediate callbacks</text>
+  </g>
+
+  <!-- Node 6: Close callbacks -->
+  <g>
+    <rect x="69.8" y="250" width="210" height="100" rx="10" fill="#FFFFFF" stroke="#34506B" stroke-width="2"/>
+    <circle cx="87.8" cy="268" r="14" fill="#34506B"/>
+    <text x="87.8" y="273" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">6</text>
+    <text x="174.8" y="292" text-anchor="middle" font-size="16" font-weight="700" fill="#1E2430">Close Callbacks</text>
+    <text x="174.8" y="314" text-anchor="middle" font-size="12" fill="#5B6B7A">clearing tables —</text>
+    <text x="174.8" y="330" text-anchor="middle" font-size="12" fill="#5B6B7A">socket close, cleanup</text>
+  </g>
+
+  <!-- footer -->
+  <text x="400" y="790" text-anchor="middle" font-size="13" fill="#5B6B7A">The circuit starts once, after top-level code finishes, and runs until the process exits.</text>
+  <text x="400" y="812" text-anchor="middle" font-size="13" fill="#5B6B7A">Poll is the resting phase — when there's nothing to do, the loop parks there instead of spinning.</text>
+</svg>

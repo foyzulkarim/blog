@@ -1,0 +1,78 @@
+<svg viewBox="0 0 900 780" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="780" fill="#F5F6F8"/>
+
+  <text x="450" y="40" text-anchor="middle" font-size="24" font-weight="700" fill="#1E2430">Where the Work Goes — libuv's Two Kitchens</text>
+  <text x="450" y="66" text-anchor="middle" font-size="13" fill="#5B6B7A">The question that decides: does the OS call notify you later, or hold the thread until done?</text>
+
+  <!-- LEFT PANEL: Kitchen One -->
+  <rect x="40" y="100" width="390" height="460" rx="14" fill="#F0FAF8" stroke="#1F7A6C" stroke-width="2.5"/>
+  <text x="235" y="136" text-anchor="middle" font-size="19" font-weight="700" fill="#0F4D42">Kitchen One</text>
+  <text x="235" y="158" text-anchor="middle" font-size="13" fill="#1F5A50">the order board (OS sockets, epoll)</text>
+
+  <!-- board with lights -->
+  <rect x="105" y="180" width="260" height="70" rx="8" fill="#FFFFFF" stroke="#1F7A6C" stroke-width="1.5"/>
+  <circle cx="140" cy="215" r="12" fill="#F2B84B" stroke="#B5842B" stroke-width="1.5"/>
+  <circle cx="185" cy="215" r="12" fill="#FFFFFF" stroke="#B5C7C2" stroke-width="1.5"/>
+  <circle cx="230" cy="215" r="12" fill="#F2B84B" stroke="#B5842B" stroke-width="1.5"/>
+  <circle cx="275" cy="215" r="12" fill="#F2B84B" stroke="#B5842B" stroke-width="1.5"/>
+  <circle cx="320" cy="215" r="12" fill="#FFFFFF" stroke="#B5C7C2" stroke-width="1.5"/>
+  <text x="235" y="264" text-anchor="middle" font-size="11" fill="#5B6B7A">pinned orders — a lit bulb means data is ready</text>
+
+  <text x="70" y="300" font-size="13" font-weight="700" fill="#0F4D42">Goes here:</text>
+  <text x="80" y="324" font-size="13" fill="#1E2430">• All network sockets</text>
+  <text x="80" y="346" font-size="13" fill="#1E2430">• HTTP requests, Postgres, Redis</text>
+  <text x="80" y="368" font-size="13" fill="#1E2430">• Outbound fetch calls</text>
+
+  <rect x="65" y="400" width="340" height="140" rx="10" fill="none" stroke="#8FBDB5" stroke-width="2" stroke-dasharray="6,5"/>
+  <text x="235" y="428" text-anchor="middle" font-size="13" font-weight="700" fill="#0F4D42">No threads used.</text>
+  <text x="235" y="452" text-anchor="middle" font-size="13" fill="#1F5A50">Waiting is free — 5 connections</text>
+  <text x="235" y="472" text-anchor="middle" font-size="13" fill="#1F5A50">or 5,000 cost the same.</text>
+  <text x="235" y="500" text-anchor="middle" font-size="13" fill="#1F5A50">The limit is the outside system</text>
+  <text x="235" y="520" text-anchor="middle" font-size="13" fill="#1F5A50">(Postgres, the client) — never this process.</text>
+
+  <!-- RIGHT PANEL: Kitchen Two -->
+  <rect x="470" y="100" width="390" height="460" rx="14" fill="#FBF3E8" stroke="#B8712B" stroke-width="2.5"/>
+  <text x="665" y="136" text-anchor="middle" font-size="19" font-weight="700" fill="#7A4B15">Kitchen Two</text>
+  <text x="665" y="158" text-anchor="middle" font-size="13" fill="#8A5A1E">four chefs (libuv thread pool)</text>
+
+  <!-- queue of waiting orders -->
+  <rect x="535" y="192" width="18" height="18" rx="3" fill="#FFFFFF" stroke="#B8712B" stroke-width="1.5"/>
+  <rect x="558" y="192" width="18" height="18" rx="3" fill="#FFFFFF" stroke="#B8712B" stroke-width="1.5"/>
+  <rect x="581" y="192" width="18" height="18" rx="3" fill="#FFFFFF" stroke="#B8712B" stroke-width="1.5"/>
+  <text x="565" y="228" text-anchor="middle" font-size="10" fill="#8A5A1E">queued orders</text>
+
+  <!-- 4 chefs -->
+  <g>
+    <circle cx="650" cy="200" r="20" fill="#FFFFFF" stroke="#B8712B" stroke-width="2"/>
+    <rect x="638" y="176" width="24" height="10" rx="4" fill="#B8712B"/>
+    <circle cx="700" cy="200" r="20" fill="#FFFFFF" stroke="#B8712B" stroke-width="2"/>
+    <rect x="688" y="176" width="24" height="10" rx="4" fill="#B8712B"/>
+    <circle cx="750" cy="200" r="20" fill="#FFFFFF" stroke="#B8712B" stroke-width="2"/>
+    <rect x="738" y="176" width="24" height="10" rx="4" fill="#B8712B"/>
+    <circle cx="800" cy="200" r="20" fill="#FFFFFF" stroke="#B8712B" stroke-width="2"/>
+    <rect x="788" y="176" width="24" height="10" rx="4" fill="#B8712B"/>
+  </g>
+  <text x="725" y="264" text-anchor="middle" font-size="11" fill="#5B6B7A">four workers — everyone below shares them</text>
+
+  <text x="500" y="300" font-size="13" font-weight="700" fill="#7A4B15">Goes here:</text>
+  <text x="510" y="324" font-size="13" fill="#1E2430">• fs.* calls (readFile, stat...)</text>
+  <text x="510" y="346" font-size="13" fill="#1E2430">• dns.lookup (the default DNS path)</text>
+  <text x="510" y="368" font-size="13" fill="#1E2430">• crypto: pbkdf2, scrypt</text>
+  <text x="510" y="390" font-size="13" fill="#1E2430">• zlib: gzip, deflate, brotli</text>
+
+  <rect x="495" y="410" width="340" height="140" rx="10" fill="none" stroke="#D9A968" stroke-width="2" stroke-dasharray="6,5"/>
+  <text x="665" y="436" text-anchor="middle" font-size="13" font-weight="700" fill="#7A4B15">Pool size is 4 by default.</text>
+  <text x="665" y="460" text-anchor="middle" font-size="13" fill="#8A5A1E">Shared by everything above,</text>
+  <text x="665" y="480" text-anchor="middle" font-size="13" fill="#8A5A1E">across every concurrent request.</text>
+  <text x="665" y="508" text-anchor="middle" font-size="13" fill="#8A5A1E">More threads still need cores —</text>
+  <text x="665" y="528" text-anchor="middle" font-size="13" fill="#8A5A1E">chefs share stoves.</text>
+
+  <!-- bottom strip -->
+  <rect x="40" y="590" width="820" height="140" rx="12" fill="#FFFFFF" stroke="#97A1B0" stroke-width="1.5"/>
+  <text x="450" y="620" text-anchor="middle" font-size="15" font-weight="700" fill="#1E2430">Thread pool exhaustion signature</text>
+  <text x="450" y="648" text-anchor="middle" font-size="13" fill="#3A4552">Event loop lag stays normal — but fs, dns, and zlib latency spikes under load.</text>
+  <text x="450" y="670" text-anchor="middle" font-size="13" fill="#3A4552">This is queueing behind four chefs, not a blocked loop.</text>
+  <text x="450" y="700" text-anchor="middle" font-size="12" font-style="italic" fill="#5B6B7A">UV_THREADPOOL_SIZE sets the chef count (max 128) — must be set before the process starts.</text>
+
+  <text x="450" y="758" text-anchor="middle" font-size="12" fill="#8A93A3">dns.resolve is the exception: it talks over the network directly, so it lands in Kitchen One.</text>
+</svg>

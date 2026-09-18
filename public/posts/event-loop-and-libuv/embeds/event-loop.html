@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Node.js Event Loop — Animated</title>
+<style>
+  body {
+    margin: 0;
+    padding: 24px 16px 40px;
+    background: #F5F6F8;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #1E2430;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .wrap { max-width: 820px; width: 100%; }
+  svg { width: 100%; height: auto; display: block; }
+
+  /* node boxes: smooth transition when a phase becomes active */
+  .node-box {
+    fill: #FFFFFF;
+    stroke: #34506B;
+    stroke-width: 2;
+    transition: fill 300ms ease, stroke 300ms ease, stroke-width 300ms ease;
+  }
+  .node-box.active {
+    fill: #FFF3E9;
+    stroke: #D64545;
+    stroke-width: 4;
+  }
+  .node-box.poll { fill: #E7F5F2; stroke: #1F7A6C; stroke-width: 3; }
+  .node-box.poll.active { fill: #FFF3E9; stroke: #D64545; stroke-width: 4; }
+
+  .badge { fill: #34506B; transition: fill 300ms ease; }
+  .badge.active { fill: #D64545; }
+
+  #marker {
+    fill: #D64545;
+    stroke: #FFFFFF;
+    stroke-width: 2.5;
+  }
+
+  .captions {
+    margin-top: 18px;
+    text-align: center;
+    min-height: 56px;
+  }
+  #captionMain {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1E2430;
+  }
+  #captionNext {
+    font-size: 13px;
+    color: #5B6B7A;
+    margin-top: 4px;
+  }
+
+  .controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  button {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1.5px solid #34506B;
+    background: #FFFFFF;
+    color: #1E2430;
+    cursor: pointer;
+  }
+  button:hover { background: #EEF1F4; }
+  button.speed-active {
+    background: #34506B;
+    color: #FFFFFF;
+  }
+  .legend {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #8A93A3;
+    text-align: center;
+  }
+  .legend span.dot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #D64545;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <svg viewBox="0 0 800 760" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#6B7686"/>
+      </marker>
+    </defs>
+
+    <rect x="0" y="0" width="800" height="760" fill="#F5F6F8"/>
+
+    <text x="400" y="34" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1E2430">Node.js Event Loop — Six Phases</text>
+    <text x="400" y="58" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#5B6B7A">Success-case loop — healthy circuit, no blocking, no starvation</text>
+
+    <!-- connecting lines -->
+    <line x1="460.6" y1="205" x2="564.6" y2="265" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="625.2" y1="370" x2="625.2" y2="490" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="564.6" y1="595" x2="460.6" y2="655" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="339.4" y1="655" x2="235.4" y2="595" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="174.8" y1="490" x2="174.8" y2="370" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="235.4" y1="265" x2="339.4" y2="205" stroke="#6B7686" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- center: microtask note (static context, not animated) -->
+    <rect x="270" y="375" width="260" height="110" rx="12" fill="none" stroke="#97A1B0" stroke-width="2" stroke-dasharray="6,5"/>
+    <text x="400" y="405" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#445066">Between every callback:</text>
+    <text x="400" y="426" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#445066">drain nextTick, then Promise queue</text>
+    <text x="400" y="447" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#445066">(repeat until both are empty)</text>
+    <text x="400" y="470" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" font-style="italic" fill="#8A93A3">Can happen after any phase's callback — not animated here.</text>
+
+    <!-- Node 1: Timers -->
+    <g data-node="timers">
+      <rect class="node-box" x="295" y="120" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="313" cy="138" r="14"/>
+      <text x="313" y="143" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">1</text>
+      <text x="400" y="162" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1E2430">Timers</text>
+      <text x="400" y="184" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#5B6B7A">sticky notes — fire when due</text>
+      <text x="400" y="200" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#5B6B7A">(late is possible, early is not)</text>
+    </g>
+
+    <!-- Node 2: Pending callbacks -->
+    <g data-node="pending">
+      <rect class="node-box" x="520.2" y="250" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="538.2" cy="268" r="14"/>
+      <text x="538.2" y="273" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">2</text>
+      <text x="625.2" y="292" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1E2430">Pending Callbacks</text>
+      <text x="625.2" y="314" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#5B6B7A">leftover tray —</text>
+      <text x="625.2" y="330" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#5B6B7A">rare, housekeeping</text>
+    </g>
+
+    <!-- Node 3: Idle/Prepare -->
+    <g data-node="idle">
+      <rect class="node-box" x="520.2" y="510" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="538.2" cy="528" r="14"/>
+      <text x="538.2" y="533" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">3</text>
+      <text x="625.2" y="558" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1E2430">Idle / Prepare</text>
+      <text x="625.2" y="580" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#5B6B7A">internal to libuv</text>
+    </g>
+
+    <!-- Node 4: Poll -->
+    <g data-node="poll">
+      <rect class="node-box poll" x="295" y="640" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="313" cy="658" r="14"/>
+      <text x="313" y="663" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">4</text>
+      <text x="400" y="682" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#0F4D42">Poll — rests here</text>
+      <text x="400" y="704" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1F5A50">kitchen window — deliver finished I/O;</text>
+      <text x="400" y="720" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#1F5A50">waits here when idle</text>
+    </g>
+
+    <!-- Node 5: Check -->
+    <g data-node="check">
+      <rect class="node-box" x="69.8" y="510" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="87.8" cy="528" r="14"/>
+      <text x="87.8" y="533" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">5</text>
+      <text x="174.8" y="558" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1E2430">Check</text>
+      <text x="174.8" y="580" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#5B6B7A">table by the window —</text>
+      <text x="174.8" y="596" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#5B6B7A">setImmediate callbacks</text>
+    </g>
+
+    <!-- Node 6: Close callbacks -->
+    <g data-node="close">
+      <rect class="node-box" x="69.8" y="250" width="210" height="100" rx="10"/>
+      <circle class="badge" cx="87.8" cy="268" r="14"/>
+      <text x="87.8" y="273" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">6</text>
+      <text x="174.8" y="292" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1E2430">Close Callbacks</text>
+      <text x="174.8" y="314" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#5B6B7A">clearing tables —</text>
+      <text x="174.8" y="330" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#5B6B7A">socket close, cleanup</text>
+    </g>
+
+    <!-- the moving marker: the single JS thread, drawn last so it's always on top -->
+    <circle id="marker" r="10" cx="339.4" cy="205"/>
+  </svg>
+
+  <div class="captions">
+    <div id="captionMain">Timers — sticky notes fire when due</div>
+    <div id="captionNext">next: Pending Callbacks</div>
+  </div>
+
+  <div class="controls">
+    <button id="playPauseBtn">Pause</button>
+    <button id="stepBtn">Step ▶</button>
+    <button class="speed-btn" data-speed="0.5">0.5×</button>
+    <button class="speed-btn speed-active" data-speed="1">1×</button>
+    <button class="speed-btn" data-speed="2">2×</button>
+  </div>
+
+  <div class="legend"><span class="dot"></span>the red dot is the single JS thread — there is only ever one</div>
+</div>
+
+<script>
+(function () {
+  // ---- Data: the 12-segment closed loop -------------------------------
+  // Each phase = one "dwell" segment (small glide, node lit up, caption shown)
+  // followed by one "edge" segment (travel to the next node).
+  // Coordinates match the static diagram's connecting lines exactly.
+
+  const phases = [
+    {
+      node: 'timers',
+      dwell:   { from: [339.4, 205], to: [460.6, 205], duration: 900 },
+      edge:    { from: [460.6, 205], to: [564.6, 265], duration: 350 },
+      caption: 'Timers — sticky notes fire when due',
+      next: 'Pending Callbacks'
+    },
+    {
+      node: 'pending',
+      dwell:   { from: [564.6, 265], to: [625.2, 370], duration: 500 },
+      edge:    { from: [625.2, 370], to: [625.2, 490], duration: 350 },
+      caption: 'Pending Callbacks — rare, housekeeping',
+      next: 'Idle / Prepare'
+    },
+    {
+      node: 'idle',
+      dwell:   { from: [625.2, 490], to: [564.6, 595], duration: 400 },
+      edge:    { from: [564.6, 595], to: [460.6, 655], duration: 350 },
+      caption: 'Idle / Prepare — internal to libuv',
+      next: 'Poll'
+    },
+    {
+      node: 'poll',
+      dwell:   { from: [460.6, 655], to: [339.4, 655], duration: 1800 },
+      edge:    { from: [339.4, 655], to: [235.4, 595], duration: 350 },
+      caption: 'Poll — delivering finished I/O, resting if empty',
+      next: 'Check'
+    },
+    {
+      node: 'check',
+      dwell:   { from: [235.4, 595], to: [174.8, 490], duration: 600 },
+      edge:    { from: [174.8, 490], to: [174.8, 370], duration: 350 },
+      caption: 'Check — setImmediate callbacks run here',
+      next: 'Close Callbacks'
+    },
+    {
+      node: 'close',
+      dwell:   { from: [174.8, 370], to: [235.4, 265], duration: 500 },
+      edge:    { from: [235.4, 265], to: [339.4, 205], duration: 350 },
+      caption: 'Close Callbacks — cleanup, socket close events',
+      next: 'Timers'
+    }
+  ];
+
+  // Flatten into 12 segments in travel order.
+  const segments = [];
+  phases.forEach(p => {
+    segments.push({ type: 'dwell', node: p.node, ...p.dwell, caption: p.caption, next: p.next });
+    segments.push({ type: 'edge', node: p.node, ...p.edge, caption: p.caption, next: p.next });
+  });
+
+  // ---- Elements ---------------------------------------------------------
+  const marker = document.getElementById('marker');
+  const captionMain = document.getElementById('captionMain');
+  const captionNext = document.getElementById('captionNext');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const stepBtn = document.getElementById('stepBtn');
+  const speedBtns = document.querySelectorAll('.speed-btn');
+  const nodeBoxes = {};
+  const badges = {};
+  document.querySelectorAll('[data-node]').forEach(g => {
+    const name = g.getAttribute('data-node');
+    nodeBoxes[name] = g.querySelector('.node-box');
+    badges[name] = g.querySelector('.badge');
+  });
+
+  // ---- Playback state -----------------------------------------------------
+  let segIndex = 0;
+  let segProgress = 0;   // ms elapsed within current segment (animation time, not wall time)
+  let speed = 1;
+  let paused = false;
+  let lastTimestamp = null;
+
+  function easeInOutQuad(t) {
+    return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  }
+
+  function setActiveNode(name) {
+    Object.keys(nodeBoxes).forEach(key => {
+      nodeBoxes[key].classList.toggle('active', key === name);
+      badges[key].classList.toggle('active', key === name);
+    });
+  }
+
+  function enterSegment(index) {
+    const seg = segments[index];
+    if (seg.type === 'dwell') {
+      setActiveNode(seg.node);
+      captionMain.textContent = seg.caption;
+      captionNext.textContent = 'next: ' + seg.next;
+    }
+    // On edge segments we leave the just-departed node highlighted a moment
+    // longer by simply not clearing it — it naturally clears when the next
+    // dwell begins, which reads as "still finishing up as it walks away."
+  }
+
+  // Prime the first segment's visuals.
+  enterSegment(0);
+
+  function frame(timestamp) {
+    if (lastTimestamp === null) lastTimestamp = timestamp;
+    const dt = timestamp - lastTimestamp;
+    lastTimestamp = timestamp;
+
+    if (!paused) {
+      segProgress += dt * speed;
+
+      let seg = segments[segIndex];
+      while (segProgress >= seg.duration) {
+        segProgress -= seg.duration;
+        segIndex = (segIndex + 1) % segments.length;
+        seg = segments[segIndex];
+        enterSegment(segIndex);
+      }
+
+      const t = easeInOutQuad(Math.min(segProgress / seg.duration, 1));
+      const x = seg.from[0] + (seg.to[0] - seg.from[0]) * t;
+      const y = seg.from[1] + (seg.to[1] - seg.from[1]) * t;
+      marker.setAttribute('cx', x);
+      marker.setAttribute('cy', y);
+    }
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ---- Controls -----------------------------------------------------------
+  playPauseBtn.addEventListener('click', () => {
+    paused = !paused;
+    playPauseBtn.textContent = paused ? 'Play' : 'Pause';
+    if (!paused) lastTimestamp = null; // avoid a big dt jump after resuming
+  });
+
+  stepBtn.addEventListener('click', () => {
+    // Jump straight to the start of the next dwell phase — useful for
+    // inspecting one phase at a time without watching the travel animation.
+    paused = true;
+    playPauseBtn.textContent = 'Play';
+    do {
+      segIndex = (segIndex + 1) % segments.length;
+    } while (segments[segIndex].type !== 'dwell');
+    segProgress = 0;
+    enterSegment(segIndex);
+    const seg = segments[segIndex];
+    marker.setAttribute('cx', seg.from[0]);
+    marker.setAttribute('cy', seg.from[1]);
+  });
+
+  speedBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      speed = parseFloat(btn.dataset.speed);
+      speedBtns.forEach(b => b.classList.remove('speed-active'));
+      btn.classList.add('speed-active');
+    });
+  });
+})();
+</script>
+
+
+<!-- Reports the document height to the parent page so the embedding iframe can
+     size itself to the content at any viewport width. See EmbedFrame.astro. -->
+<script>
+(function () {
+  if (window.parent === window) return;
+  function report() {
+    window.parent.postMessage(
+      { type: 'embed-height', height: document.body.offsetHeight },
+      '*'
+    );
+  }
+  new ResizeObserver(report).observe(document.body);
+  window.addEventListener('load', report);
+  report();
+})();
+</script>
+</body>
+</html>
