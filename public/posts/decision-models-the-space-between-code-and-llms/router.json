@@ -1,0 +1,51 @@
+{
+  "model": "laya",
+  "state": "",
+  "questions": {
+    "tier": {
+      "type": "choice",
+      "instructions": "Which model tier should handle this? Pick the cheapest tier that can do it well. If unclear or risky, pick the higher tier.",
+      "criteria": {
+        "local": [
+          "commit messages",
+          "branch names and PR titles",
+          "renames and typos",
+          "formatting and lint fixes",
+          "simple boilerplate",
+          "JSON, YAML, CSV conversion",
+          "one-line shell commands"
+        ],
+        "general": [
+          "implement a feature",
+          "write or fix tests",
+          "refactor a module",
+          "fix a bug with a clear error",
+          "write documentation",
+          "review a small diff",
+          "write SQL or scripts",
+          "explain existing code"
+        ],
+        "reasoning": [
+          "system design and architecture",
+          "choosing between technologies",
+          "tradeoff analysis",
+          "break down a large task",
+          "security review",
+          "unclear performance problems",
+          "concurrency and race conditions",
+          "schema design and data migrations",
+          "root cause analysis"
+        ]
+      }
+    },
+    "scope": {
+      "type": "choice",
+      "instructions": "How much code or system does this task touch?",
+      "criteria": {
+        "single": ["one line or function", "one file", "nothing else changes"],
+        "multi": ["several files or modules", "one project", "changes must stay consistent"],
+        "system": ["many services or repos", "infrastructure or deployment", "data layer or architecture"]
+      }
+    }
+  }
+}

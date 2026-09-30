@@ -574,6 +574,48 @@ pre:focus-visible {
 }
 .code-label + pre { margin-top: var(--s-2); }
 
+/* Collapsible full-file blocks (post: decision-models-the-space-between-code-and-llms). A <details> whose
+   summary is a mono filename plus a download link; the body is an unframed
+   code block — the details container already carries the frame. */
+.file-details {
+  margin: var(--s-6) 0;
+  border: var(--hairline) solid var(--code-border);
+  border-radius: var(--radius-lg);
+  background: var(--code-bg);
+}
+.file-details > summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--t--1);
+  color: var(--code-text);
+  list-style: none;
+}
+.file-details > summary::-webkit-details-marker { display: none; }
+.file-details > summary::before {
+  content: '▸';
+  color: var(--text-faint);
+  margin-right: var(--s-2);
+}
+.file-details[open] > summary::before { content: '▾'; }
+.file-details[open] > summary { border-bottom: var(--hairline) solid var(--code-border); }
+.file-details > summary a {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+.file-details pre {
+  margin: 0;
+  padding: var(--s-4) var(--s-4) var(--s-4);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
 /* ---------- 7. TABLES ------------------------------------- */
 /* Scroll container. Always present: it is what makes 10 columns
    survive 380px without shrinking text or squeezing columns. */
