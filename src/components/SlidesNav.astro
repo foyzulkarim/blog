@@ -18,6 +18,32 @@
 ---
 
 <script>
+  import { captureSlideAsPNG } from '../scripts/slide-capture';
+
+  /* The subset of the Umami tracker API we use
+     (docs.umami.is/docs/tracker-functions). The tracker is a third-party
+     `defer` script, so it may be missing entirely (ad-blocker, offline) —
+     every call site must treat it as optional. */
+  type UmamiTracker = {
+    track: (name: string, data?: Record<string, string | number>) => void;
+  };
+
+  /* Fires only after a successful export: a rasterize that throws is not a
+     download. Best-effort — analytics must never break the export. */
+  function trackSlideDownload(slide: HTMLElement, index: number): void {
+    const umami = (window as Window & { umami?: UmamiTracker }).umami;
+    if (!umami?.track) return;
+    try {
+      umami.track('slide-png-download', {
+        deck: window.location.pathname.split('/').filter(Boolean).pop() ?? 'slides',
+        slide: index + 1,
+        label: slide.getAttribute('aria-label') ?? '',
+      });
+    } catch {
+      /* ignore — tracking is best-effort */
+    }
+  }
+
   function initDecks() {
     document.querySelectorAll<HTMLElement>('.slides-deck').forEach((deck) => {
       const slides = Array.from(deck.querySelectorAll<HTMLElement>('.slide'));
@@ -27,6 +53,9 @@
       const prevBtn = deck.querySelector<HTMLElement>('[data-slides-prev]');
       const nextBtn = deck.querySelector<HTMLElement>('[data-slides-next]');
       const presentBtn = deck.querySelector<HTMLElement>('[data-slides-present]');
+      const downloadBtn = deck.querySelector<HTMLElement>('[data-slides-download]');
+      let exporting = false;
+      const idleLabel = downloadBtn?.textContent ?? 'PNG';
 
       const total = slides.length;
       let current = 0;
@@ -123,6 +152,23 @@
             if (deck.classList.contains('is-presented')) exitPresentation();
             break;
         }
+      });
+
+      downloadBtn?.addEventListener('click', () => {
+        if (exporting || !downloadBtn) return;
+        exporting = true;
+        downloadBtn.setAttribute('aria-disabled', 'true');
+        downloadBtn.textContent = 'Saving…';
+        const slide = slides[current]!;
+        const index = current;
+        captureSlideAsPNG(deck, slide, index)
+          .then(() => trackSlideDownload(slide, index))
+          .catch((err: unknown) => console.error('[slides] PNG export failed', err))
+          .finally(() => {
+            exporting = false;
+            downloadBtn.textContent = idleLabel;
+            downloadBtn.removeAttribute('aria-disabled');
+          });
       });
 
       function enterPresentation(): void {
