@@ -2243,3 +2243,433 @@ figcaption b { color: var(--text-primary); font-weight: 600; }
 .share-btn svg {
   flex-shrink: 0;
 }
+
+/* ---------- 12. Cheap Coding deck (.cc-deck) ------------------------------
+
+   A faithful port of the "How to Keep Myself Relevant in the Age of Cheap
+   Coding" video deck. Its visual vocabulary — diff blocks, chip clouds,
+   workflow strips, timelines, stacked bars — is re-expressed in blog tokens
+   and scoped under .slides-deck.cc-deck so the other two decks are untouched.
+   The fixed 1600x900 stage is replaced by the blog's fluid slide model:
+   every size is a clamp() anchored near the original's 0.8x scale at 1280px.
+   The page's only <h1> is the post title (verify.mjs), so slide headlines
+   are <h2>; .s-xl carries the original h1 sizes. */
+
+.slides-deck.cc-deck {
+  --cc-del-ink: light-dark(oklch(0.500 0.150 25),  oklch(0.800 0.090 22));
+  --cc-del-bg:  light-dark(oklch(0.925 0.030 25),  oklch(0.300 0.050 25));
+  --cc-add-ink: light-dark(oklch(0.470 0.120 152), oklch(0.830 0.100 152));
+  --cc-add-bg:  light-dark(oklch(0.930 0.035 155), oklch(0.300 0.055 155));
+  --cc-soft:    light-dark(oklch(0.930 0.035 255), oklch(0.270 0.055 255));
+}
+
+.slides-deck.cc-deck .slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  padding: clamp(2.5rem, 6vw, 5rem) clamp(1rem, 4vw, 4.5rem);
+}
+
+/* ----- Typography ----- */
+
+.cc-deck h2 {
+  font-size: clamp(1.6rem, 1.1rem + 2.8vw, 3.4rem);
+  line-height: 1.12;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  margin: 0 0 clamp(1rem, 2.5vw, 2.25rem);
+}
+
+.cc-deck .s-xl {
+  font-size: clamp(2rem, 1.3rem + 3.8vw, 4.7rem);
+  line-height: 1.06;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 clamp(1rem, 2.5vw, 2.25rem);
+}
+
+.cc-deck p {
+  font-size: clamp(1.05rem, 0.95rem + 0.7vw, 1.75rem);
+  line-height: 1.42;
+  margin: 0 0 clamp(0.5rem, 1.2vw, 1.1rem);
+}
+
+.cc-deck .sub {
+  font-size: clamp(1.15rem, 1rem + 0.9vw, 1.9rem);
+  line-height: 1.35;
+  color: var(--text-secondary);
+  margin-top: clamp(0.75rem, 2vw, 1.75rem);
+}
+
+.cc-deck .note {
+  font-size: clamp(0.95rem, 0.9rem + 0.35vw, 1.3rem);
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: clamp(0.75rem, 1.5vw, 1.5rem);
+}
+
+.cc-deck .lead {
+  font-size: clamp(1rem, 0.9rem + 0.7vw, 1.5rem);
+  color: var(--text-secondary);
+  margin-bottom: clamp(0.5rem, 1.2vw, 1.1rem);
+}
+
+/* statement pre-line (original 42px) */
+.cc-deck .s-lead { font-size: clamp(1.3rem, 1.1rem + 1vw, 2.1rem); }
+
+.cc-deck .big {
+  font-size: clamp(1.5rem, 1.2rem + 1.6vw, 2.4rem);
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.cc-deck .muted { color: var(--text-secondary); }
+
+.cc-deck .small { font-size: clamp(0.95rem, 0.88rem + 0.4vw, 1.5rem); }
+
+/* ----- Diff blocks (the deck's core device) ----- */
+
+.cc-deck .diff {
+  font-family: var(--font-mono);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: clamp(0.95rem, 0.8rem + 0.9vw, 1.8rem);
+  line-height: 1.4;
+  margin-bottom: clamp(1rem, 2.5vw, 2.6rem);
+}
+
+.cc-deck .diff div { padding: clamp(0.4rem, 1.2vw, 1rem) clamp(0.75rem, 1.8vw, 1.75rem); }
+.cc-deck .diff.sm { font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.5rem); }
+.cc-deck .diff.sm div { padding: clamp(0.3rem, 0.9vw, 0.7rem) clamp(0.6rem, 1.5vw, 1.5rem); }
+.cc-deck .diff .del { background: var(--cc-del-bg); color: var(--cc-del-ink); }
+.cc-deck .diff .del span { text-decoration: line-through; text-decoration-thickness: 2px; }
+.cc-deck .diff .add { background: var(--cc-add-bg); color: var(--cc-add-ink); font-weight: 600; }
+.cc-deck .title .diff { max-width: 900px; }
+
+/* ----- Divider / statement / quote slides ----- */
+
+.cc-deck .slide.divider { background: var(--cc-soft); }
+
+.cc-deck .divider .partno {
+  font-size: clamp(1.3rem, 1.1rem + 1.2vw, 2.2rem);
+  font-style: italic;
+  color: var(--accent);
+  margin-bottom: clamp(0.5rem, 1.2vw, 1.1rem);
+}
+
+.cc-deck .divider .s-xl { font-size: clamp(2.4rem, 1.6rem + 4.5vw, 5.9rem); max-width: 1000px; }
+.cc-deck .divider .sub { max-width: 880px; }
+.cc-deck .statement .s-xl { max-width: 1060px; }
+
+.cc-deck .quote p {
+  font-size: clamp(1.9rem, 1.4rem + 3vw, 3.7rem);
+  line-height: 1.22;
+  font-style: italic;
+  color: var(--accent);
+  max-width: 1060px;
+  margin: 0;
+}
+
+/* ----- Roadmap ----- */
+
+.cc-deck .roadmap { list-style: none; margin: 0; padding: 0; counter-reset: r; }
+
+.cc-deck .roadmap li {
+  counter-increment: r;
+  display: flex;
+  align-items: baseline;
+  gap: clamp(0.75rem, 2.5vw, 2.25rem);
+  font-size: clamp(1.25rem, 1rem + 1.2vw, 2.2rem);
+  line-height: 1.3;
+  padding: clamp(0.6rem, 1.5vw, 1.2rem) 0;
+  border-top: 2px solid var(--border);
+}
+
+.cc-deck .roadmap li:last-child { border-bottom: 2px solid var(--border); }
+
+.cc-deck .roadmap li::before {
+  content: counter(r);
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.9rem);
+  min-width: 2ch;
+}
+
+.cc-deck .roadmap li span {
+  color: var(--text-secondary);
+  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.6rem);
+  margin-left: auto;
+  font-style: italic;
+  text-align: right;
+}
+
+/* ----- Chips ----- */
+
+.cc-deck .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.4rem, 0.9vw, 0.9rem);
+  margin: 0.25rem 0 clamp(1rem, 1.9vw, 1.9rem);
+}
+
+.cc-deck .chip {
+  font-size: clamp(0.95rem, 0.85rem + 0.55vw, 1.5rem);
+  padding: clamp(0.3rem, 0.7vw, 0.75rem) clamp(0.6rem, 1.2vw, 1.5rem);
+  border-radius: 999px;
+  background: var(--surface-raised);
+  border: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+.cc-deck .chips.lg .chip { font-size: clamp(1.05rem, 0.95rem + 0.7vw, 1.7rem); }
+.cc-deck .chips.cheap .chip { background: var(--cc-del-bg); color: var(--cc-del-ink); border-color: transparent; }
+.cc-deck .chips.hard .chip { background: var(--cc-add-bg); color: var(--cc-add-ink); border-color: transparent; font-weight: 600; }
+.cc-deck .chips.acc .chip { background: var(--cc-soft); color: var(--accent); border-color: transparent; }
+
+/* ----- Columns and cards ----- */
+
+.cc-deck .cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.25rem, 3vw, 3rem); }
+.cc-deck .cols.wide { grid-template-columns: 1.25fr 1fr; }
+.cc-deck .cols.loop { grid-template-columns: 0.8fr 1.4fr; }
+.cc-deck .cols.def { grid-template-columns: 0.85fr 1.15fr; }
+
+.cc-deck .card {
+  background: var(--surface-raised);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: clamp(1rem, 2.2vw, 2.1rem) clamp(1.1rem, 2.5vw, 2.5rem);
+}
+
+.cc-deck .card h3 { font-size: clamp(1.15rem, 1rem + 0.8vw, 1.9rem); margin: 0 0 0.75rem; font-weight: 600; }
+.cc-deck .card p { font-size: clamp(1rem, 0.9rem + 0.55vw, 1.5rem); margin: 0 0 0.5rem; }
+.cc-deck .card ul, .cc-deck .card ol { margin: 0; padding-left: 1.5rem; }
+.cc-deck .card li { font-size: clamp(1rem, 0.9rem + 0.55vw, 1.5rem); line-height: 1.38; margin-bottom: 0.3rem; }
+.cc-deck .card .chips { margin-bottom: 0; }
+.cc-deck .card .chip { font-size: clamp(0.85rem, 0.8rem + 0.35vw, 1.35rem); }
+.cc-deck .card.del { background: var(--cc-del-bg); border-color: transparent; }
+.cc-deck .card.del h3, .cc-deck .card.del li, .cc-deck .card.del p { color: var(--cc-del-ink); }
+.cc-deck .card.add { background: var(--cc-add-bg); border-color: transparent; }
+.cc-deck .card.add h3, .cc-deck .card.add li, .cc-deck .card.add p { color: var(--cc-add-ink); }
+
+.cc-deck ol.two { columns: 2; column-gap: 2.5rem; list-style-position: inside; }
+.cc-deck ol.two li { break-inside: avoid; }
+
+/* ----- Pairs (A -> B rows) ----- */
+
+.cc-deck .pairs {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: clamp(0.5rem, 1.1vw, 1.1rem) clamp(1rem, 2.2vw, 2.25rem);
+  align-items: center;
+  font-size: clamp(1.05rem, 0.9rem + 0.9vw, 1.8rem);
+  margin: 0.25rem 0 clamp(1.25rem, 2.1vw, 2.1rem);
+}
+
+.cc-deck .pairs .arrow { color: var(--accent); font-family: var(--font-mono); }
+
+/* ----- Bars ----- */
+
+.cc-deck .bars {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) 1fr;
+  gap: clamp(0.6rem, 1.3vw, 1.3rem) clamp(1rem, 1.7vw, 1.75rem);
+  align-items: center;
+  margin-bottom: clamp(1.25rem, 1.9vw, 1.9rem);
+}
+
+.cc-deck .bars .lbl { font-size: clamp(1rem, 0.9rem + 0.6vw, 1.6rem); text-align: right; }
+.cc-deck .bar { height: clamp(1.75rem, 2.4vw, 2.8rem); border-radius: 8px; background: var(--text-secondary); opacity: 0.55; }
+.cc-deck .bar.b1 { width: 5%; }
+.cc-deck .bar.b2 { width: 6.2%; }
+
+.cc-deck .bar.b3 {
+  width: 100%;
+  opacity: 1;
+  background: linear-gradient(90deg, var(--accent) 70%, transparent);
+  display: flex;
+  align-items: center;
+  padding-left: clamp(0.75rem, 1.5vw, 1.5rem);
+  color: var(--surface);
+  font-size: clamp(0.85rem, 0.8rem + 0.45vw, 1.4rem);
+  font-family: var(--font-mono);
+}
+
+/* ----- Timeline ----- */
+
+.cc-deck .timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin: clamp(0.75rem, 1.2vw, 1.2rem) 0 clamp(1.5rem, 2.6vw, 2.6rem);
+}
+
+.cc-deck .timeline::before {
+  content: "";
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 16px;
+  height: 3px;
+  background: var(--border);
+}
+
+.cc-deck .tstep { text-align: center; position: relative; padding: 0 0.2rem; min-width: 0; }
+.cc-deck .tstep .dot { width: 32px; height: 32px; border-radius: 50%; background: var(--surface-raised); border: 3px solid var(--text-secondary); margin: 0 auto clamp(0.5rem, 1.1vw, 1.1rem); position: relative; }
+.cc-deck .tstep.now .dot { background: var(--accent); border-color: var(--accent); }
+.cc-deck .tstep .t { font-size: clamp(0.9rem, 0.8rem + 0.55vw, 1.5rem); font-weight: 600; line-height: 1.2; }
+.cc-deck .tstep .d { font-size: clamp(0.75rem, 0.72rem + 0.2vw, 1.1rem); color: var(--text-secondary); margin-top: 0.35rem; line-height: 1.3; }
+.cc-deck .tstep.now .t { color: var(--accent); }
+
+/* ----- Shift table ----- */
+
+.cc-deck .shift { width: 100%; border-collapse: collapse; font-size: clamp(1rem, 0.85rem + 0.9vw, 1.8rem); }
+.cc-deck .shift th { text-align: left; font-size: clamp(0.9rem, 0.85rem + 0.35vw, 1.5rem); color: var(--text-secondary); font-weight: 400; font-style: italic; padding: 0 1rem 0.75rem 0; }
+.cc-deck .shift td { padding: clamp(0.5rem, 1vw, 1rem) 1rem clamp(0.5rem, 1vw, 1rem) 0; border-top: 2px solid var(--border); }
+.cc-deck .shift td:first-child { color: var(--cc-del-ink); width: 42%; }
+.cc-deck .shift td.arr { color: var(--accent); width: 8%; font-family: var(--font-mono); }
+.cc-deck .shift td:last-child { color: var(--cc-add-ink); font-weight: 600; }
+
+/* ----- Question grid ----- */
+
+.cc-deck .qgrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.5rem, 1vw, 1rem);
+  margin: 0.25rem 0 clamp(1rem, 1.75vw, 1.75rem);
+}
+
+.cc-deck .q {
+  background: var(--surface-raised);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(0.6rem, 1.1vw, 1.1rem) clamp(0.75rem, 1.4vw, 1.4rem);
+  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.4rem);
+  line-height: 1.3;
+}
+
+.cc-deck .q.first { border-color: var(--accent); color: var(--accent); }
+.cc-deck .qgrid.two { grid-template-columns: 1fr 1fr; }
+.cc-deck .qgrid.two .q { font-size: clamp(1rem, 0.9rem + 0.7vw, 1.7rem); padding: clamp(0.9rem, 1.6vw, 1.6rem) clamp(1rem, 1.9vw, 1.9rem); }
+
+/* ----- Futures / safe bet ----- */
+
+.cc-deck .futures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 2.1vw, 2.1rem);
+  margin-bottom: clamp(1.25rem, 1.9vw, 1.9rem);
+}
+
+.cc-deck .futures.three { grid-template-columns: repeat(3, 1fr); }
+
+.cc-deck .safe {
+  background: var(--accent);
+  color: var(--surface);
+  border-radius: 14px;
+  padding: clamp(1rem, 2vw, 1.9rem) clamp(1.25rem, 2.6vw, 2.6rem);
+  font-size: clamp(1.05rem, 0.9rem + 0.9vw, 1.8rem);
+  line-height: 1.35;
+}
+
+/* ----- Stacked bar + legend ----- */
+
+.cc-deck .stack {
+  display: flex;
+  height: clamp(3rem, 5vw, 5.5rem);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 0.5rem 0 clamp(1rem, 1.9vw, 1.9rem);
+}
+
+.cc-deck .seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--surface);
+  font-family: var(--font-mono);
+  font-size: clamp(0.9rem, 0.8rem + 0.55vw, 1.7rem);
+  font-weight: 600;
+}
+
+/* s3 uses the dimmed gold so the large mono label keeps contrast on both
+   faces; the other segments already ship AA-safe pairs with --surface text. */
+.cc-deck .s1 { background: var(--accent); }
+.cc-deck .s2 { background: var(--cc-add-ink); }
+.cc-deck .s3 { background: var(--deck-gold-dim); }
+.cc-deck .s4 { background: var(--cc-del-ink); }
+.cc-deck .s5 { background: var(--text-secondary); }
+
+.cc-deck .legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.4rem, 0.9vw, 0.9rem) clamp(1.5rem, 3.3vw, 3.3rem);
+  margin-bottom: clamp(1rem, 1.9vw, 1.9rem);
+}
+
+.cc-deck .legend div { font-size: clamp(1rem, 0.9rem + 0.6vw, 1.55rem); display: flex; align-items: center; gap: clamp(0.5rem, 1.1vw, 1.1rem); }
+.cc-deck .legend i { width: clamp(0.9rem, 1.3vw, 1.4rem); height: clamp(0.9rem, 1.3vw, 1.4rem); border-radius: 6px; flex: none; }
+
+/* ----- Workflow strip ----- */
+
+.cc-deck .wf {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(0.4rem, 1vw, 1rem);
+  margin: 0.1rem 0 clamp(1.25rem, 1.9vw, 1.9rem);
+}
+
+.cc-deck .wstep {
+  background: var(--surface-raised);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(0.7rem, 1.4vw, 1.4rem);
+}
+
+.cc-deck .wstep .n { font-family: var(--font-mono); color: var(--accent); font-size: clamp(0.8rem, 0.75rem + 0.35vw, 1.3rem); }
+.cc-deck .wstep b { display: block; font-size: clamp(1rem, 0.9rem + 0.7vw, 1.7rem); margin: 0.25rem 0 0.3rem; }
+.cc-deck .wstep span { font-size: clamp(0.8rem, 0.75rem + 0.3vw, 1.2rem); color: var(--text-secondary); line-height: 1.3; display: block; }
+.cc-deck .wstep.key { border-color: var(--accent); background: var(--cc-soft); }
+.cc-deck .wstep.swap { background: var(--cc-add-bg); border-color: transparent; }
+.cc-deck .wstep.swap b, .cc-deck .wstep.swap span.now { color: var(--cc-add-ink); }
+.cc-deck .wstep.swap s { color: var(--cc-del-ink); text-decoration-thickness: 2px; }
+
+/* ----- Closing slide ----- */
+
+.cc-deck .final {
+  font-size: clamp(1.6rem, 1.3rem + 1.6vw, 2.5rem);
+  line-height: 1.28;
+  font-style: italic;
+  color: var(--accent);
+  max-width: 1040px;
+  margin-top: clamp(0.5rem, 1.2vw, 1.2rem);
+}
+
+.cc-deck .blog {
+  font-family: var(--font-mono);
+  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.4rem);
+  color: var(--text-secondary);
+  margin-top: clamp(0.75rem, 1.5vw, 1.5rem);
+}
+
+/* ----- Responsive collapse ----- */
+
+@media (max-width: 48rem) {
+  .cc-deck .cols,
+  .cc-deck .cols.wide,
+  .cc-deck .cols.loop,
+  .cc-deck .cols.def,
+  .cc-deck .futures,
+  .cc-deck .futures.three,
+  .cc-deck .legend,
+  .cc-deck .qgrid,
+  .cc-deck .qgrid.two { grid-template-columns: 1fr; }
+  .cc-deck .wf { grid-template-columns: repeat(2, 1fr); }
+  .cc-deck .chip { white-space: normal; }
+  .cc-deck ol.two { columns: 1; }
+  .cc-deck .bars { grid-template-columns: 1fr; gap: 0.25rem 0; }
+  .cc-deck .bars .lbl { text-align: left; }
+  .cc-deck .timeline { grid-template-columns: repeat(4, 1fr); row-gap: clamp(1rem, 3vw, 1.5rem); }
+  .cc-deck .timeline::before { display: none; }
+}

@@ -1,0 +1,604 @@
+---
+title: "How to Keep Myself Relevant in the Age of Cheap Coding — slides"
+description: "A 44-slide deck on what remains valuable when coding becomes cheap — identity, judgment, specification, verification, and the road ahead."
+pubDate: 2026-10-01
+tags:
+  - Slides
+  - AI
+  - Career
+  - Engineering Practice
+---
+
+import SlidesNav from '../../../components/SlidesNav.astro';
+
+<SlidesNav />
+
+<p class="lede">
+  The slide deck behind the talk — forty-four slides on what remains valuable
+  when coding becomes cheap. My before and after with coding agents, the
+  economics, the mindset shift, the skills worth building, and the road ahead.
+  Use the arrow keys, the on-screen controls, or the Present button to step
+  through.
+</p>
+
+<div class="slides-deck bleed cc-deck">
+  <div class="slides-deck__nav">
+    <span class="slides-deck__title">Slides</span>
+    <button class="slides-deck__btn" data-slides-prev type="button" aria-label="Previous slide">←</button>
+    <button class="slides-deck__btn" data-slides-next type="button" aria-label="Next slide">→</button>
+    <span class="slides-deck__counter" data-slides-counter>01 / 44</span>
+    <button class="slides-deck__btn slides-deck__present" data-slides-present type="button" aria-label="Enter presentation mode">Present</button>
+  </div>
+
+{/* ============ OPENING ============ */}
+
+{/* notes: Hello. This is a personal reflection for software professionals. The question is not whether AI can code. It clearly can. The real question is this. What remains valuable when coding becomes cheap? */}
+<section class="slide title" aria-label="Cover">
+  <div class="diff">
+    <div class="del">- <span>my value = the code I write</span></div>
+    <div class="add">+ my value = software I can stand behind</div>
+  </div>
+  <h2 class="s-xl">How to Keep Myself Relevant in the Age of Cheap Coding</h2>
+  <p class="sub">What remains valuable when coding becomes cheap?</p>
+</section>
+
+{/* notes: This talk has four parts. First, where we are today. I will share my own story, and then the bigger picture. Second, how we should change our thinking. Third, what we can actually do next. And finally, the road ahead. */}
+<section class="slide" aria-label="Four parts">
+  <h2>Four parts</h2>
+  <ol class="roadmap">
+    <li>Where we are <span>my story and the bigger picture</span></li>
+    <li>Changing how we think <span>identity and mindset</span></li>
+    <li>What to do next <span>skills and strategy</span></li>
+    <li>The road ahead <span>opportunity and relevance</span></li>
+  </ol>
+</section>
+
+{/* ============ PART ONE ============ */}
+
+{/* notes: Part one. Where are we today, and how did we get here? */}
+<section class="slide divider" aria-label="Part one — Where we are">
+  <div class="partno">Part one</div>
+  <h2 class="s-xl">Where we are</h2>
+  <p class="sub">My own before and after, and what is really changing</p>
+</section>
+
+{/* notes: AI coding agents can now build surprisingly complete applications. A good harness and a good specification can produce software in a fraction of the old time. Tasks that took days can take hours. Tasks that took hours can take minutes. The implementation barrier is falling fast. And this creates an uncomfortable question for experienced developers. If the machine can write the code, what exactly am I bringing to the table? */}
+<section class="slide" aria-label="The uncomfortable realization">
+  <h2>The uncomfortable realization</h2>
+  <div class="pairs">
+    <div>Days</div><div class="arrow">→</div><div class="accent">hours</div>
+    <div>Hours</div><div class="arrow">→</div><div class="accent">minutes</div>
+  </div>
+  <p>A good harness plus a good specification. The implementation barrier is falling fast.</p>
+  <p class="big">If the machine can write the code, what am I bringing to the table?</p>
+</section>
+
+{/* notes: Before I talk about the big picture, let me show you my own story. This is not advice. It is just one engineer's before and after. For many years, I built a lot of open source projects. I did them end to end. First I investigated the problem. Then I made a mockup. I gathered requirements and planned what to do. Then I built it, and I deployed it to hosting. Coding was only one of these steps. But it was the most fun part. I learned new things by building them with my own hands. */}
+<section class="slide" aria-label="Before agents: how I built things">
+  <h2>Before agents: how I built things</h2>
+  <p class="lead">Many open source projects, end to end. Not advice. Just my story.</p>
+  <div class="wf">
+    <div class="wstep"><div class="n">1</div><b>Investigate</b><span>the problem</span></div>
+    <div class="wstep"><div class="n">2</div><b>Mockup</b><span>the idea</span></div>
+    <div class="wstep"><div class="n">3</div><b>Plan</b><span>requirements and scheduling</span></div>
+    <div class="wstep key"><div class="n">4</div><b>Build</b><span>by hand</span></div>
+    <div class="wstep"><div class="n">5</div><b>Deploy</b><span>to hosting</span></div>
+  </div>
+  <p>Coding was one step of five. But it was the fun part.</p>
+  <p class="big accent">I learned new things by building them by hand.</p>
+</section>
+
+{/* notes: After coding agents arrived, I kept building projects in almost the same way. The journey is the same. But in the build step, I let the agents loose. They generate the code for me. At my job, I have not written code by hand for many months. I do research. I build proofs of concept. I investigate unfamiliar codebases. None of this needs me to type code. Here is a recent example. I added a Storybook testing gate to a Jenkins pipeline. The pipeline code is written in Groovy. I had never seen Groovy code before, let alone touched it. With an agent, I still delivered it. */}
+<section class="slide" aria-label="After agents: same journey, new engine">
+  <h2>After agents: same journey, new engine</h2>
+  <div class="wf">
+    <div class="wstep"><div class="n">1</div><b>Investigate</b><span>the problem</span></div>
+    <div class="wstep"><div class="n">2</div><b>Mockup</b><span>the idea</span></div>
+    <div class="wstep"><div class="n">3</div><b>Plan</b><span>requirements and scheduling</span></div>
+    <div class="wstep swap"><div class="n">4</div><b>Build</b><span><s>by hand</s></span><span class="now">agents generate</span></div>
+    <div class="wstep"><div class="n">5</div><b>Deploy</b><span>to hosting</span></div>
+  </div>
+  <p class="lead">At work, for many months, no hand-typed code:</p>
+  <div class="chips acc">
+    <span class="chip">Research</span><span class="chip">Proofs of concept</span><span class="chip">Investigating new codebases</span>
+  </div>
+  <p class="muted small">Recent example: I added a Storybook testing gate to a Jenkins pipeline, in Groovy. I had never even seen Groovy before.</p>
+</section>
+
+{/* notes: And honestly, I gained a lot. With agents, I can investigate requirements much more deeply and more completely. I find many more edge cases than I could before. I can try more ideas, faster. That is a big win for future deliveries. I also learn in a new way. I learn by reading the agent's responses, not by typing code. So I am not complaining about the non-coding work. And I believe thousands of developers are working this way now. */}
+<section class="slide" aria-label="What I gained">
+  <h2>What I gained</h2>
+  <div class="chips hard lg">
+    <span class="chip">Deeper requirement investigation</span><span class="chip">More complete analysis</span>
+    <span class="chip">Many more edge cases</span><span class="chip">Faster proofs of concept</span>
+  </div>
+  <p>I learn by reading agent responses, not by typing code.</p>
+  <p class="big accent">A big win for future deliveries.</p>
+  <p class="muted">I am not complaining about the non-coding work.</p>
+</section>
+
+{/* notes: But one question kept coming back. Am I missing the learning? Here is why the worry is real. Reading code and writing code teach different things. Reading builds recognition. I can follow code and judge it. Writing builds recall. I can produce code myself, even under pressure. Agents gave me much more reading. But they took away most of my writing. That is the gap I worried about. */}
+<section class="slide" aria-label="What I worried I lost">
+  <h2>What I worried I lost</h2>
+  <div class="cols">
+    <div class="card add">
+      <h3>Reading builds recognition</h3>
+      <p>I can follow code and judge it.</p>
+      <p><b>Agents gave me much more of this.</b></p>
+    </div>
+    <div class="card del">
+      <h3>Writing builds recall</h3>
+      <p>I can produce it myself, under pressure.</p>
+      <p><b>Agents took most of this away.</b></p>
+    </div>
+  </div>
+  <p class="big" style="margin-top:1.5rem">So, am I missing the learning?</p>
+</section>
+
+{/* notes: Now it is your turn. Pause the video for a moment. Think about your own before and after. What did your workflow look like before agents? What do you do now? What did you gain? And what do you miss? There is no right answer here. Everyone starts from a different level. Your answers will tell you more than my advice ever could. */}
+<section class="slide" aria-label="Your turn">
+  <h2>Your turn</h2>
+  <div class="qgrid two">
+    <div class="q first">What did your workflow look like before agents?</div>
+    <div class="q">What do you do now?</div>
+    <div class="q">What did you gain?</div>
+    <div class="q">What do you miss?</div>
+  </div>
+  <p class="muted">There is no right answer. Start from your own level.</p>
+</section>
+
+{/* notes: For many of us, coding is more than a job. It is a big part of our professional identity. We spent years learning languages, frameworks, APIs, databases, cloud platforms, design patterns, debugging, testing, and deployment. We became valuable because we could turn requirements into working software. Now AI can do more and more of exactly that. So the conclusion feels obvious. The thing I spent years becoming good at is becoming cheaper. */}
+<section class="slide" aria-label="The identity crisis">
+  <h2>The identity crisis</h2>
+  <p class="lead">We spent years learning:</p>
+  <div class="chips">
+    <span class="chip">Languages</span><span class="chip">Frameworks</span><span class="chip">APIs</span>
+    <span class="chip">Databases</span><span class="chip">Cloud platforms</span><span class="chip">Design patterns</span>
+    <span class="chip">Debugging</span><span class="chip">Testing</span><span class="chip">Deployment</span>
+  </div>
+  <p>We became valuable because we could turn requirements into working software.</p>
+  <p class="big accent">The thing I spent years getting good at is becoming cheaper.</p>
+</section>
+
+{/* notes: Why is this happening? The economics is simple. A thing is expensive when it is scarce and in demand. Good code was both. Only trained people could write it, and it took a long time. AI removes the scarcity. Producing code now costs almost nothing. This happened before. Copying books by hand ended with the printing press. Manual typesetting ended with desktop publishing. The skill did not get worse. It got cheap. */}
+<section class="slide" aria-label="Scarcity made code valuable">
+  <h2>Scarcity made code valuable</h2>
+  <div class="pairs">
+    <div>Hand-copied books</div><div class="arrow">→</div><div>Printing press</div>
+    <div>Manual typesetting</div><div class="arrow">→</div><div>Desktop publishing</div>
+    <div>Hand-written code</div><div class="arrow">→</div><div class="accent"><b>Coding agents</b></div>
+  </div>
+  <p>The skill did not get worse. <b>It got cheap.</b></p>
+</section>
+
+{/* notes: In the past, a new tool made us ten or twenty percent faster. We could still compete by being skilled. This time the gap is orders of magnitude. And the tools improve every month, while our typing speed stays the same. So the gap will keep growing. Competing on speed is a losing game. */}
+<section class="slide" aria-label="The speed gap is too large">
+  <h2>The speed gap is too large</h2>
+  <div class="bars">
+    <div class="lbl">You</div><div class="bar b1"></div>
+    <div class="lbl">You + better IDE</div><div class="bar b2"></div>
+    <div class="lbl">You + agent</div><div class="bar b3">orders of magnitude</div>
+  </div>
+  <p>Tools improve every month. Our hands do not.</p>
+  <p class="note">Illustrative, not to scale.</p>
+</section>
+
+{/* notes: So what exactly is becoming cheap? Typing code. Boilerplate. CRUD. Framework setup. Standard integrations. Basic tests. Documentation drafts. Refactoring. Code translation. Familiar algorithms. Conventional architecture. And large amounts of routine work. Fred Brooks called most of this accidental complexity. It comes from our tools, not from the problem. AI is very good at exactly this part. */}
+<section class="slide" aria-label="What is becoming cheap">
+  <h2>What is becoming cheap</h2>
+  <div class="chips cheap">
+    <span class="chip">Typing code</span><span class="chip">Boilerplate</span><span class="chip">CRUD</span>
+    <span class="chip">Framework setup</span><span class="chip">Standard integrations</span><span class="chip">Basic tests</span>
+    <span class="chip">Documentation drafts</span><span class="chip">Refactoring</span><span class="chip">Code translation</span>
+    <span class="chip">Familiar algorithms</span><span class="chip">Conventional architecture</span><span class="chip">Routine implementation</span>
+  </div>
+  <p>Most of this is what Fred Brooks called <b>accidental complexity</b>. It comes from our tools, not from the problem.</p>
+</section>
+
+{/* notes: But something important is being confused here. Cheap implementation does not mean cheap engineering. An application can be generated quickly. A reliable system is still difficult. Working code is not necessarily correct, secure, maintainable, observable, performant, cost-effective, resilient, compliant, or right for the actual problem. AI reduces the cost of producing code. It does not remove the need for engineering judgment. */}
+<section class="slide" aria-label="Cheap implementation is not cheap engineering">
+  <h2>Cheap implementation is not cheap engineering</h2>
+  <p class="lead">Working code is not necessarily:</p>
+  <div class="chips hard">
+    <span class="chip">Correct</span><span class="chip">Secure</span><span class="chip">Maintainable</span>
+    <span class="chip">Observable</span><span class="chip">Performant</span><span class="chip">Cost-effective</span>
+    <span class="chip">Resilient</span><span class="chip">Compliant</span><span class="chip">Right for the problem</span>
+  </div>
+  <p>An app can be generated quickly. <b>A reliable system is still difficult.</b></p>
+</section>
+
+{/* notes: What does not become cheap so easily? Understanding the real problem. Deciding what to build. Identifying constraints and invariants. Defining correctness. Understanding failure modes. Making architectural trade-offs. Spotting dangerous assumptions. Understanding production behaviour. Security, performance, cost, and operational judgment. And most important, knowing when the generated solution is wrong. The cost of producing code is falling. The cost of being wrong is not. */}
+<section class="slide" aria-label="What does not become cheap">
+  <h2>What does not become cheap</h2>
+  <div class="chips hard">
+    <span class="chip">Understanding the real problem</span><span class="chip">Deciding what to build</span>
+    <span class="chip">Constraints</span><span class="chip">Invariants</span><span class="chip">Defining correctness</span>
+    <span class="chip">Failure modes</span><span class="chip">Architectural trade-offs</span><span class="chip">Dangerous assumptions</span>
+    <span class="chip">Production behaviour</span><span class="chip">Reliable design</span><span class="chip">Security</span>
+    <span class="chip">Performance</span><span class="chip">Cost</span><span class="chip">Operations</span>
+  </div>
+  <p class="big accent">Knowing when the generated solution is wrong.</p>
+</section>
+
+{/* notes: This is not the first time. Software development has always moved abstraction upward. Assembly became less necessary. High-level languages removed machine details. Frameworks removed infrastructure work. Cloud removed physical servers. Containers simplified deployment. Managed services reduced operations. And now AI agents reduce the cost of implementation itself. Each step made a lower-level activity cheaper. And each time, the value of engineering moved toward higher-level decisions. */}
+<section class="slide" aria-label="We have seen this pattern before">
+  <h2>We have seen this pattern before</h2>
+  <div class="timeline">
+    <div class="tstep"><div class="dot"></div><div class="t">Assembly</div></div>
+    <div class="tstep"><div class="dot"></div><div class="t">High-level languages</div><div class="d">machine details</div></div>
+    <div class="tstep"><div class="dot"></div><div class="t">Frameworks</div><div class="d">infrastructure code</div></div>
+    <div class="tstep"><div class="dot"></div><div class="t">Cloud</div><div class="d">physical servers</div></div>
+    <div class="tstep"><div class="dot"></div><div class="t">Containers</div><div class="d">deployment</div></div>
+    <div class="tstep"><div class="dot"></div><div class="t">Managed services</div><div class="d">operations</div></div>
+    <div class="tstep now"><div class="dot"></div><div class="t">AI agents</div><div class="d">implementation itself</div></div>
+  </div>
+  <p>Each step made a lower-level activity cheaper.</p>
+  <p class="accent"><b>Value moved up to higher-level decisions.</b></p>
+</section>
+
+{/* notes: So the bottleneck moves. Implementation is becoming abundant. Engineering judgment remains scarce. The question is no longer: can I build this? The questions become: should I build this? What exactly should it do? What does correct mean? What are we assuming? How could it fail? And what evidence do I need before I trust it? */}
+<section class="slide" aria-label="The new bottleneck">
+  <h2>The new bottleneck</h2>
+  <div class="diff">
+    <div class="del">- <span>Can I build this?</span></div>
+    <div class="add">+ How do I know it is right?</div>
+  </div>
+  <div class="chips acc lg">
+    <span class="chip">Should I build this?</span><span class="chip">What should it do?</span>
+    <span class="chip">What does correct mean?</span><span class="chip">What are we assuming?</span>
+    <span class="chip">How could it fail?</span><span class="chip">What evidence do I need?</span>
+  </div>
+</section>
+
+{/* notes: If you remember one idea from part one, remember this. The value of typing code collapses. The value of understanding code does not. */}
+<section class="slide quote" aria-label="Part one takeaway">
+  <p>The value of typing code collapses.<br />The value of understanding code does not.</p>
+</section>
+
+{/* ============ PART TWO ============ */}
+
+{/* notes: Part two. How should we change the way we think about ourselves? */}
+<section class="slide divider" aria-label="Part two — Changing how we think">
+  <div class="partno">Part two</div>
+  <h2 class="s-xl">Changing how we think</h2>
+</section>
+
+{/* notes: First, admit the loss. If you loved coding, this change hurts. The deep focus, the puzzle, and the joy of a clean solution are leaving daily work. It is fine to grieve this. Pretending it is not a loss only makes adapting harder. */}
+<section class="slide statement" aria-label="Admit the loss">
+  <p class="muted s-lead">If you loved coding, this change hurts.</p>
+  <h2 class="s-xl">It is fine to admit the loss.</h2>
+  <p class="sub">Pretending it is not a loss only makes adapting harder.</p>
+</section>
+
+{/* notes: We need to change the definition of a coder. The old definition was: I write code. The new definition is: I can turn an ambiguous problem into a reliable running system. Even better, I can define what correct looks like. I can delegate implementation. I can verify the result. I can operate the system, diagnose failures, and evolve it safely. Coding is still part of the skill. It is no longer the whole skill. */}
+<section class="slide" aria-label="Change the definition of a coder">
+  <h2>Change the definition of a coder</h2>
+  <div class="diff sm">
+    <div class="del">- <span>I write code</span></div>
+    <div class="add">+ I turn an ambiguous problem into a reliable running system</div>
+  </div>
+  <div class="chips hard">
+    <span class="chip">Define correct</span><span class="chip">Delegate</span><span class="chip">Verify</span>
+    <span class="chip">Operate</span><span class="chip">Diagnose</span><span class="chip">Evolve safely</span>
+  </div>
+  <p>Coding is still part of the skill. <b>It is no longer the whole skill.</b></p>
+</section>
+
+{/* notes: Fifteen years of experience does not become worthless because code generation became cheap. Experience contains failure patterns, architectural intuition, debugging strategies, production knowledge, trade-off awareness, and understanding of users, systems, and organizations. And imposter syndrome often comes from a wrong comparison. You compare your speed with the machine's speed. You will always lose that race. Compare on judgment and context instead. The challenge is to bring experience into the new workflow. Experience should be amplified by AI, not replaced by it. */}
+<section class="slide" aria-label="Experience does not disappear">
+  <h2>Experience does not disappear</h2>
+  <div class="chips">
+    <span class="chip">Failure patterns</span><span class="chip">Architectural intuition</span><span class="chip">Debugging strategies</span>
+    <span class="chip">Production knowledge</span><span class="chip">Trade-off awareness</span><span class="chip">Organizational constraints</span>
+    <span class="chip">Understanding users</span><span class="chip">Understanding systems</span>
+  </div>
+  <p>Do not race the machine on speed. Compete on judgment and context.</p>
+  <p class="big accent">Amplified by AI. Not replaced by AI.</p>
+</section>
+
+{/* notes: Here is a useful personal rule. Do not ask: can AI do my job? Ask better questions. Which parts of my job have become cheap? Which parts remain difficult? Which difficult parts can I become exceptionally good at? And how can AI amplify those? This changes the problem. You stop defending the old definition of software engineering. You start designing the next version of your own career. */}
+<section class="slide" aria-label="A useful personal rule">
+  <h2>A useful personal rule</h2>
+  <div class="diff sm">
+    <div class="del">- <span>Can AI do my job?</span></div>
+    <div class="add">+ Which parts of my job have become cheap?</div>
+    <div class="add">+ Which parts remain difficult?</div>
+    <div class="add">+ Which difficult parts can I master?</div>
+    <div class="add">+ How can AI amplify them?</div>
+  </div>
+  <p>Stop defending the old definition. <b>Design the next version of your career.</b></p>
+</section>
+
+{/* ============ PART THREE ============ */}
+
+{/* notes: Part three. What can we actually do next? */}
+<section class="slide divider" aria-label="Part three — What to do next">
+  <div class="partno">Part three</div>
+  <h2 class="s-xl">What to do next</h2>
+</section>
+
+{/* notes: First, look at how the engineering loop changes. The traditional loop was: understand, design, write code, debug, test, deploy, operate. The emerging loop has many more steps around the code. Specify intent. Define constraints. Decompose. Delegate. Generate. Verify. Inspect the architecture. Test adversarially. Operate, observe, learn, and iterate. The amount of typing goes down. The amount of judgment goes up. */}
+<section class="slide" aria-label="The new engineering loop">
+  <h2>The new engineering loop</h2>
+  <div class="cols loop">
+    <div class="card">
+      <h3>Traditional</h3>
+      <ol><li>Understand</li><li>Design</li><li>Write code</li><li>Debug</li><li>Test</li><li>Deploy</li><li>Operate</li></ol>
+    </div>
+    <div class="card add">
+      <h3>Emerging</h3>
+      <ol class="two"><li>Understand</li><li>Specify intent</li><li>Define constraints</li><li>Decompose</li><li>Delegate</li><li>Generate</li><li>Verify</li><li>Inspect architecture</li><li>Test adversarially</li><li>Operate</li><li>Observe</li><li>Learn</li><li>Iterate</li></ol>
+    </div>
+  </div>
+  <p style="margin-top:1.5rem">Less typing. <b>More judgment.</b></p>
+</section>
+
+{/* notes: The scarce skills are changing. Writing code fast was scarce. Now specifying clearly what to build is scarce. Knowing syntax is replaced by knowing fundamentals deeply. Implementing features is replaced by designing systems. Testing by hand is replaced by building systems that create trust. And personal output is replaced by multiplying a team of people and agents. Let's look at these skills one by one. */}
+<section class="slide" aria-label="The scarce skills are changing">
+  <h2>The scarce skills are changing</h2>
+  <table class="shift">
+    <thead><tr><th>Was scarce</th><th></th><th>Is becoming scarce</th></tr></thead>
+    <tbody>
+      <tr><td>Writing code fast</td><td class="arr">→</td><td>Specifying what to build</td></tr>
+      <tr><td>Knowing syntax and APIs</td><td class="arr">→</td><td>Knowing fundamentals deeply</td></tr>
+      <tr><td>Implementing features</td><td class="arr">→</td><td>Designing systems</td></tr>
+      <tr><td>Testing by hand</td><td class="arr">→</td><td>Building trust systems</td></tr>
+      <tr><td>Personal output</td><td class="arr">→</td><td>Multiplying people and agents</td></tr>
+    </tbody>
+  </table>
+</section>
+
+{/* notes: Skill one. Become exceptional at specification. Give agents objectives, not vague instructions. Define invariants, constraints, interfaces, state transitions, failure modes, security boundaries, performance and operational needs, and acceptance criteria. Separate what the system must do from how it may do it. Make ambiguity visible before implementation starts. Treat specs as real engineering artifacts. A better spec gives better delegation. It also makes verification possible. */}
+<section class="slide" aria-label="Become exceptional at specification">
+  <h2>Become exceptional at specification</h2>
+  <div class="cols wide">
+    <div class="card">
+      <h3>Define</h3>
+      <div class="chips">
+        <span class="chip">Invariants</span><span class="chip">Constraints</span><span class="chip">Interfaces</span>
+        <span class="chip">State transitions</span><span class="chip">Failure modes</span><span class="chip">Security boundaries</span>
+        <span class="chip">Performance</span><span class="chip">Operations</span><span class="chip">Acceptance criteria</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Separate</h3>
+      <p><b>What</b> the system must do</p>
+      <p><b>How</b> the system may do it</p>
+      <p class="accent" style="margin-top:1rem">Make ambiguity visible before implementation.</p>
+    </div>
+  </div>
+  <p style="margin-top:1.5rem">A better spec gives better delegation. <b>It also makes verification possible.</b></p>
+</section>
+
+{/* notes: Skill two. Verification becomes a core skill. An agent can generate thousands of lines of code. So the important question becomes: how do I know those lines are correct? Build stronger skills in property-based testing, contract testing, integration testing, adversarial and security testing, failure injection, performance testing, static analysis, runtime verification, and observability. And change the question you ask the agent. Do not ask: did you implement it? Ask: what evidence shows that it works? */}
+<section class="slide" aria-label="Verification becomes a core skill">
+  <h2>Verification becomes a core skill</h2>
+  <div class="diff">
+    <div class="del">- <span>"Did you implement it?"</span></div>
+    <div class="add">+ "What evidence shows it works?"</div>
+  </div>
+  <div class="chips">
+    <span class="chip">Property-based testing</span><span class="chip">Contract testing</span><span class="chip">Integration testing</span>
+    <span class="chip">Adversarial testing</span><span class="chip">Security testing</span><span class="chip">Failure injection</span>
+    <span class="chip">Performance testing</span><span class="chip">Static analysis</span><span class="chip">Runtime verification</span>
+    <span class="chip">Observability</span>
+  </div>
+</section>
+
+{/* notes: Here is where the senior engineer shines. Imagine an agent generates fifty thousand lines. Another agent reviews it. Tests pass. The app seems to work. A senior engineer still asks hard questions. What assumptions are hidden? What happens under concurrency? When a dependency fails? When the database is down? At a hundred times the traffic? With malicious input? When state becomes inconsistent? During deployment? During rollback? Experience is valuable because it contains patterns of failure. */}
+<section class="slide" aria-label="The senior engineer's advantage">
+  <h2>The senior engineer's advantage</h2>
+  <p>50,000 generated lines. Reviewed by another agent. Tests pass. <span class="muted">It appears to work.</span></p>
+  <div class="qgrid">
+    <div class="q first">What assumptions are hidden?</div>
+    <div class="q">What happens under concurrency?</div>
+    <div class="q">When a dependency fails?</div>
+    <div class="q">When the database is down?</div>
+    <div class="q">At 100x traffic?</div>
+    <div class="q">With malicious input?</div>
+    <div class="q">When state is inconsistent?</div>
+    <div class="q">During deployment?</div>
+    <div class="q">During rollback?</div>
+  </div>
+  <p class="accent"><b>Experience contains patterns of failure.</b></p>
+</section>
+
+{/* notes: Skill three. Do not abandon coding. It is tempting to move completely away from implementation. That would be a mistake. But the purpose of coding changes. Do not compete with agents on typing speed. Use agents when it makes sense. But keep writing code yourself to keep your intuition alive. Mechanical intuition, debugging, runtime, API, and performance intuition, and understanding of the platform. Think of a pilot. Autopilot does most of the flying. Good pilots still practise flying by hand. Build things manually sometimes. Not because it is faster. Because understanding still matters. */}
+<section class="slide" aria-label="Do not abandon coding">
+  <h2>Do not abandon coding</h2>
+  <p>The purpose of coding changes. Do not compete on typing speed. Keep coding to keep your intuition:</p>
+  <div class="chips hard">
+    <span class="chip">Mechanical</span><span class="chip">Debugging</span><span class="chip">Runtime</span>
+    <span class="chip">API</span><span class="chip">Performance</span><span class="chip">Platform</span>
+  </div>
+  <p class="muted">Like a pilot who still practises flying by hand.</p>
+  <p class="big">Not because it is faster. Because understanding still matters.</p>
+</section>
+
+{/* notes: Skill four. Move deeper into systems. When application code becomes cheap, systems become more interesting. Explore runtime internals, databases, networking, distributed systems, operating systems, storage, scheduling, messaging, observability, security, performance, GPU computing, and AI inference systems. The closer we get to fundamental constraints, the harder it is to replace understanding with prompting. */}
+<section class="slide" aria-label="Move deeper into systems">
+  <h2>Move deeper into systems</h2>
+  <div class="chips lg">
+    <span class="chip">Runtime internals</span><span class="chip">Databases</span><span class="chip">Networking</span>
+    <span class="chip">Distributed systems</span><span class="chip">Operating systems</span><span class="chip">Storage</span>
+    <span class="chip">Scheduling</span><span class="chip">Messaging</span><span class="chip">Observability</span>
+    <span class="chip">Security</span><span class="chip">Performance</span><span class="chip">GPU computing</span>
+    <span class="chip">AI inference</span>
+  </div>
+  <p class="big accent">The closer to fundamental constraints, the harder it is to replace understanding with prompting.</p>
+</section>
+
+{/* notes: Skill five. Learn to operate AI as an engineering system. Do not think of an agent as a magical programmer. Think of it as an engineering component. Learn orchestration, context management, tool use, planning, delegation, verification, evaluation, human-in-the-loop workflows, agent failure modes, cost control, and observability. The important skill is not just prompting. It is designing a reliable process around probabilistic systems. */}
+<section class="slide" aria-label="Operate AI as an engineering system">
+  <h2>Operate AI as an engineering system</h2>
+  <div class="diff sm">
+    <div class="del">- <span>a magical programmer</span></div>
+    <div class="add">+ an engineering component</div>
+  </div>
+  <div class="chips">
+    <span class="chip">Orchestration</span><span class="chip">Context management</span><span class="chip">Tool use</span>
+    <span class="chip">Planning</span><span class="chip">Delegation</span><span class="chip">Verification</span>
+    <span class="chip">Evaluation</span><span class="chip">Human-in-the-loop</span><span class="chip">Agent failure modes</span>
+    <span class="chip">Cost control</span><span class="chip">Observability</span>
+  </div>
+  <p><b>A reliable process around probabilistic systems.</b></p>
+</section>
+
+{/* notes: But be careful. Prompting is not the moat. Prompting is useful. But it is not a lasting advantage. Models improve. Harnesses improve. Context management improves. Agents follow instructions better. A trick that is valuable today may be built in tomorrow. The durable skills are problem decomposition, specification, architecture, verification, systems thinking, domain knowledge, and operational judgment. */}
+<section class="slide" aria-label="Prompting is not the moat">
+  <h2>Prompting is not the moat</h2>
+  <div class="cols">
+    <div class="card del">
+      <h3>Changes fast</h3>
+      <ul><li>Models improve</li><li>Harnesses improve</li><li>Context management improves</li><li>Today's trick is tomorrow's default</li></ul>
+    </div>
+    <div class="card add">
+      <h3>Durable</h3>
+      <ul><li>Problem decomposition</li><li>Specification and architecture</li><li>Verification</li><li>Systems thinking</li><li>Domain and operational judgment</li></ul>
+    </div>
+  </div>
+</section>
+
+{/* notes: So who is at risk? Engineers whose only value was turning clear tickets into code. That work is the easiest to automate. Who gains? Engineers who own outcomes. One of them can now deliver the work of a small team. The line between these groups is not age or years of experience. It is whether you think in outcomes or in lines of code. */}
+<section class="slide" aria-label="Who is at risk, and who gains">
+  <h2>Who is at risk, and who gains</h2>
+  <div class="cols">
+    <div class="card del">
+      <h3>At risk</h3>
+      <ul><li>Value is only turning tickets into code</li><li>Thinks in lines of code</li></ul>
+    </div>
+    <div class="card add">
+      <h3>Gains</h3>
+      <ul><li>Owns outcomes end to end</li><li>Can deliver the work of a small team</li></ul>
+    </div>
+  </div>
+  <p style="margin-top:1.75rem">The line is not age. <b>It is outcomes versus lines of code.</b></p>
+</section>
+
+{/* notes: Here is my personal strategy. Keep coding. Use agents aggressively. Study systems deeply. Improve specification and verification skills. Build real systems. Break them deliberately, and study why they break. Measure production behaviour. Learn agent architecture. Develop strong technical judgment. And teach what I discover. Document experiments. Build public evidence of my thinking. */}
+<section class="slide" aria-label="A personal strategy">
+  <h2>A personal strategy</h2>
+  <div class="chips lg">
+    <span class="chip">Keep coding</span><span class="chip">Use agents aggressively</span><span class="chip">Study systems deeply</span>
+    <span class="chip">Improve specification</span><span class="chip">Improve verification</span><span class="chip">Build real systems</span>
+    <span class="chip">Break them deliberately</span><span class="chip">Study why they break</span><span class="chip">Measure production</span>
+    <span class="chip">Learn agent architecture</span><span class="chip">Develop judgment</span>
+  </div>
+  <div class="chips acc lg">
+    <span class="chip">Teach what I discover</span><span class="chip">Document experiments</span><span class="chip">Build public evidence</span>
+  </div>
+</section>
+
+{/* notes: And this is where I want to invest my time. Twenty-five percent to keep my coding muscles alive. Twenty-five percent on systems and architecture. Twenty percent on AI agents and engineering harnesses. Twenty percent on verification and reliability. And ten percent on teaching, writing, and sharing. The exact numbers are not important. The direction is. Less time competing with machines on implementation. More time building the skills that make machines useful. */}
+<section class="slide" aria-label="Where I want to invest my time">
+  <h2>Where I want to invest my time</h2>
+  <div class="stack">
+    <div class="seg s1" style="width:25%">25%</div>
+    <div class="seg s2" style="width:25%">25%</div>
+    <div class="seg s3" style="width:20%">20%</div>
+    <div class="seg s4" style="width:20%">20%</div>
+    <div class="seg s5" style="width:10%">10%</div>
+  </div>
+  <div class="legend">
+    <div><i class="s1"></i>Coding muscles</div>
+    <div><i class="s2"></i>Systems and architecture</div>
+    <div><i class="s3"></i>AI agents and harnesses</div>
+    <div><i class="s4"></i>Verification and reliability</div>
+    <div><i class="s5"></i>Teaching and writing</div>
+  </div>
+  <p>The numbers are not important. <b>The direction is.</b></p>
+</section>
+
+{/* notes: So what am I actually doing right now? Here is my own show and tell. First, a Node.js deep dive. I read the internals, and I rebuild small pieces by hand. Second, my next project is an AI clone that can talk with the public for me. It will teach me speech-to-text, text-to-speech, and agent SDKs. It also forces me to think about performance, security, scaling, and self-hosting. I will hand-write the core and let agents do the rest. And third, I write and share what I learn. This video is part of that. */}
+<section class="slide" aria-label="What I am trying right now">
+  <h2>What I am trying right now</h2>
+  <div class="futures three">
+    <div class="card"><h3>Node.js deep dive</h3><p>Read the internals. Rebuild small pieces by hand.</p></div>
+    <div class="card add"><h3>An AI clone</h3><p>Speech-to-text, text-to-speech, agent SDKs. Hand-written core, agents for the rest.</p></div>
+    <div class="card"><h3>Write and share</h3><p>Blog posts, experiments, and this talk.</p></div>
+  </div>
+  <p>Not a perfect plan. <b>Just my current experiments.</b></p>
+</section>
+
+{/* ============ PART FOUR ============ */}
+
+{/* notes: Part four. The road ahead. */}
+<section class="slide divider" aria-label="Part four — The road ahead">
+  <div class="partno">Part four</div>
+  <h2 class="s-xl">The road ahead</h2>
+</section>
+
+{/* notes: Cheap coding changes the economics of software. More people will build software. More software will be produced. More experiments become possible. Economists call this the Jevons paradox. When something gets cheaper, we use much more of it. But more poorly understood software will also be produced. So the value of knowing how to build reliable systems may actually increase. The senior engineer's role can become problem framer, system designer, agent orchestrator, verification engineer, technical decision maker, and production owner. */}
+<section class="slide" aria-label="The opportunity">
+  <h2>The opportunity</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>Cheap coding means</h3>
+      <ul><li>More people building software</li><li>More software produced</li><li>More experiments</li><li class="accent"><b>More poorly understood software</b></li></ul>
+    </div>
+    <div class="card add">
+      <h3>The senior engineer becomes</h3>
+      <ul><li>Problem framer</li><li>System designer</li><li>Agent orchestrator</li><li>Verification engineer</li><li>Technical decision maker</li><li>Production owner</li></ul>
+    </div>
+  </div>
+</section>
+
+{/* notes: To be honest, nobody knows exactly how this will go. Some people argue that quality and maintenance problems will limit AI code. They expect hand-written code to keep a large role, especially in regulated fields. Others argue that agents will take over specification and review too. The truth may be in between. The safest bet is to build skills that help in both futures. Judgment, fundamentals, verification, and ownership. */}
+<section class="slide" aria-label="Honest uncertainty">
+  <h2>Honest uncertainty</h2>
+  <div class="futures">
+    <div class="card"><h3>One future</h3><p>Quality limits slow AI code. Hand-written code keeps a big role, especially in regulated fields.</p></div>
+    <div class="card"><h3>Another future</h3><p>Agents take over specification and review too. The human role shrinks further.</p></div>
+  </div>
+  <div class="safe"><b>The safe bet for both:</b> judgment, fundamentals, verification, and ownership.</div>
+</section>
+
+{/* notes: So here is the uncomfortable but hopeful conclusion. I do not need to beat AI at writing code. I need to become better at engineering with AI. I do not need to preserve the old definition of my profession. I need to preserve the engineering capability underneath it. I should not abandon coding. But I should stop measuring my value by how much code I type. The implementation layer is becoming cheaper. My job is to move toward the layers where judgment matters. */}
+<section class="slide" aria-label="An uncomfortable but hopeful conclusion">
+  <h2>An uncomfortable but hopeful conclusion</h2>
+  <div class="diff sm">
+    <div class="del">- <span>Beat AI at writing code</span></div>
+    <div class="add">+ Get better at engineering with AI</div>
+    <div class="del">- <span>Preserve the old definition of my profession</span></div>
+    <div class="add">+ Preserve the engineering capability underneath</div>
+    <div class="del">- <span>Measure my value by code I type</span></div>
+    <div class="add">+ Move toward the layers where judgment matters</div>
+  </div>
+  <p>I should not abandon coding. I should stop measuring myself by it.</p>
+</section>
+
+{/* notes: This is my new definition of relevance. Not: I can write code faster than an AI. Not: I know more syntax. Not: I produce more lines. Instead: I know what should be built. I know what can go wrong. I know how to constrain the system. I know how to delegate implementation. I know how to verify the result. I know how to operate it. And I know how to evolve it safely. */}
+<section class="slide" aria-label="My new definition of relevance">
+  <h2>My new definition of relevance</h2>
+  <div class="cols def">
+    <div class="card del">
+      <h3>Not</h3>
+      <ul><li>I code faster than AI</li><li>I know more syntax</li><li>I produce more lines</li></ul>
+    </div>
+    <div class="card add">
+      <h3>Instead, I know</h3>
+      <ul><li>what should be built</li><li>what can go wrong</li><li>how to constrain the system</li><li>how to delegate implementation</li><li>how to verify the result</li><li>how to operate it</li><li>how to evolve it safely</li></ul>
+    </div>
+  </div>
+</section>
+
+{/* notes: A final thought. Maybe software engineering is not dying. Maybe one particular form of it is becoming cheap. Writing code was never the whole profession. We simply spent a long time in a world where implementation was expensive. Now implementation is becoming cheap. That forces us to rediscover what engineering really means. */}
+<section class="slide statement" aria-label="Final thought">
+  <p class="muted s-lead">Maybe software engineering is not dying.</p>
+  <h2 class="s-xl">Maybe one form of it is becoming cheap.</h2>
+  <p class="sub">Writing code was never the whole profession. Now we get to rediscover what engineering really means.</p>
+</section>
+
+{/* notes: So let me close with a short list. Keep coding. Keep learning. Go deeper. Specify better. Verify harder. Understand systems. Learn to work with agents. Build real things. Break them. Measure them. Teach what you learn. Move your value upward. Do not compete with the machine at the thing it is becoming exceptionally good at. Become the engineer who knows what to ask the machine to build, and how to know whether it deserves to be trusted. You can find more of my writing at blog dot foyzul dot com. Thank you for watching. */}
+<section class="slide" aria-label="Closing">
+  <div class="chips acc">
+    <span class="chip">Keep coding</span><span class="chip">Keep learning</span><span class="chip">Go deeper</span>
+    <span class="chip">Specify better</span><span class="chip">Verify harder</span><span class="chip">Understand systems</span>
+    <span class="chip">Work with agents</span><span class="chip">Build real things</span><span class="chip">Break them</span>
+    <span class="chip">Measure them</span><span class="chip">Teach what you learn</span><span class="chip">Move your value upward</span>
+  </div>
+  <p class="final">Become the engineer who knows what to ask the machine to build, and how to know whether it deserves to be trusted.</p>
+  <p class="blog">blog.foyzul.com</p>
+</section>
+
+</div>
