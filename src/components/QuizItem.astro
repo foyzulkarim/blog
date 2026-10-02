@@ -75,3 +75,22 @@
     margin-bottom: 0;
   }
 </style>
+
+<script>
+  import { pageSlug, track } from '../lib/track';
+
+  /* One listener per question, first open only — toggling back and forth is
+     one engagement signal, not five. Numbering restarts per quiz list, so a
+     post with two quizzes reports 1..n within each. The <details> toggle
+     event does not bubble, so attach directly per element. */
+  document.querySelectorAll('ol.quiz').forEach((list) => {
+    list.querySelectorAll('details.quiz-item').forEach((item, n) => {
+      let fired = false;
+      item.addEventListener('toggle', () => {
+        if (fired || !item.open) return;
+        fired = true;
+        track('quiz-opened', { post: pageSlug(), question: n + 1 });
+      });
+    });
+  });
+</script>

@@ -67,3 +67,20 @@ const linkedinHref = `https://www.linkedin.com/sharing/share-offsite/?url=${enco
     {!iconOnly && <span>Share on LinkedIn</span>}
   </a>
 </div>
+
+<script>
+  import { track } from '../lib/track';
+
+  /* One delegated listener covers every instance on the page (component
+     scripts are hoisted and deduplicated). Umami attributes events to the
+     page URL, so the payload only carries what the pageview cannot express:
+     which network, and whether the click came from an index row. */
+  document.addEventListener('click', (event) => {
+    const btn = (event.target as Element | null)?.closest<HTMLAnchorElement>('a.share-btn');
+    if (!btn) return;
+    track('share-clicked', {
+      network: btn.classList.contains('share-btn--linkedin') ? 'linkedin' : 'x',
+      placement: btn.closest('.post-list') ? 'list' : 'post',
+    });
+  });
+</script>

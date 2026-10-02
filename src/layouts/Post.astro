@@ -67,3 +67,53 @@ const ogImage = new URL(ogRel, Astro.site).href;
     <TagChips tags={tags} lang={lang} />
   </article>
 </Base>
+
+<script>
+  import { pageSlug, track } from '../lib/track';
+
+  /* Scroll-depth quartiles for the post body. percentRead counts the
+     viewport bottom sweeping the <article>; thresholds already passed when
+     the script starts (short posts fully in view, restored mid-page scroll)
+     are pre-marked, so only downward movement during this session fires. */
+  const article = document.querySelector<HTMLElement>('article.post');
+  if (article) {
+    const post = pageSlug();
+    const THRESHOLDS = [25, 50, 75, 100];
+    let ticking = false;
+
+    const percentRead = (): number => {
+      const rect = article.getBoundingClientRect();
+      if (rect.height <= 0) return 0;
+      const swept = window.innerHeight - rect.top;
+      return Math.min(100, Math.max(0, (swept / rect.height) * 100));
+    };
+
+    const fired = new Set<number>(THRESHOLDS.filter((t) => percentRead() >= t));
+
+    const teardown = (): void => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+
+    const measure = (): void => {
+      ticking = false;
+      const percent = percentRead();
+      for (const t of THRESHOLDS) {
+        if (percent >= t && !fired.has(t)) {
+          fired.add(t);
+          track('post-read-depth', { post, percent: t });
+        }
+      }
+      if (fired.has(100)) teardown();
+    };
+
+    const onScroll = (): void => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(measure);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+  }
+</script>

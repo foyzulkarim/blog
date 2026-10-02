@@ -106,5 +106,51 @@ const fullTitle = bareTitle ? title : `${title} — foyzul`;
       <slot />
     </main>
     <SiteFooter />
+
+    <script>
+      import { track } from '../lib/track';
+
+      /* Delegated outbound-link tracking: any click that leaves this origin.
+         Internal, mailto:, tel: links are ignored; the share buttons report
+         their own share-clicked event instead. */
+      document.addEventListener('click', (event) => {
+        const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href]');
+        if (!anchor || anchor.closest('.share-buttons')) return;
+        let url: URL;
+        try {
+          url = new URL(anchor.href);
+        } catch {
+          return;
+        }
+        if (url.protocol !== 'https:' && url.protocol !== 'http:') return;
+        if (url.origin === window.location.origin) return;
+        track('outbound-click', { href: url.href });
+      });
+    </script>
+
+    <script>
+      import { track } from '../lib/track';
+
+      /* The Google Translate widget has no public event API. It renders a
+         <select class="goog-te-combo"> into the container after its async
+         script loads, so wait for that element with a MutationObserver and
+         hook its change event; value is the chosen target language code
+         (empty = back to the original page language). */
+      const container = document.getElementById('google_translate_element');
+      if (container) {
+        const attach = (): boolean => {
+          const combo = container.querySelector<HTMLSelectElement>('select.goog-te-combo');
+          if (!combo) return false;
+          combo.addEventListener('change', () => {
+            track('translate-used', { lang: combo.value || 'original' });
+          });
+          return true;
+        };
+        const observer = new MutationObserver(() => {
+          if (attach()) observer.disconnect();
+        });
+        if (!attach()) observer.observe(container, { childList: true, subtree: true });
+      }
+    </script>
   </body>
 </html>

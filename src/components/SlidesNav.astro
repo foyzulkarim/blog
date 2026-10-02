@@ -19,29 +19,16 @@
 
 <script>
   import { captureSlideAsPNG } from '../scripts/slide-capture';
-
-  /* The subset of the Umami tracker API we use
-     (docs.umami.is/docs/tracker-functions). The tracker is a third-party
-     `defer` script, so it may be missing entirely (ad-blocker, offline) —
-     every call site must treat it as optional. */
-  type UmamiTracker = {
-    track: (name: string, data?: Record<string, string | number>) => void;
-  };
+  import { pageSlug, track } from '../lib/track';
 
   /* Fires only after a successful export: a rasterize that throws is not a
-     download. Best-effort — analytics must never break the export. */
+     download. */
   function trackSlideDownload(slide: HTMLElement, index: number): void {
-    const umami = (window as Window & { umami?: UmamiTracker }).umami;
-    if (!umami?.track) return;
-    try {
-      umami.track('slide-png-download', {
-        deck: window.location.pathname.split('/').filter(Boolean).pop() ?? 'slides',
-        slide: index + 1,
-        label: slide.getAttribute('aria-label') ?? '',
-      });
-    } catch {
-      /* ignore — tracking is best-effort */
-    }
+    track('slide-png-download', {
+      deck: pageSlug() || 'slides',
+      slide: index + 1,
+      label: slide.getAttribute('aria-label') ?? '',
+    });
   }
 
   function initDecks() {
@@ -61,6 +48,31 @@
       let current = 0;
       let returnScrollY = 0;
 
+      /* Read-through depth: one deck-progress event the first time the
+         reader reaches each quartile of the deck — by slide index, whether
+         they got there via buttons, keyboard, or plain scrolling (update()
+         is the choke point for all three). Quartiles already passed at load
+         time (small decks, restored scroll position) are pre-marked so they
+         never fire: reaching 100 by scrolling a short deck is not a read
+         that happened during this session. */
+      const QUARTILES = [25, 50, 75, 100];
+      const firedQuartiles = new Set<number>(
+        QUARTILES.filter((q) => Math.ceil((1 / total) * 100) >= q),
+      );
+      function reportProgress(): void {
+        const percent = Math.ceil(((current + 1) / total) * 100);
+        for (const q of QUARTILES) {
+          if (percent >= q && !firedQuartiles.has(q)) {
+            firedQuartiles.add(q);
+            track('deck-progress', {
+              deck: pageSlug() || 'slides',
+              percent: q,
+              slide: current + 1,
+            });
+          }
+        }
+      }
+
       const pad = (n: number) => String(n).padStart(2, '0');
 
       function update(): void {
@@ -72,6 +84,7 @@
             'aria-disabled',
             current === total - 1 ? 'true' : 'false',
           );
+        reportProgress();
       }
 
       function go(i: number): void {
@@ -174,6 +187,7 @@
       function enterPresentation(): void {
         returnScrollY = window.scrollY;
         deck.classList.add('is-presented');
+        track('deck-presented', { deck: pageSlug() || 'slides' });
         document.documentElement.style.overflow = 'hidden';
         slides[current]!.scrollIntoView({ block: 'start' });
         if (presentBtn) presentBtn.textContent = 'Exit';

@@ -73,6 +73,11 @@ src/
     _TEMPLATE/index.mdx    #   leading _ = never published
     <slug>/index.mdx       #   folder name is the URL; images sit beside it
   styles/blog.css          # consolidated production design system (§6)
+  lib/
+    posts.ts               # collection queries, tagSlug
+    track.ts               # guarded Umami track() + pageSlug()
+  scripts/
+    slide-capture.ts       # slide PNG export
   layouts/
     Base.astro             # <html>, head, skip link, header, footer
     Post.astro             # article wrapper + full-bleed track
@@ -252,3 +257,26 @@ With `defaultColor: false`, a `@media (prefers-color-scheme: dark)` block remaps
 ## 12. Spec amendments applied
 
 `BLOG_SPEC.md` should be updated to match: §3.1/§4 Bengali resolved to Sans (L2); §6 route table gains `/page/N/`, `/404`; §8.1 `.index-intro` markup corrected (C3); §5.2 noted as incompatible with the current `.post-link` (C4); §2.3 revised — Shiki dual-theme variables are retained from the ChatGPT side (§8); §12 "None blocking" is no longer accurate.
+
+## 13. Analytics events
+
+Umami loads on every page via `Base.astro` (pageviews come free). Custom events go through
+`src/lib/track.ts` — a guarded `track()` (no-ops when `window.umami` is absent: ad-blocker,
+offline; swallows throws) and `pageSlug()` (post/deck id from the URL). Kebab-case names;
+payloads carry only what the pageview cannot already express.
+
+| Event | Source | Payload | Notes |
+|---|---|---|---|
+| `post-read-depth` | `Post.astro` scroll quartiles | `post, percent` | 25/50/75/100, each at most once; quartiles already passed at load (short posts, restored scroll) are suppressed |
+| `outbound-click` | `Base.astro` delegated listener | `href` | Cross-origin http(s) only; share buttons excluded (they fire their own event) |
+| `share-clicked` | `ShareButtons.astro` | `network, placement` | `placement` = `post` or `list` (index row) |
+| `tag-clicked` | `TagChips.astro` | `tag` | Includes the বাংলা language chip |
+| `translate-used` | `Base.astro`, `.goog-te-combo` change | `lang` | The widget has no public API; hooked via MutationObserver |
+| `quiz-opened` | `QuizItem.astro` | `post, question` | First open only; numbering restarts per quiz list |
+| `deck-progress` | `SlidesNav.astro` | `deck, percent, slide` | Quartiles of max slide reached, each once |
+| `deck-presented` | `SlidesNav.astro` | `deck` | Each entry into presentation mode |
+| `slide-png-download` | `SlidesNav.astro` | `deck, slide, label` | Pre-existing; fires only on successful export |
+
+Constraints: best-effort — analytics never breaks the tracked action; volume bounded by
+quartile bucketing (no per-scroll/per-keypress events); payload values are URL-derived or
+static, never reader data.

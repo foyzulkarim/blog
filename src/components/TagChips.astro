@@ -31,3 +31,17 @@ const hasAny = tags.length > 0 || showLangChip;
     </ul>
   )
 }
+
+<script>
+  import { track } from '../lib/track';
+
+  /* Tag chips navigate to /topics/#<slug>; the click tells us which topics
+     readers treat as a discovery path, which the topics pageview alone
+     cannot show (anchors on the same page never navigate). */
+  document.addEventListener('click', (event) => {
+    const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('ul.tags a');
+    if (!link) return;
+    const tag = link.textContent?.trim() ?? '';
+    if (tag) track('tag-clicked', { tag });
+  });
+</script>
